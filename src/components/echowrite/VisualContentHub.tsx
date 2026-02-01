@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import DOMPurify from 'dompurify';
 import { 
   Layout, 
   GitBranch, 
@@ -39,13 +40,21 @@ interface VisualContentHubProps {
   workspaceText?: string;
 }
 
-// Initialize mermaid
+// Initialize mermaid with strict security
 mermaid.initialize({
   startOnLoad: false,
   theme: 'neutral',
-  securityLevel: 'loose',
+  securityLevel: 'strict', // Changed from 'loose' to 'strict' for XSS protection
   fontFamily: 'inherit',
 });
+
+// Sanitize SVG content to prevent XSS attacks
+const sanitizeSvg = (svg: string): string => {
+  return DOMPurify.sanitize(svg, {
+    USE_PROFILES: { svg: true, svgFilters: true },
+    ADD_TAGS: ['use'],
+  });
+};
 
 export const VisualContentHub = ({ workspaceText = '' }: VisualContentHubProps) => {
   const [selectedType, setSelectedType] = useState<VisualType>('diagram');
@@ -90,7 +99,7 @@ export const VisualContentHub = ({ workspaceText = '' }: VisualContentHubProps) 
     }
   };
 
-  // Render mermaid diagrams
+  // Render mermaid diagrams with sanitization
   useEffect(() => {
     const renderDiagrams = async () => {
       for (const item of generatedItems) {
@@ -98,8 +107,10 @@ export const VisualContentHub = ({ workspaceText = '' }: VisualContentHubProps) 
         if (element && item.mermaidCode && !item.svg) {
           try {
             const { svg } = await mermaid.render(`mermaid-${item.id}`, item.mermaidCode);
+            // Sanitize the SVG before storing
+            const sanitizedSvg = sanitizeSvg(svg);
             setGeneratedItems(prev => 
-              prev.map(i => i.id === item.id ? { ...i, svg } : i)
+              prev.map(i => i.id === item.id ? { ...i, svg: sanitizedSvg } : i)
             );
           } catch (err) {
             console.error('Mermaid render error:', err);
