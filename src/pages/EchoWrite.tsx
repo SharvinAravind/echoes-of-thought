@@ -173,7 +173,7 @@ const EchoWrite = () => {
             <HistoryIcon className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-3">
-            <Logo size="md" />
+            <Logo size="lg" animated />
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-display font-bold tracking-tight text-foreground">
