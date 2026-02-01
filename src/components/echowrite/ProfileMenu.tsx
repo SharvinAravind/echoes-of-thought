@@ -3,8 +3,7 @@ import {
   User as UserIcon, 
   Crown, 
   LogOut, 
-  Settings, 
-  CheckCircle2,
+  Settings,
   Check
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -20,28 +19,6 @@ interface ProfileMenuProps {
   onThemeChange: (theme: Theme) => void;
 }
 
-const currentFeatures = [
-  "Standard Voice Transcription",
-  "Basic AI Styles",
-  "History (Last 5 items)",
-  "10 Generations/Day"
-];
-
-const premiumFeatures = [
-  "Elite Precision Mode",
-  "4 Simultaneous Variations",
-  "Unlimited Archive Access",
-  "All 10 Premium Themes",
-  "Global Output Translation"
-];
-
-const premiumBenefits = [
-  "Advanced Noise Cancellation",
-  "Smart Formatting & Summaries",
-  "Unlimited Recordings",
-  "Export to PDF / DOCX",
-  "Cloud Sync Across Devices"
-];
 
 export const ProfileMenu = ({
   user,
@@ -167,23 +144,6 @@ export const ProfileMenu = ({
           </div>
         </div>
 
-        {/* Current Features */}
-        <div className="p-5 border-b border-border/30">
-          <h4 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-3">
-            {user.tier === 'premium' ? 'Premium Benefits' : 'Your Features'}
-          </h4>
-          <div className="space-y-2">
-            {(user.tier === 'premium' ? premiumBenefits : currentFeatures).map((f, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-2 text-xs text-muted-foreground"
-              >
-                <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />
-                {f}
-              </div>
-            ))}
-          </div>
-        </div>
 
         {/* Actions */}
         <div className="p-3">

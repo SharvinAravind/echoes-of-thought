@@ -7,8 +7,6 @@ import {
   Theme
 } from '@/types/echowrite';
 import { getWritingVariations } from '@/services/aiService';
-import { StyleButtons } from '@/components/echowrite/StyleButtons';
-import { VariationOutput } from '@/components/echowrite/VariationOutput';
 import { Workspace } from '@/components/echowrite/Workspace';
 import { HistorySidebar } from '@/components/echowrite/HistorySidebar';
 import { ProfileMenu } from '@/components/echowrite/ProfileMenu';
@@ -17,6 +15,8 @@ import { Logo } from '@/components/echowrite/Logo';
 import { PremiumBadge } from '@/components/echowrite/PremiumBadge';
 import { SnowEffect } from '@/components/echowrite/SnowEffect';
 import { SettingsPanel } from '@/components/echowrite/SettingsPanel';
+import { AIContentGenerator } from '@/components/echowrite/AIContentGenerator';
+import { VisualContentHub } from '@/components/echowrite/VisualContentHub';
 import { useDictation } from '@/hooks/useDictation';
 import { useHistory } from '@/hooks/useHistory';
 import { useUser } from '@/hooks/useUser';
@@ -266,46 +266,37 @@ const EchoWrite = () => {
         </div>
       </header>
 
-      {/* Main Content */}
+      {/* Main Content - Vertical Layout */}
       <div className="flex flex-1 relative z-10 overflow-hidden">
         <main className="flex-1 overflow-y-auto p-6 flex flex-col gap-6 scrollbar-hide">
-          {/* Style Buttons */}
-          <div className="neu-flat p-4 rounded-3xl">
-            <StyleButtons
-              currentStyle={style}
-              onSelect={handleProcess}
-              isLoading={isLoading}
-            />
-          </div>
+          {/* Row 1: Workspace - Full Width */}
+          <Workspace
+            text={text}
+            onTextChange={setText}
+            onClear={handleClear}
+            onEnterPress={() => handleProcess(style)}
+            interimText={interimText}
+            isDictating={dictation.isDictating}
+            isDictationPaused={dictation.isPaused}
+            dictationTime={dictation.dictationTime}
+            onStartDictation={dictation.start}
+            onStopDictation={dictation.stop}
+            onTogglePause={dictation.togglePause}
+          />
 
-          {/* Workspace and Output */}
-          <div className="flex flex-col xl:flex-row gap-6 flex-1">
-            {/* Left: Workspace */}
-            <Workspace
-              text={text}
-              onTextChange={setText}
-              onClear={handleClear}
-              onEnterPress={() => handleProcess(style)}
-              interimText={interimText}
-              isDictating={dictation.isDictating}
-              isDictationPaused={dictation.isPaused}
-              dictationTime={dictation.dictationTime}
-              onStartDictation={dictation.start}
-              onStopDictation={dictation.stop}
-              onTogglePause={dictation.togglePause}
-            />
+          {/* Row 2: AI-Powered Content Generation */}
+          <AIContentGenerator
+            currentStyle={style}
+            onSelectStyle={handleProcess}
+            variations={variations}
+            selectedVariation={selectedVariation}
+            onSelectVariation={setSelectedVariation}
+            onApplyToWorkspace={handleApplyToWorkspace}
+            isLoading={isLoading}
+          />
 
-            {/* Right: Output */}
-            <aside className="xl:w-[480px] flex flex-col gap-6">
-              <VariationOutput
-                variations={variations}
-                selectedVariation={selectedVariation}
-                onSelectVariation={setSelectedVariation}
-                onApplyToWorkspace={handleApplyToWorkspace}
-                isLoading={isLoading}
-              />
-            </aside>
-          </div>
+          {/* Row 3: Visual Content Creation */}
+          <VisualContentHub />
         </main>
       </div>
 

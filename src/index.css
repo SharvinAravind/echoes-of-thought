@@ -15,13 +15,27 @@
   }
 }
 
-/* Logo theme color filter */
-.logo-theme-color {
-  filter: 
-    drop-shadow(0 8px 20px hsl(var(--primary) / 0.4)) 
-    drop-shadow(0 4px 8px hsl(var(--accent) / 0.3))
-    hue-rotate(var(--logo-hue, 0deg))
-    saturate(1.2);
+/* Logo theme adaptation - plain black with theme color tint */
+.logo-theme-adapt {
+  filter: brightness(0) saturate(100%);
+  transition: filter 0.3s ease;
+}
+
+/* Theme-specific logo tints */
+:root .logo-theme-adapt {
+  filter: brightness(0) saturate(100%);
+}
+
+.theme-glassmorphism .logo-theme-adapt {
+  filter: brightness(0) saturate(100%) invert(1);
+}
+
+.theme-liquid-glass .logo-theme-adapt {
+  filter: brightness(0) saturate(100%) invert(1);
+}
+
+.theme-ocean-deep .logo-theme-adapt {
+  filter: brightness(0) saturate(100%);
 }
 @tailwind components;
 @tailwind utilities;
