@@ -11,7 +11,7 @@ import { Workspace } from '@/components/echowrite/Workspace';
 import { HistorySidebar } from '@/components/echowrite/HistorySidebar';
 import { ProfileMenu } from '@/components/echowrite/ProfileMenu';
 import { AuthScreen } from '@/components/echowrite/AuthScreen';
-import { Logo } from '@/components/echowrite/Logo';
+import { AnimatedMicLogo } from '@/components/echowrite/AnimatedMicLogo';
 import { PremiumBadge } from '@/components/echowrite/PremiumBadge';
 import { SnowEffect } from '@/components/echowrite/SnowEffect';
 import { SettingsPanel } from '@/components/echowrite/SettingsPanel';
@@ -182,7 +182,7 @@ const EchoWrite = () => {
             <HistoryIcon className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-3">
-            <Logo size="lg" animated />
+            <AnimatedMicLogo size="lg" isAnimating={dictation.isDictating} />
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-display font-bold tracking-tight text-foreground">

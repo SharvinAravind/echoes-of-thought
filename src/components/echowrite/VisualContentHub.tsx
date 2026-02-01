@@ -8,12 +8,14 @@ import {
   Maximize2,
   Sparkles,
   RefreshCw,
-  X
+  X,
+  Wand2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { generateVisualContent, VisualContent } from '@/services/aiService';
 import { toast } from 'sonner';
 import mermaid from 'mermaid';
+import { Button } from '@/components/ui/button';
 
 type VisualType = 'diagram' | 'flowchart' | 'mindmap' | 'timeline';
 
@@ -50,9 +52,43 @@ export const VisualContentHub = ({ workspaceText = '' }: VisualContentHubProps) 
   const [generatedItems, setGeneratedItems] = useState<VisualItem[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [fullscreenItem, setFullscreenItem] = useState<VisualItem | null>(null);
+  const [autoGenerate, setAutoGenerate] = useState(false);
   const mermaidRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const lastTextRef = useRef<string>('');
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Manual generate function
+  const handleManualGenerate = async () => {
+    if (!workspaceText.trim() || workspaceText.length < 20) {
+      toast.error('Please enter at least 20 characters in workspace');
+      return;
+    }
+    
+    setIsGenerating(true);
+    lastTextRef.current = workspaceText;
+
+    try {
+      const visualPromises = visualTypes.map(async (type) => {
+        const result = await generateVisualContent(workspaceText, type.id);
+        return {
+          id: `${type.id}-${Date.now()}`,
+          type: type.id,
+          title: result.title,
+          mermaidCode: result.mermaidCode,
+          description: result.description,
+        } as VisualItem;
+      });
+
+      const newItems = await Promise.all(visualPromises);
+      setGeneratedItems(newItems);
+      toast.success('Visual content generated!');
+    } catch (error) {
+      console.error('Error generating visuals:', error);
+      toast.error('Failed to generate visual content');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   // Render mermaid diagrams
   useEffect(() => {
@@ -74,8 +110,9 @@ export const VisualContentHub = ({ workspaceText = '' }: VisualContentHubProps) 
     renderDiagrams();
   }, [generatedItems]);
 
-  // Auto-generate visual content when workspace text changes
+  // Auto-generate visual content when workspace text changes (only if autoGenerate is enabled)
   useEffect(() => {
+    if (!autoGenerate) return;
     if (!workspaceText.trim() || workspaceText.length < 20) return;
     if (workspaceText === lastTextRef.current) return;
 
@@ -117,7 +154,7 @@ export const VisualContentHub = ({ workspaceText = '' }: VisualContentHubProps) 
         clearTimeout(debounceRef.current);
       }
     };
-  }, [workspaceText]);
+  }, [workspaceText, autoGenerate]);
 
   const handleDownload = (item: VisualItem) => {
     if (!item.svg) return;
@@ -145,16 +182,42 @@ export const VisualContentHub = ({ workspaceText = '' }: VisualContentHubProps) 
           <div>
             <h3 className="text-sm font-bold text-foreground">Visual Content Creation</h3>
             <p className="text-[10px] text-muted-foreground">
-              Auto-generated diagrams, flowcharts, mind maps, and timelines
+              Generate diagrams, flowcharts, mind maps, and timelines
             </p>
           </div>
         </div>
-        {isGenerating && (
-          <div className="flex items-center gap-2 text-primary">
-            <RefreshCw className="w-4 h-4 animate-spin" />
-            <span className="text-xs font-semibold">Generating...</span>
-          </div>
-        )}
+        <div className="flex items-center gap-3">
+          {/* Auto-generate toggle */}
+          <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer">
+            <input
+              type="checkbox"
+              checked={autoGenerate}
+              onChange={(e) => setAutoGenerate(e.target.checked)}
+              className="w-4 h-4 rounded accent-primary"
+            />
+            Auto
+          </label>
+          
+          {/* Generate Button */}
+          <Button
+            onClick={handleManualGenerate}
+            disabled={isGenerating || !workspaceText.trim() || workspaceText.length < 20}
+            size="sm"
+            className="gap-2 primary-button"
+          >
+            {isGenerating ? (
+              <>
+                <RefreshCw className="w-4 h-4 animate-spin" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <Wand2 className="w-4 h-4" />
+                Generate
+              </>
+            )}
+          </Button>
+        </div>
       </div>
 
       {/* Visual Type Selector */}

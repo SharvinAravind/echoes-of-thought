@@ -722,3 +722,105 @@
 .logo-plain {
   filter: brightness(0) saturate(100%);
 }
+
+.logo-theme-adapt {
+  /* Plain black logo that adapts to theme */
+  filter: brightness(0) saturate(100%);
+}
+
+/* In dark themes, invert the logo to white */
+.dark .logo-theme-adapt,
+[data-theme="glassmorphism"] .logo-theme-adapt,
+[data-theme="midnight-luxe"] .logo-theme-adapt,
+[data-theme="cyberpunk-neon"] .logo-theme-adapt,
+[data-theme="aurora-dream"] .logo-theme-adapt,
+[data-theme="royal-velvet"] .logo-theme-adapt {
+  filter: brightness(0) saturate(100%) invert(1);
+}
+
+/* Animated Mic Logo Animations */
+@keyframes mic-float {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-3px) rotate(2deg); }
+}
+
+@keyframes mic-wave {
+  0%, 100% { opacity: 0.6; transform: scaleX(1); }
+  50% { opacity: 0.9; transform: scaleX(1.1); }
+}
+
+@keyframes sound-wave {
+  0% { opacity: 0; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.2); }
+}
+
+@keyframes fade-in-out {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.animate-mic-float {
+  animation: mic-float 2s ease-in-out infinite;
+}
+
+.animate-mic-wave {
+  animation: mic-wave 1s ease-in-out infinite;
+}
+
+.animate-sound-wave {
+  animation: sound-wave 1.5s ease-in-out infinite;
+}
+
+.animate-fade-in-out {
+  animation: fade-in-out 2s ease-in-out infinite;
+}
+
+/* Rocket Animations */
+@keyframes rocket-hover {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-8px) rotate(2deg); }
+}
+
+@keyframes flame-flicker {
+  0%, 100% { transform: scaleY(1) scaleX(1); opacity: 1; }
+  25% { transform: scaleY(1.1) scaleX(0.95); opacity: 0.9; }
+  50% { transform: scaleY(0.9) scaleX(1.05); opacity: 1; }
+  75% { transform: scaleY(1.05) scaleX(0.98); opacity: 0.95; }
+}
+
+@keyframes flame-particle {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(30px) scale(0); opacity: 0; }
+}
+
+@keyframes spark {
+  0%, 100% { opacity: 0.5; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(5px); }
+}
+
+@keyframes smoke {
+  0% { transform: translateY(0) scale(1); opacity: 0.3; }
+  100% { transform: translateY(20px) scale(2); opacity: 0; }
+}
+
+.animate-rocket-hover {
+  animation: rocket-hover 3s ease-in-out infinite;
+}
+
+.animate-flame-flicker {
+  animation: flame-flicker 0.3s ease-in-out infinite;
+  transform-origin: center top;
+}
+
+.animate-flame-particle {
+  animation: flame-particle 0.8s ease-out infinite;
+}
+
+.animate-spark {
+  animation: spark 0.5s ease-in-out infinite;
+}
+
+.animate-smoke {
+  animation: smoke 1.5s ease-out infinite;
+}
