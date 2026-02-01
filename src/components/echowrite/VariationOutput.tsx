@@ -7,10 +7,12 @@ import {
   Mail, 
   Globe, 
   RefreshCw,
-  Zap
+  Zap,
+  ArrowRight
 } from 'lucide-react';
 import { translateText, rephraseText } from '@/services/aiService';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 
 interface VariationOutputProps {
   variations: WritingVariation[];
@@ -90,10 +92,12 @@ export const VariationOutput = ({
 
   if (isLoading) {
     return (
-      <div className="gold-card p-24 text-center flex flex-col items-center justify-center animate-pulse">
-        <RefreshCw className="w-12 h-12 text-primary animate-spin mb-4" />
-        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">
-          Refining Intelligence...
+      <div className="neu-flat rounded-3xl p-16 text-center flex flex-col items-center justify-center">
+        <div className="w-16 h-16 rounded-full neu-convex flex items-center justify-center mb-4">
+          <RefreshCw className="w-8 h-8 text-primary animate-spin" />
+        </div>
+        <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+          Generating Variations...
         </p>
       </div>
     );
@@ -101,10 +105,15 @@ export const VariationOutput = ({
 
   if (variations.length === 0) {
     return (
-      <div className="bg-muted/30 border-2 border-dashed border-muted rounded-4xl p-24 text-center opacity-60 flex flex-col items-center">
-        <Zap className="w-12 h-12 text-muted-foreground/50 mb-4" />
-        <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.4em]">
-          Engine Standby
+      <div className="neu-pressed rounded-3xl p-16 text-center flex flex-col items-center opacity-70">
+        <div className="w-16 h-16 rounded-full neu-flat flex items-center justify-center mb-4">
+          <Zap className="w-8 h-8 text-muted-foreground/50" />
+        </div>
+        <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+          Awaiting Input
+        </p>
+        <p className="text-[10px] text-muted-foreground mt-2">
+          Type or dictate, then generate
         </p>
       </div>
     );
@@ -118,11 +127,12 @@ export const VariationOutput = ({
           <button
             key={v.id}
             onClick={() => handleSelectVariation(v)}
-            className={`shrink-0 px-6 py-2.5 rounded-full text-[10px] font-black border transition-all ${
+            className={cn(
+              'shrink-0 px-5 py-2.5 rounded-2xl text-[10px] font-bold transition-all',
               selectedVariation?.id === v.id
-                ? 'bg-primary text-primary-foreground border-primary shadow-xl'
-                : 'bg-card text-muted-foreground border-border hover:text-primary'
-            }`}
+                ? 'style-chip-active'
+                : 'neu-flat text-muted-foreground hover:text-foreground'
+            )}
           >
             {v.label.toUpperCase()}
           </button>
@@ -131,19 +141,19 @@ export const VariationOutput = ({
 
       {/* Selected Variation Content */}
       {currentVariation && (
-        <div className="gold-card overflow-hidden animate-echo-in p-8">
+        <div className="neu-flat rounded-3xl overflow-hidden animate-scale-in p-6">
           {/* Header */}
-          <div className="flex justify-between items-start mb-6">
+          <div className="flex justify-between items-start mb-5">
             <div className="flex flex-col gap-2">
-              <span className="text-[9px] font-black text-primary bg-primary/5 px-3 py-1 rounded-full uppercase self-start border border-primary/20">
+              <span className="text-[10px] font-bold text-primary-foreground bg-primary px-3 py-1.5 rounded-xl uppercase self-start">
                 {currentVariation.tone} Tone
               </span>
               
               {/* Translate Dropdown */}
-              <div className="flex items-center gap-1.5 bg-muted px-2 py-1 rounded-lg border border-border group">
-                <Globe className="w-3 h-3 text-muted-foreground group-hover:text-primary transition-colors" />
+              <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl neu-pressed group">
+                <Globe className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
                 <select
-                  className="bg-transparent border-none text-[8px] font-black uppercase text-muted-foreground outline-none cursor-pointer"
+                  className="bg-transparent border-none text-[10px] font-semibold text-muted-foreground outline-none cursor-pointer"
                   onChange={(e) => handleTranslate(e.target.value)}
                   value=""
                   disabled={isTranslating}
@@ -160,31 +170,31 @@ export const VariationOutput = ({
             <div className="flex gap-2">
               <button
                 onClick={() => shareOutput('whatsapp')}
-                className="p-2.5 bg-green-50 text-green-600 rounded-xl hover:bg-green-100 transition-colors shadow-sm"
+                className="p-2.5 rounded-xl neu-button text-primary hover:scale-105 transition-transform"
                 title="Share via WhatsApp"
               >
                 <Share2 className="w-4 h-4" />
               </button>
               <button
                 onClick={() => shareOutput('email')}
-                className="p-2.5 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-colors shadow-sm"
+                className="p-2.5 rounded-xl neu-button text-accent hover:scale-105 transition-transform"
                 title="Send via Email"
               >
                 <Mail className="w-4 h-4" />
               </button>
               <button
                 onClick={copyToClipboard}
-                className="p-2.5 bg-muted text-muted-foreground hover:text-primary rounded-xl transition-colors shadow-sm"
+                className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors"
               >
-                {copied ? <CheckCircle2 className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                {copied ? <CheckCircle2 className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
               </button>
             </div>
           </div>
 
           {/* Content */}
-          <div className="p-6 bg-muted/50 rounded-3xl border border-border text-foreground text-lg leading-relaxed whitespace-pre-wrap font-medium shadow-inner italic relative min-h-[200px]">
+          <div className="p-5 rounded-2xl neu-pressed text-foreground text-base leading-relaxed whitespace-pre-wrap relative min-h-[180px]">
             {(isRephrasing || isTranslating) && (
-              <div className="absolute inset-0 bg-card/50 backdrop-blur-[2px] flex items-center justify-center rounded-3xl z-10">
+              <div className="absolute inset-0 bg-card/70 backdrop-blur-[2px] flex items-center justify-center rounded-2xl z-10">
                 <RefreshCw className="w-6 h-6 text-primary animate-spin" />
               </div>
             )}
@@ -192,15 +202,15 @@ export const VariationOutput = ({
           </div>
 
           {/* Rephrase Options */}
-          <div className="mt-6 flex gap-2">
+          <div className="mt-5 flex gap-2">
             {(['simple', 'medium', 'long'] as const).map((type) => (
               <button
                 key={type}
                 onClick={() => handleRephrase(type)}
                 disabled={isRephrasing}
-                className="flex-1 py-3 px-3 rounded-xl border border-border bg-muted hover:bg-card hover:border-primary text-[8px] font-black uppercase text-muted-foreground transition-all disabled:opacity-50"
+                className="flex-1 py-3 px-3 rounded-xl neu-button text-[10px] font-bold uppercase text-muted-foreground hover:text-foreground transition-all disabled:opacity-50"
               >
-                {type} Form
+                {type}
               </button>
             ))}
           </div>
@@ -208,9 +218,10 @@ export const VariationOutput = ({
           {/* Apply Button */}
           <button
             onClick={() => onApplyToWorkspace(currentVariation.suggestedText)}
-            className="w-full mt-6 py-5 gold-gradient text-primary-foreground rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl transition-all hover:scale-[1.02]"
+            className="w-full mt-5 py-4 primary-button rounded-2xl flex items-center justify-center gap-2"
           >
-            APPLY TO WORKSPACE
+            Apply to Workspace
+            <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       )}

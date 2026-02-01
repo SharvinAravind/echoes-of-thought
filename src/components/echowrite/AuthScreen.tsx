@@ -4,6 +4,8 @@ import { Mail, Lock, ArrowRight, Mic, Sparkles, Languages, CheckCircle2, Star, Z
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { Logo } from './Logo';
+import { PREMIUM_FEATURES } from '@/types/echowrite';
 
 interface AuthScreenProps {
   onLogin: (user: User) => void;
@@ -12,22 +14,26 @@ interface AuthScreenProps {
 const freeFeatures = [
   "Standard Voice Transcription",
   "Basic AI Phrasing",
-  "Last 5 Items History",
-  "Single Output Mode"
+  "10 Generations/Day",
+  "2 Theme Options",
+  "Last 5 Items History"
 ];
 
 const premiumFeatures = [
   "Elite Accuracy Mode",
+  "Unlimited Generations",
+  "All 10 Premium Themes",
   "4 Simultaneous Variations",
-  "Unlimited Archive Access",
   "Global Output Translation",
-  "Priority AI Support"
+  "Cloud Sync & Backup",
+  "Priority AI Processing"
 ];
 
 export const AuthScreen = ({ onLogin }: AuthScreenProps) => {
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -50,8 +56,10 @@ export const AuthScreen = ({ onLogin }: AuthScreenProps) => {
       const user: User = {
         id: crypto.randomUUID(),
         email,
-        name: email.split('@')[0],
-        tier: 'free'
+        name: name || email.split('@')[0],
+        tier: 'free',
+        usageCount: 0,
+        maxUsage: 10
       };
       onLogin(user);
       toast.success(`Welcome${mode === 'signup' ? '' : ' back'}, ${user.name}!`);
@@ -60,110 +68,102 @@ export const AuthScreen = ({ onLogin }: AuthScreenProps) => {
   };
 
   return (
-    <div className="min-h-screen flex bg-background font-sans selection:bg-primary/30">
-      {/* Left Side: Tier Comparison */}
-      <div className="hidden lg:flex w-1/2 bg-muted/50 border-r border-border flex-col p-16 overflow-y-auto">
-        <div className="mb-16">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 gold-gradient rounded-xl flex items-center justify-center shadow-lg border border-white/30">
-              <Mic className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <h1 className="text-3xl font-black tracking-tighter text-gold-dark uppercase">
-              EchoWrite
-            </h1>
+    <div className="min-h-screen flex bg-background font-sans selection:bg-primary/30 overflow-hidden">
+      {/* Left Side: Hero & Tier Comparison */}
+      <div className="hidden lg:flex w-1/2 flex-col p-12 overflow-y-auto relative">
+        {/* Animated Background */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-20 left-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-32 right-10 w-80 h-80 bg-accent/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '1.5s' }} />
+        </div>
+
+        <div className="relative z-10">
+          {/* Logo */}
+          <div className="mb-12">
+            <Logo size="lg" showText />
           </div>
-          <p className="text-sm text-muted-foreground font-medium max-w-sm">
-            Transform your words with AI-powered writing assistance. Voice, text, any style.
+
+          <h2 className="text-3xl font-display font-bold text-foreground mb-4 leading-tight">
+            Transform Your Words with AI-Powered Writing
+          </h2>
+          <p className="text-muted-foreground mb-8 max-w-md">
+            Voice-to-text processing with AI-powered content generation. 
+            Transform your ideas into polished content in seconds.
           </p>
-        </div>
 
-        {/* Tier Comparison */}
-        <div className="grid grid-cols-2 gap-6 flex-1">
-          {/* Free Tier */}
-          <div className="bg-card rounded-3xl border border-border p-8 flex flex-col">
-            <div className="flex items-center gap-2 mb-6">
-              <Star className="w-5 h-5 text-muted-foreground" />
-              <h3 className="text-sm font-black uppercase tracking-widest text-muted-foreground">
-                Free
-              </h3>
+          {/* Tier Comparison */}
+          <div className="grid grid-cols-2 gap-4 flex-1">
+            {/* Free Tier */}
+            <div className="neu-flat rounded-3xl p-6 flex flex-col">
+              <div className="flex items-center gap-2 mb-4">
+                <Star className="w-5 h-5 text-muted-foreground" />
+                <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+                  Free
+                </h3>
+              </div>
+              <p className="text-2xl font-bold text-foreground mb-4">$0</p>
+              <ul className="space-y-2.5 flex-1">
+                {freeFeatures.map((f, i) => (
+                  <li key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mb-6">
-              Get Started
-            </p>
-            <ul className="space-y-3 flex-1">
-              {freeFeatures.map((f, i) => (
-                <li key={i} className="flex items-center gap-3 text-xs text-muted-foreground">
-                  <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
-                  {f}
-                </li>
-              ))}
-            </ul>
+
+            {/* Premium Tier */}
+            <div className="neu-convex rounded-3xl p-6 flex flex-col relative overflow-hidden ring-2 ring-gold">
+              <div className="absolute top-0 right-0 gold-gradient text-white px-3 py-1 text-[8px] font-bold uppercase tracking-widest rounded-bl-xl">
+                Popular
+              </div>
+              <div className="flex items-center gap-2 mb-4">
+                <Crown className="w-5 h-5 text-gold" />
+                <h3 className="text-sm font-bold uppercase tracking-widest text-gold">
+                  Premium
+                </h3>
+              </div>
+              <p className="text-2xl font-bold text-foreground mb-4">$9/mo</p>
+              <ul className="space-y-2.5 flex-1">
+                {premiumFeatures.map((f, i) => (
+                  <li key={i} className="flex items-center gap-2 text-xs text-foreground font-medium">
+                    <Zap className="w-3.5 h-3.5 text-gold shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
-          {/* Premium Tier */}
-          <div className="bg-card rounded-3xl border-2 border-primary p-8 flex flex-col relative overflow-hidden">
-            <div className="absolute top-0 right-0 bg-primary text-primary-foreground px-4 py-1 text-[8px] font-black uppercase tracking-widest rounded-bl-xl">
-              Popular
-            </div>
-            <div className="flex items-center gap-2 mb-6">
-              <Crown className="w-5 h-5 text-primary" />
-              <h3 className="text-sm font-black uppercase tracking-widest text-primary">
-                Premium
-              </h3>
-            </div>
-            <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mb-6">
-              Full Power
-            </p>
-            <ul className="space-y-3 flex-1">
-              {premiumFeatures.map((f, i) => (
-                <li key={i} className="flex items-center gap-3 text-xs text-foreground font-medium">
-                  <Zap className="w-4 h-4 text-primary shrink-0" />
-                  {f}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* Features Icons */}
-        <div className="mt-12 flex items-center justify-center gap-8">
-          <div className="flex flex-col items-center gap-2">
-            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-              <Mic className="w-6 h-6 text-primary" />
-            </div>
-            <span className="text-[8px] font-black text-muted-foreground uppercase">Voice</span>
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-              <Sparkles className="w-6 h-6 text-primary" />
-            </div>
-            <span className="text-[8px] font-black text-muted-foreground uppercase">AI Styles</span>
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-              <Languages className="w-6 h-6 text-primary" />
-            </div>
-            <span className="text-[8px] font-black text-muted-foreground uppercase">Translate</span>
+          {/* Feature Icons */}
+          <div className="mt-8 flex items-center gap-6">
+            {[
+              { icon: Mic, label: '25+ Languages' },
+              { icon: Sparkles, label: 'AI Styles' },
+              { icon: Languages, label: 'Translate' },
+            ].map(({ icon: Icon, label }) => (
+              <div key={label} className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-2xl neu-flat flex items-center justify-center">
+                  <Icon className="w-5 h-5 text-primary" />
+                </div>
+                <span className="text-xs font-semibold text-muted-foreground">{label}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
       {/* Right Side: Auth Form */}
-      <div className="flex-1 flex items-center justify-center p-8">
+      <div className="flex-1 flex items-center justify-center p-8 lg:p-12">
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
-          <div className="lg:hidden flex items-center gap-3 mb-8 justify-center">
-            <div className="w-10 h-10 gold-gradient rounded-xl flex items-center justify-center shadow-lg">
-              <Mic className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <h1 className="text-2xl font-black tracking-tighter text-gold-dark uppercase">
-              EchoWrite
-            </h1>
+          <div className="lg:hidden flex justify-center mb-8">
+            <Logo size="lg" showText />
           </div>
 
           {/* Form */}
-          <div className="bg-card rounded-4xl border border-border p-10 shadow-xl">
-            <h2 className="text-xl font-black text-foreground mb-2">
+          <div className="neu-flat rounded-[2rem] p-8 md:p-10">
+            <h2 className="text-2xl font-bold text-foreground mb-2">
               {mode === 'login' ? 'Welcome back' : 'Create account'}
             </h2>
             <p className="text-sm text-muted-foreground mb-8">
@@ -173,6 +173,19 @@ export const AuthScreen = ({ onLogin }: AuthScreenProps) => {
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
+              {mode === 'signup' && (
+                <div className="relative">
+                  <Sparkles className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    placeholder="Your name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="pl-12 h-14 rounded-2xl neu-pressed border-0 focus-visible:ring-primary"
+                  />
+                </div>
+              )}
+              
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
@@ -180,9 +193,10 @@ export const AuthScreen = ({ onLogin }: AuthScreenProps) => {
                   placeholder="Email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-12 h-14 rounded-2xl border-border bg-muted/50"
+                  className="pl-12 h-14 rounded-2xl neu-pressed border-0 focus-visible:ring-primary"
                 />
               </div>
+              
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
@@ -190,21 +204,21 @@ export const AuthScreen = ({ onLogin }: AuthScreenProps) => {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-12 h-14 rounded-2xl border-border bg-muted/50"
+                  className="pl-12 h-14 rounded-2xl neu-pressed border-0 focus-visible:ring-primary"
                 />
               </div>
 
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="w-full h-14 gold-gradient text-primary-foreground rounded-2xl font-black uppercase tracking-widest shadow-lg hover:scale-[1.02] transition-all"
+                className="w-full h-14 primary-button rounded-2xl text-base gap-2"
               >
                 {isLoading ? (
-                  'Processing...'
+                  <span className="animate-pulse">Processing...</span>
                 ) : (
                   <>
                     {mode === 'login' ? 'Sign In' : 'Create Account'}
-                    <ArrowRight className="w-4 h-4 ml-2" />
+                    <ArrowRight className="w-5 h-5" />
                   </>
                 )}
               </Button>
@@ -220,6 +234,14 @@ export const AuthScreen = ({ onLogin }: AuthScreenProps) => {
                   : 'Already have an account? Sign in'}
               </button>
             </div>
+          </div>
+
+          {/* Free tier notice */}
+          <div className="mt-6 p-4 rounded-2xl neu-flat text-center">
+            <p className="text-xs text-muted-foreground">
+              <span className="font-semibold text-foreground">Free tier includes:</span>{' '}
+              10 generations/day • Basic transcription • 2 themes
+            </p>
           </div>
         </div>
       </div>

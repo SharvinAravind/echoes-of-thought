@@ -11,6 +11,7 @@ import {
   Wrench, 
   List 
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface StyleButtonsProps {
   currentStyle: WritingStyle;
@@ -43,11 +44,13 @@ export const StyleButtons = ({ currentStyle, onSelect, isLoading }: StyleButtons
             key={style.id}
             disabled={isLoading}
             onClick={() => onSelect(style.id)}
-            className={`style-chip flex items-center gap-2 ${
-              isActive ? 'style-chip-active' : 'style-chip-inactive'
-            } disabled:opacity-50 disabled:cursor-not-allowed`}
+            className={cn(
+              'style-chip flex items-center gap-2',
+              isActive ? 'style-chip-active' : 'style-chip-inactive',
+              isLoading && 'opacity-50 cursor-not-allowed'
+            )}
           >
-            <Icon className="w-3 h-3" />
+            <Icon className="w-3.5 h-3.5" />
             <span>{style.label}</span>
           </button>
         );
