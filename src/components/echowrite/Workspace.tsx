@@ -1,5 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Mic, Trash2, Edit3, Square, Pause, Play } from 'lucide-react';
+import { VoiceWaveAnimation } from './VoiceWaveAnimation';
+import { cn } from '@/lib/utils';
 
 interface WorkspaceProps {
   text: string;
@@ -44,18 +46,32 @@ export const Workspace = ({
   };
 
   return (
-    <div className="flex-1 gold-card flex flex-col relative min-h-[500px] overflow-hidden">
+    <div className="flex-1 neu-flat rounded-3xl flex flex-col relative min-h-[500px] overflow-hidden">
       {/* Header */}
-      <div className="px-8 py-5 border-b border-border/50 flex justify-between items-center bg-card/40">
-        <div className="flex items-center gap-3">
-          <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-            <Edit3 className="w-3 h-3 text-primary" /> Workspace
-          </h3>
+      <div className="px-6 py-4 border-b border-border/30 flex justify-between items-center">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl neu-convex flex items-center justify-center">
+              <Edit3 className="w-4 h-4 text-primary" />
+            </div>
+            <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+              Workspace
+            </h3>
+          </div>
+          
           {isDictating && (
-            <div className="flex items-center gap-2 px-3 py-1 bg-red-50 rounded-full">
-              <div className={`w-2 h-2 rounded-full ${isDictationPaused ? 'bg-yellow-500' : 'bg-red-500 animate-pulse'}`} />
-              <span className="text-[9px] font-black text-red-600 uppercase">
-                {isDictationPaused ? 'PAUSED' : 'RECORDING'} {formatTime(dictationTime)}
+            <div className="flex items-center gap-3 px-4 py-2 rounded-2xl neu-pressed">
+              <div className={cn(
+                'w-2.5 h-2.5 rounded-full',
+                isDictationPaused 
+                  ? 'bg-accent' 
+                  : 'bg-destructive animate-pulse'
+              )} />
+              <span className="text-xs font-bold uppercase tracking-wider">
+                {isDictationPaused ? 'Paused' : 'Recording'}
+              </span>
+              <span className="text-xs font-mono font-bold text-primary">
+                {formatTime(dictationTime)}
               </span>
             </div>
           )}
@@ -66,54 +82,77 @@ export const Workspace = ({
             <>
               <button
                 onClick={onTogglePause}
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-100 text-yellow-700 border border-yellow-200 hover:bg-yellow-200 transition-all"
+                className="neu-button flex items-center gap-2 px-4 py-2 rounded-xl text-accent"
               >
                 {isDictationPaused ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
-                <span className="text-[10px] font-black uppercase">
-                  {isDictationPaused ? 'RESUME' : 'PAUSE'}
+                <span className="text-[10px] font-bold uppercase">
+                  {isDictationPaused ? 'Resume' : 'Pause'}
                 </span>
               </button>
               <button
                 onClick={onStopDictation}
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-red-500 text-white hover:bg-red-600 transition-all shadow-md"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-destructive text-destructive-foreground shadow-lg hover:shadow-xl transition-all"
               >
                 <Square className="w-4 h-4" />
-                <span className="text-[10px] font-black uppercase">STOP</span>
+                <span className="text-[10px] font-bold uppercase">Stop</span>
               </button>
             </>
           ) : (
             <button
               onClick={onStartDictation}
-              className="flex items-center gap-2 px-5 py-2 rounded-full shadow-md bg-card text-muted-foreground border border-border hover:text-primary hover:border-primary/30 transition-all"
+              className="neu-button flex items-center gap-2 px-5 py-2.5 rounded-xl text-foreground hover:text-primary transition-colors"
             >
               <Mic className="w-4 h-4" />
-              <span className="text-[10px] font-black uppercase tracking-tight">DICTATE</span>
+              <span className="text-[10px] font-bold uppercase tracking-tight">Dictate</span>
             </button>
           )}
           <button
             onClick={onClear}
-            className="p-2.5 text-muted-foreground hover:text-destructive transition-colors"
+            className="neu-button p-2.5 rounded-xl text-muted-foreground hover:text-destructive transition-colors"
           >
             <Trash2 className="w-5 h-5" />
           </button>
         </div>
       </div>
 
+      {/* Voice Wave Animation */}
+      {isDictating && (
+        <div className="px-6 py-4 flex items-center justify-center border-b border-border/20">
+          <VoiceWaveAnimation 
+            isActive={isDictating} 
+            isPaused={isDictationPaused}
+            barCount={7}
+          />
+        </div>
+      )}
+
       {/* Textarea */}
-      <div className="flex-1 flex flex-col p-8 overflow-y-auto relative">
+      <div className="flex-1 flex flex-col p-6 overflow-y-auto relative">
         <textarea
           ref={textareaRef}
           value={text}
           onChange={(e) => onTextChange(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Start typing or use dictation... (Press Enter to generate)"
-          className="w-full flex-1 resize-none bg-transparent focus:outline-none text-2xl text-foreground leading-relaxed placeholder:text-muted-foreground/40 font-light"
+          className="w-full flex-1 resize-none bg-transparent focus:outline-none text-xl text-foreground leading-relaxed placeholder:text-muted-foreground/40 font-normal"
         />
+        
+        {/* Interim (live) dictation text with gradient */}
         {interimText && (
-          <p className="text-2xl text-primary opacity-60 leading-relaxed font-light mt-4 italic animate-pulse">
+          <p className="text-xl leading-relaxed mt-4 font-normal animate-pulse dictation-interim">
             {interimText}
           </p>
         )}
+      </div>
+
+      {/* Character count footer */}
+      <div className="px-6 py-3 border-t border-border/20 flex justify-between items-center">
+        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+          {text.length} characters • {text.split(/\s+/).filter(Boolean).length} words
+        </span>
+        <span className="text-[10px] font-medium text-muted-foreground">
+          Press <kbd className="px-1.5 py-0.5 rounded bg-muted text-foreground font-mono text-[9px]">Enter</kbd> to generate
+        </span>
       </div>
     </div>
   );

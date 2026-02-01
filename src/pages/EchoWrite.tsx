@@ -1,9 +1,10 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { 
   WritingStyle, 
   WritingVariation, 
   SUPPORTED_LANGUAGES,
-  HistoryItem 
+  HistoryItem,
+  Theme
 } from '@/types/echowrite';
 import { getWritingVariations } from '@/services/aiService';
 import { StyleButtons } from '@/components/echowrite/StyleButtons';
@@ -12,12 +13,13 @@ import { Workspace } from '@/components/echowrite/Workspace';
 import { HistorySidebar } from '@/components/echowrite/HistorySidebar';
 import { ProfileMenu } from '@/components/echowrite/ProfileMenu';
 import { AuthScreen } from '@/components/echowrite/AuthScreen';
+import { Logo } from '@/components/echowrite/Logo';
+import { PremiumBadge } from '@/components/echowrite/PremiumBadge';
 import { useDictation } from '@/hooks/useDictation';
 import { useHistory } from '@/hooks/useHistory';
 import { useUser } from '@/hooks/useUser';
 import { toast } from 'sonner';
 import { 
-  Mic, 
   History as HistoryIcon, 
   Languages, 
   User as UserIcon,
@@ -44,7 +46,28 @@ const EchoWrite = () => {
   const [historyOpen, setHistoryOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [inputLang, setInputLang] = useState('en-US');
-  const [theme, setTheme] = useState<'creamy' | 'pure' | 'minimal'>('creamy');
+  const [currentTheme, setCurrentTheme] = useState<Theme>('neumorphic-green');
+
+  // Apply theme class to body
+  useEffect(() => {
+    // Remove all theme classes first
+    document.documentElement.classList.remove(
+      'theme-golden-cream',
+      'theme-glassmorphism',
+      'theme-neo-brutalism',
+      'theme-skeuomorphism',
+      'theme-clay-morphism',
+      'theme-minimalism',
+      'theme-liquid-glass',
+      'theme-ocean-deep',
+      'theme-sunset-glow'
+    );
+    
+    // Add current theme class (neumorphic-green is default, no class needed)
+    if (currentTheme !== 'neumorphic-green') {
+      document.documentElement.classList.add(`theme-${currentTheme}`);
+    }
+  }, [currentTheme]);
 
   // Voice Commands Handler
   const handleVoiceCommand = useCallback((command: string): boolean => {
@@ -125,20 +148,13 @@ const EchoWrite = () => {
     toast.success("Applied to workspace!");
   };
 
-  // Theme classes
-  const themeClasses = {
-    creamy: "bg-background",
-    pure: "bg-card",
-    minimal: "bg-muted/30"
-  };
-
   // Show auth screen if not logged in
   if (!user) {
     return <AuthScreen onLogin={login} />;
   }
 
   return (
-    <div className={`min-h-screen flex flex-col relative transition-colors duration-700 ${themeClasses[theme]} overflow-hidden font-sans`}>
+    <div className="min-h-screen flex flex-col relative transition-colors duration-700 bg-background overflow-hidden font-sans">
       {/* History Sidebar */}
       <HistorySidebar
         history={history}
@@ -148,32 +164,27 @@ const EchoWrite = () => {
       />
 
       {/* Navbar */}
-      <header className="px-6 py-4 gold-frosted flex justify-between items-center sticky top-0 z-40 shadow-sm">
+      <header className="px-6 py-4 glass-frosted flex justify-between items-center sticky top-0 z-40">
         <div className="flex items-center gap-4">
           <button
             onClick={() => setHistoryOpen(!historyOpen)}
-            className="p-2 text-gold-dark hover:bg-card/40 rounded-xl transition-colors"
+            className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors"
           >
             <HistoryIcon className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 gold-gradient rounded-xl flex items-center justify-center shadow-lg border border-white/30">
-              <Mic className="text-primary-foreground w-6 h-6" />
-            </div>
+            <Logo size="md" />
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-black tracking-tighter text-gold-dark uppercase">
+                <h1 className="text-xl font-display font-bold tracking-tight text-foreground">
                   EchoWrite
                 </h1>
                 {user.tier === 'premium' && (
-                  <div className="bg-primary/10 text-primary px-2 py-0.5 rounded-full flex items-center gap-1 border border-primary/20">
-                    <Crown className="w-3 h-3" />
-                    <span className="text-[8px] font-black uppercase tracking-widest">PRIME</span>
-                  </div>
+                  <PremiumBadge variant="badge" />
                 )}
               </div>
-              <p className="text-[8px] text-muted-foreground font-black uppercase tracking-[0.2em]">
-                Voice Master Active
+              <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-widest">
+                Premium AI Writing
               </p>
             </div>
           </div>
@@ -181,12 +192,12 @@ const EchoWrite = () => {
 
         <div className="flex items-center gap-3">
           {/* Language Selector */}
-          <div className="flex items-center gap-2 bg-card/60 px-4 py-2 rounded-full border border-border shadow-sm transition-transform hover:scale-[1.02]">
+          <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl neu-flat transition-transform hover:scale-[1.02]">
             <Languages className="w-4 h-4 text-primary" />
             <select
               value={inputLang}
               onChange={(e) => setInputLang(e.target.value)}
-              className="bg-transparent border-none text-[10px] font-black uppercase text-muted-foreground outline-none cursor-pointer"
+              className="bg-transparent border-none text-[10px] font-bold uppercase text-muted-foreground outline-none cursor-pointer"
             >
               {SUPPORTED_LANGUAGES.map(l => (
                 <option key={l.code} value={l.code}>{l.name}</option>
@@ -198,7 +209,7 @@ const EchoWrite = () => {
           <div className="relative">
             <button
               onClick={() => setProfileOpen(!profileOpen)}
-              className="p-2 rounded-full bg-card/80 border border-border shadow-sm hover:border-primary transition-all"
+              className="p-2.5 rounded-xl neu-button hover:scale-[1.02] transition-all"
             >
               <UserIcon className="w-5 h-5 text-muted-foreground" />
             </button>
@@ -207,8 +218,8 @@ const EchoWrite = () => {
               isOpen={profileOpen}
               onClose={() => setProfileOpen(false)}
               onLogout={logout}
-              theme={theme}
-              onThemeChange={setTheme}
+              currentTheme={currentTheme}
+              onThemeChange={setCurrentTheme}
             />
           </div>
 
@@ -216,7 +227,7 @@ const EchoWrite = () => {
           <button
             disabled={!text || isLoading}
             onClick={() => handleProcess(style)}
-            className="gold-button flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="primary-button flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Sparkles className="w-4 h-4" /> GENERATE
           </button>
@@ -227,7 +238,7 @@ const EchoWrite = () => {
       <div className="flex flex-1 relative z-10 overflow-hidden">
         <main className="flex-1 overflow-y-auto p-6 flex flex-col gap-6 scrollbar-hide">
           {/* Style Buttons */}
-          <div className="bg-card/40 border border-border p-4 rounded-4xl shadow-sm backdrop-blur-sm">
+          <div className="neu-flat p-4 rounded-3xl">
             <StyleButtons
               currentStyle={style}
               onSelect={handleProcess}
@@ -236,7 +247,7 @@ const EchoWrite = () => {
           </div>
 
           {/* Workspace and Output */}
-          <div className="flex flex-col xl:flex-row gap-6">
+          <div className="flex flex-col xl:flex-row gap-6 flex-1">
             {/* Left: Workspace */}
             <Workspace
               text={text}
