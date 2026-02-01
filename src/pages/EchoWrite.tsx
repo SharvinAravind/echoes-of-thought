@@ -16,6 +16,7 @@ import { AuthScreen } from '@/components/echowrite/AuthScreen';
 import { Logo } from '@/components/echowrite/Logo';
 import { PremiumBadge } from '@/components/echowrite/PremiumBadge';
 import { SnowEffect } from '@/components/echowrite/SnowEffect';
+import { SettingsPanel } from '@/components/echowrite/SettingsPanel';
 import { useDictation } from '@/hooks/useDictation';
 import { useHistory } from '@/hooks/useHistory';
 import { useUser } from '@/hooks/useUser';
@@ -25,7 +26,8 @@ import {
   Languages, 
   User as UserIcon,
   Sparkles,
-  Snowflake
+  Snowflake,
+  Settings
 } from 'lucide-react';
 
 const EchoWrite = () => {
@@ -49,6 +51,7 @@ const EchoWrite = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [inputLang, setInputLang] = useState('en-US');
   const [currentTheme, setCurrentTheme] = useState<Theme>('neumorphic-green');
 
@@ -197,6 +200,15 @@ const EchoWrite = () => {
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Settings Button */}
+          <button
+            onClick={() => setSettingsOpen(true)}
+            className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors"
+            title="Settings"
+          >
+            <Settings className="w-5 h-5" />
+          </button>
+
           {/* Snow Toggle */}
           <button
             onClick={() => setSnowEnabled(!snowEnabled)}
@@ -296,6 +308,20 @@ const EchoWrite = () => {
           </div>
         </main>
       </div>
+
+      {/* Settings Panel */}
+      <SettingsPanel
+        isOpen={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        user={user}
+        currentTheme={currentTheme}
+        onThemeChange={setCurrentTheme}
+        onUpgrade={() => {
+          upgradeToPremium();
+          toast.success("🎉 Welcome to Premium! All features unlocked.");
+          setSettingsOpen(false);
+        }}
+      />
     </div>
   );
 };
