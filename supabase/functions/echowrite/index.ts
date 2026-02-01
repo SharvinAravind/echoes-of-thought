@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -20,6 +21,69 @@ serve(async (req) => {
   }
 
   try {
+    // Validate authorization header
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      console.error("Missing or invalid authorization header");
+      return new Response(
+        JSON.stringify({ error: "Unauthorized - Missing authentication token" }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Create Supabase client with user's auth
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    // Validate the JWT by getting user
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    
+    if (userError || !userData?.user) {
+      console.error("JWT validation failed:", userError);
+      return new Response(
+        JSON.stringify({ error: "Unauthorized - Invalid token" }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const userId = userData.user.id;
+    console.log(`Authenticated request from user: ${userId}`);
+
+    // Check user's usage limits from database
+    const { data: usageData, error: usageError } = await supabase
+      .rpc('get_user_usage', { _user_id: userId });
+
+    if (usageError) {
+      console.error("Error fetching user usage:", usageError);
+      // If user doesn't exist in roles table, they haven't completed setup
+      return new Response(
+        JSON.stringify({ error: "User profile not found. Please complete authentication setup." }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const userUsage = usageData?.[0];
+    if (!userUsage) {
+      console.error("No usage data found for user");
+      return new Response(
+        JSON.stringify({ error: "User profile not found. Please complete authentication setup." }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Check if user has exceeded their usage limit (premium users have no limit)
+    if (userUsage.role !== 'premium' && userUsage.usage_count >= userUsage.max_usage) {
+      console.log(`User ${userId} has exceeded usage limit: ${userUsage.usage_count}/${userUsage.max_usage}`);
+      return new Response(
+        JSON.stringify({ error: "Usage limit exceeded. Upgrade to premium for unlimited access." }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
@@ -30,6 +94,14 @@ serve(async (req) => {
     if (!text || !action) {
       return new Response(
         JSON.stringify({ error: "Missing required fields: text and action" }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate and sanitize input
+    if (typeof text !== 'string' || text.length > 10000) {
+      return new Response(
+        JSON.stringify({ error: "Invalid text input - must be a string under 10000 characters" }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -92,7 +164,7 @@ IMPORTANT: Return ONLY the JSON, no markdown code blocks, no extra text.`;
         break;
 
       case 'generate-visual':
-        const visualPrompts = {
+        const visualPrompts: Record<string, string> = {
           diagram: `Create a Mermaid.js diagram representing the concepts in the text. Use a simple graph TD format.`,
           flowchart: `Create a Mermaid.js flowchart showing the process or workflow described. Use flowchart TD format with decision nodes where appropriate.`,
           mindmap: `Create a Mermaid.js mindmap with the main concept in the center and branches for related ideas.`,
@@ -120,7 +192,7 @@ Keep the same tone, formatting, and meaning. Return ONLY the translated text, no
         break;
 
       case 'rephrase':
-        const rephrasePrompts = {
+        const rephrasePrompts: Record<string, string> = {
           simple: "Rewrite this text to be shorter and much simpler. Use plain language and be very concise.",
           medium: "Rewrite this text to be of moderate length. Ensure it is balanced, professional, and clear.",
           long: "Rewrite this text to be more detailed and comprehensive. Expand on the points while maintaining the same core message."
@@ -136,7 +208,19 @@ Keep the same tone, formatting, and meaning. Return ONLY the translated text, no
         );
     }
 
-    console.log(`Processing ${action} request for text length: ${text.length}`);
+    console.log(`Processing ${action} request for user ${userId}, text length: ${text.length}`);
+
+    // Increment usage count before processing
+    const { data: incrementResult, error: incrementError } = await supabase
+      .rpc('increment_user_usage', { _user_id: userId });
+
+    if (incrementError || incrementResult === false) {
+      console.error("Failed to increment usage:", incrementError);
+      return new Response(
+        JSON.stringify({ error: "Usage limit exceeded. Upgrade to premium for unlimited access." }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -177,7 +261,7 @@ Keep the same tone, formatting, and meaning. Return ONLY the translated text, no
     const aiResponse = await response.json();
     const content = aiResponse.choices?.[0]?.message?.content || "";
 
-    console.log(`AI response received for ${action}, length: ${content.length}`);
+    console.log(`AI response received for ${action}, user ${userId}, length: ${content.length}`);
 
     let result;
     if (action === 'variations' || action === 'length-variations' || action === 'generate-visual') {
@@ -234,7 +318,7 @@ Keep the same tone, formatting, and meaning. Return ONLY the translated text, no
   } catch (error) {
     console.error("Error in echowrite function:", error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
+      JSON.stringify({ error: "An internal error occurred. Please try again." }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
