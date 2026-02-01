@@ -1,11 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { 
-  WritingStyle, 
-  WritingVariation, 
-  SUPPORTED_LANGUAGES,
-  HistoryItem,
-  Theme
-} from '@/types/echowrite';
+import { WritingStyle, WritingVariation, SUPPORTED_LANGUAGES, HistoryItem, Theme } from '@/types/echowrite';
 import { getWritingVariations } from '@/services/aiService';
 import { Workspace } from '@/components/echowrite/Workspace';
 import { HistorySidebar } from '@/components/echowrite/HistorySidebar';
@@ -21,31 +15,32 @@ import { useDictation } from '@/hooks/useDictation';
 import { useHistory } from '@/hooks/useHistory';
 import { useUser } from '@/hooks/useUser';
 import { toast } from 'sonner';
-import { 
-  History as HistoryIcon, 
-  Languages, 
-  Sparkles,
-  Snowflake,
-  Settings
-} from 'lucide-react';
-
+import { History as HistoryIcon, Languages, Sparkles, Snowflake, User } from 'lucide-react';
 const EchoWrite = () => {
   // User & Auth
-  const { user, login, logout, upgradeToPremium } = useUser();
-  
+  const {
+    user,
+    login,
+    logout,
+    upgradeToPremium
+  } = useUser();
+
   // History
-  const { history, addToHistory } = useHistory();
-  
+  const {
+    history,
+    addToHistory
+  } = useHistory();
+
   // Snow effect toggle
   const [snowEnabled, setSnowEnabled] = useState(false);
-  
+
   // Main State
   const [text, setText] = useState('');
   const [style, setStyle] = useState<WritingStyle>(WritingStyle.PROFESSIONAL_EMAIL);
   const [variations, setVariations] = useState<WritingVariation[]>([]);
   const [selectedVariation, setSelectedVariation] = useState<WritingVariation | null>(null);
   const [interimText, setInterimText] = useState('');
-  
+
   // UI State
   const [isLoading, setIsLoading] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
@@ -57,18 +52,8 @@ const EchoWrite = () => {
   // Apply theme class to body
   useEffect(() => {
     // Remove all theme classes first
-    document.documentElement.classList.remove(
-      'theme-golden-cream',
-      'theme-glassmorphism',
-      'theme-neo-brutalism',
-      'theme-skeuomorphism',
-      'theme-clay-morphism',
-      'theme-minimalism',
-      'theme-liquid-glass',
-      'theme-ocean-deep',
-      'theme-sunset-glow'
-    );
-    
+    document.documentElement.classList.remove('theme-golden-cream', 'theme-glassmorphism', 'theme-neo-brutalism', 'theme-skeuomorphism', 'theme-clay-morphism', 'theme-minimalism', 'theme-liquid-glass', 'theme-ocean-deep', 'theme-sunset-glow');
+
     // Add current theme class (neumorphic-green is default, no class needed)
     if (currentTheme !== 'neumorphic-green') {
       document.documentElement.classList.add(`theme-${currentTheme}`);
@@ -105,7 +90,7 @@ const EchoWrite = () => {
   const dictation = useDictation({
     lang: inputLang,
     onInterimResult: setInterimText,
-    onFinalResult: (finalText) => {
+    onFinalResult: finalText => {
       setText(prev => (prev ? prev + ' ' : '') + finalText);
     },
     onVoiceCommand: handleVoiceCommand
@@ -114,10 +99,8 @@ const EchoWrite = () => {
   // Process text with AI
   const handleProcess = useCallback(async (targetStyle: WritingStyle) => {
     if (!text.trim() || isLoading) return;
-    
     setIsLoading(true);
     setStyle(targetStyle);
-    
     try {
       const result = await getWritingVariations(text, targetStyle);
       setVariations(result.variations);
@@ -158,26 +141,16 @@ const EchoWrite = () => {
   if (!user) {
     return <AuthScreen onLogin={login} />;
   }
-
-  return (
-    <div className="min-h-screen flex flex-col relative transition-colors duration-700 bg-background overflow-hidden font-sans">
+  return <div className="min-h-screen flex flex-col relative transition-colors duration-700 bg-background overflow-hidden font-sans">
       {/* Snow Effect */}
       <SnowEffect enabled={snowEnabled} />
       {/* History Sidebar */}
-      <HistorySidebar
-        history={history}
-        isOpen={historyOpen}
-        onClose={() => setHistoryOpen(false)}
-        onSelectItem={handleHistorySelect}
-      />
+      <HistorySidebar history={history} isOpen={historyOpen} onClose={() => setHistoryOpen(false)} onSelectItem={handleHistorySelect} />
 
       {/* Navbar */}
       <header className="px-6 py-4 glass-frosted flex justify-between items-center sticky top-0 z-40">
         <div className="flex items-center gap-4">
-          <button
-            onClick={() => setHistoryOpen(!historyOpen)}
-            className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors"
-          >
+          <button onClick={() => setHistoryOpen(!historyOpen)} className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors">
             <HistoryIcon className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-4">
@@ -187,9 +160,7 @@ const EchoWrite = () => {
                 <h1 className="text-xl font-display font-bold tracking-tight text-foreground">
                   EchoWrite
                 </h1>
-                {user.tier === 'premium' && (
-                  <PremiumBadge variant="badge" />
-                )}
+                {user.tier === 'premium' && <PremiumBadge variant="badge" />}
               </div>
               <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-widest">
                 Premium AI Writing
@@ -200,53 +171,30 @@ const EchoWrite = () => {
 
         <div className="flex items-center gap-3">
           {/* Settings Button - Single unified settings icon */}
-          <button
-            onClick={() => setSettingsOpen(true)}
-            className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors"
-            title="Settings"
-          >
-            <Settings className="w-5 h-5" />
-          </button>
+          
 
           {/* Snow Toggle */}
-          <button
-            onClick={() => setSnowEnabled(!snowEnabled)}
-            className={`p-2.5 rounded-xl neu-button transition-all ${snowEnabled ? 'text-primary' : 'text-muted-foreground'}`}
-            title={snowEnabled ? 'Disable snow effect' : 'Enable snow effect'}
-          >
+          <button onClick={() => setSnowEnabled(!snowEnabled)} className={`p-2.5 rounded-xl neu-button transition-all ${snowEnabled ? 'text-primary' : 'text-muted-foreground'}`} title={snowEnabled ? 'Disable snow effect' : 'Enable snow effect'}>
             <Snowflake className="w-5 h-5" />
           </button>
 
           {/* Language Selector */}
           <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl neu-flat transition-transform hover:scale-[1.02]">
             <Languages className="w-4 h-4 text-primary" />
-            <select
-              value={inputLang}
-              onChange={(e) => setInputLang(e.target.value)}
-              className="bg-transparent border-none text-[10px] font-bold uppercase text-muted-foreground outline-none cursor-pointer"
-            >
-              {SUPPORTED_LANGUAGES.map(l => (
-                <option key={l.code} value={l.code}>{l.name}</option>
-              ))}
+            <select value={inputLang} onChange={e => setInputLang(e.target.value)} className="bg-transparent border-none text-[10px] font-bold uppercase text-muted-foreground outline-none cursor-pointer">
+              {SUPPORTED_LANGUAGES.map(l => <option key={l.code} value={l.code}>{l.name}</option>)}
             </select>
           </div>
 
           {/* Unified Profile/Settings Button */}
           <div className="relative">
-            <button
-              onClick={() => setSettingsOpen(!settingsOpen)}
-              className="p-2.5 rounded-xl neu-button hover:scale-[1.02] transition-all"
-            >
-              <Settings className="w-5 h-5 text-muted-foreground" />
+            <button onClick={() => setSettingsOpen(!settingsOpen)} className="p-2.5 rounded-xl neu-button hover:scale-[1.02] transition-all">
+              <User className="w-5 h-5 text-muted-foreground" />
             </button>
           </div>
 
           {/* Generate Button */}
-          <button
-            disabled={!text || isLoading}
-            onClick={() => handleProcess(style)}
-            className="primary-button flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+          <button disabled={!text || isLoading} onClick={() => handleProcess(style)} className="primary-button flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
             <Sparkles className="w-4 h-4" /> GENERATE
           </button>
         </div>
@@ -256,31 +204,10 @@ const EchoWrite = () => {
       <div className="flex flex-1 relative z-10 overflow-hidden">
         <main className="flex-1 overflow-y-auto p-6 flex flex-col gap-6 scrollbar-hide">
           {/* Row 1: Workspace - Full Width */}
-          <Workspace
-            text={text}
-            onTextChange={setText}
-            onClear={handleClear}
-            onEnterPress={() => handleProcess(style)}
-            interimText={interimText}
-            isDictating={dictation.isDictating}
-            isDictationPaused={dictation.isPaused}
-            dictationTime={dictation.dictationTime}
-            onStartDictation={dictation.start}
-            onStopDictation={dictation.stop}
-            onTogglePause={dictation.togglePause}
-          />
+          <Workspace text={text} onTextChange={setText} onClear={handleClear} onEnterPress={() => handleProcess(style)} interimText={interimText} isDictating={dictation.isDictating} isDictationPaused={dictation.isPaused} dictationTime={dictation.dictationTime} onStartDictation={dictation.start} onStopDictation={dictation.stop} onTogglePause={dictation.togglePause} />
 
           {/* Row 2: AI-Powered Content Generation */}
-          <AIContentGenerator
-            currentStyle={style}
-            onSelectStyle={handleProcess}
-            variations={variations}
-            selectedVariation={selectedVariation}
-            onSelectVariation={setSelectedVariation}
-            onApplyToWorkspace={handleApplyToWorkspace}
-            isLoading={isLoading}
-            workspaceText={text}
-          />
+          <AIContentGenerator currentStyle={style} onSelectStyle={handleProcess} variations={variations} selectedVariation={selectedVariation} onSelectVariation={setSelectedVariation} onApplyToWorkspace={handleApplyToWorkspace} isLoading={isLoading} workspaceText={text} />
 
           {/* Row 3: Visual Content Creation */}
           <VisualContentHub workspaceText={text} />
@@ -288,20 +215,11 @@ const EchoWrite = () => {
       </div>
 
       {/* Settings Panel - Unified with all options */}
-      <SettingsPanel
-        isOpen={settingsOpen}
-        onClose={() => setSettingsOpen(false)}
-        user={user}
-        currentTheme={currentTheme}
-        onThemeChange={setCurrentTheme}
-        onUpgrade={() => {
-          upgradeToPremium();
-          toast.success("🎉 Welcome to Premium! All features unlocked.");
-          setSettingsOpen(false);
-        }}
-      />
-    </div>
-  );
+      <SettingsPanel isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} user={user} currentTheme={currentTheme} onThemeChange={setCurrentTheme} onUpgrade={() => {
+      upgradeToPremium();
+      toast.success("🎉 Welcome to Premium! All features unlocked.");
+      setSettingsOpen(false);
+    }} />
+    </div>;
 };
-
 export default EchoWrite;
