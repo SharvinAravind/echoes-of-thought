@@ -2,109 +2,106 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @layer base {
   :root {
-    /* Warm, inviting cream-based palette */
-    --background: 40 33% 98%;
-    --foreground: 220 25% 12%;
+    /* EchoWrite Golden Cream Theme */
+    --background: 40 20% 96%;
+    --foreground: 220 20% 20%;
 
-    --card: 40 25% 96%;
-    --card-foreground: 220 25% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 20%;
 
-    --popover: 40 33% 98%;
-    --popover-foreground: 220 25% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 20%;
 
-    /* Deep ink blue as primary */
-    --primary: 220 30% 18%;
-    --primary-foreground: 40 33% 98%;
+    /* Golden primary accent */
+    --primary: 43 74% 47%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Warm sand secondary */
-    --secondary: 35 25% 92%;
-    --secondary-foreground: 220 25% 12%;
+    --secondary: 40 15% 92%;
+    --secondary-foreground: 220 20% 20%;
 
-    --muted: 35 20% 94%;
-    --muted-foreground: 220 15% 45%;
+    --muted: 40 15% 94%;
+    --muted-foreground: 220 10% 45%;
 
-    /* Soft teal accent - the "echo" color */
-    --accent: 175 40% 45%;
-    --accent-foreground: 40 33% 98%;
+    /* Golden accent */
+    --accent: 43 74% 47%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 65% 55%;
-    --destructive-foreground: 40 33% 98%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 35 20% 88%;
-    --input: 35 20% 88%;
-    --ring: 175 40% 45%;
+    --border: 40 15% 88%;
+    --input: 40 15% 88%;
+    --ring: 43 74% 47%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
-    /* Custom design tokens */
-    --echo-glow: 175 60% 70%;
-    --ink-light: 220 15% 35%;
-    --paper-warm: 40 40% 97%;
-    --paper-cream: 38 35% 95%;
+    /* Custom EchoWrite tokens */
+    --gold: 43 74% 47%;
+    --gold-dark: 38 60% 35%;
+    --gold-light: 43 80% 60%;
+    --cream: 40 30% 97%;
+    --cream-dark: 40 20% 92%;
 
-    --sidebar-background: 35 25% 95%;
-    --sidebar-foreground: 220 25% 20%;
-    --sidebar-primary: 220 30% 18%;
-    --sidebar-primary-foreground: 40 33% 98%;
-    --sidebar-accent: 175 40% 45%;
-    --sidebar-accent-foreground: 40 33% 98%;
-    --sidebar-border: 35 20% 88%;
-    --sidebar-ring: 175 40% 45%;
+    --sidebar-background: 40 25% 95%;
+    --sidebar-foreground: 220 20% 20%;
+    --sidebar-primary: 43 74% 47%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 43 74% 47%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 40 15% 88%;
+    --sidebar-ring: 43 74% 47%;
 
     /* Typography */
-    --font-serif: 'Crimson Pro', Georgia, serif;
     --font-sans: 'Inter', system-ui, sans-serif;
-
-    /* Animations */
-    --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dark {
-    --background: 220 25% 8%;
-    --foreground: 40 20% 92%;
+    --background: 220 20% 8%;
+    --foreground: 40 20% 95%;
 
-    --card: 220 25% 10%;
-    --card-foreground: 40 20% 92%;
+    --card: 220 20% 10%;
+    --card-foreground: 40 20% 95%;
 
-    --popover: 220 25% 10%;
-    --popover-foreground: 40 20% 92%;
+    --popover: 220 20% 10%;
+    --popover-foreground: 40 20% 95%;
 
-    --primary: 40 20% 92%;
-    --primary-foreground: 220 25% 8%;
+    --primary: 43 74% 52%;
+    --primary-foreground: 220 20% 8%;
 
-    --secondary: 220 20% 15%;
-    --secondary-foreground: 40 20% 92%;
+    --secondary: 220 15% 15%;
+    --secondary-foreground: 40 20% 95%;
 
-    --muted: 220 20% 18%;
+    --muted: 220 15% 18%;
     --muted-foreground: 40 15% 60%;
 
-    --accent: 175 50% 50%;
-    --accent-foreground: 220 25% 8%;
+    --accent: 43 74% 52%;
+    --accent-foreground: 220 20% 8%;
 
     --destructive: 0 60% 45%;
-    --destructive-foreground: 40 20% 92%;
+    --destructive-foreground: 40 20% 95%;
 
-    --border: 220 20% 18%;
-    --input: 220 20% 18%;
-    --ring: 175 50% 50%;
+    --border: 220 15% 18%;
+    --input: 220 15% 18%;
+    --ring: 43 74% 52%;
 
-    --paper-warm: 220 25% 10%;
-    --paper-cream: 220 25% 12%;
-    --ink-light: 40 15% 65%;
-    --echo-glow: 175 60% 60%;
+    --gold: 43 74% 52%;
+    --gold-dark: 38 60% 40%;
+    --gold-light: 43 80% 65%;
+    --cream: 220 20% 12%;
+    --cream-dark: 220 20% 15%;
 
-    --sidebar-background: 220 25% 10%;
+    --sidebar-background: 220 20% 10%;
     --sidebar-foreground: 40 20% 90%;
-    --sidebar-primary: 40 20% 92%;
-    --sidebar-primary-foreground: 220 25% 8%;
-    --sidebar-accent: 175 50% 50%;
-    --sidebar-accent-foreground: 220 25% 8%;
-    --sidebar-border: 220 20% 18%;
-    --sidebar-ring: 175 50% 50%;
+    --sidebar-primary: 43 74% 52%;
+    --sidebar-primary-foreground: 220 20% 8%;
+    --sidebar-accent: 43 74% 52%;
+    --sidebar-accent-foreground: 220 20% 8%;
+    --sidebar-border: 220 15% 18%;
+    --sidebar-ring: 43 74% 52%;
   }
 }
 
@@ -117,59 +114,61 @@
     @apply bg-background text-foreground antialiased;
     font-family: var(--font-sans);
   }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-serif);
-  }
 }
 
 @layer components {
-  .echo-text-gradient {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(var(--foreground)) 0%, hsl(var(--ink-light)) 100%);
+  .gold-gradient {
+    background: linear-gradient(135deg, hsl(var(--gold)) 0%, hsl(var(--gold-dark)) 100%);
   }
 
-  .echo-glow {
-    box-shadow: 0 0 40px -10px hsl(var(--echo-glow) / 0.4);
+  .gold-frosted {
+    @apply bg-white/80 backdrop-blur-xl border-b border-white/60;
   }
 
-  .echo-card {
-    @apply bg-card border border-border rounded-lg;
-    box-shadow: 0 2px 8px -2px hsl(var(--foreground) / 0.05),
-                0 4px 16px -4px hsl(var(--foreground) / 0.08);
+  .gold-card {
+    @apply bg-white/80 backdrop-blur-xl border border-white rounded-[2rem] shadow-xl;
   }
 
-  .echo-input {
-    @apply bg-background border-border focus:ring-2 focus:ring-accent/20 focus:border-accent;
-    transition: all 0.2s var(--transition-smooth);
+  .gold-button {
+    @apply bg-primary text-primary-foreground font-black text-[10px] uppercase tracking-widest px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all active:scale-95;
   }
 
-  .paper-texture {
-    background-color: hsl(var(--paper-warm));
-    background-image: 
-      radial-gradient(circle at 20% 80%, hsl(var(--paper-cream)) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, hsl(var(--paper-cream)) 0%, transparent 50%);
+  .style-chip {
+    @apply flex-shrink-0 px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-wider border transition-all duration-300;
+  }
+
+  .style-chip-active {
+    @apply bg-primary text-primary-foreground border-primary scale-105 shadow-lg;
+  }
+
+  .style-chip-inactive {
+    @apply bg-white text-muted-foreground border-border hover:border-primary/30 hover:text-primary;
   }
 }
 
 @layer utilities {
   .animate-echo-in {
-    animation: echoIn 0.6s var(--transition-smooth) forwards;
+    animation: echoIn 0.4s ease-out forwards;
   }
 
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
+  .animate-pulse-ring {
+    animation: pulseRing 1.5s ease-out infinite;
   }
 
-  .animate-pulse-soft {
-    animation: pulseSoft 3s ease-in-out infinite;
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }
 
 @keyframes echoIn {
   0% {
     opacity: 0;
-    transform: translateY(20px) scale(0.98);
+    transform: translateY(10px) scale(0.98);
   }
   100% {
     opacity: 1;
@@ -177,37 +176,31 @@
   }
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
+@keyframes pulseRing {
+  0% {
+    box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4);
   }
-  50% {
-    transform: translateY(-10px);
+  70% {
+    box-shadow: 0 0 0 10px hsl(var(--primary) / 0);
   }
-}
-
-@keyframes pulseSoft {
-  0%, 100% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 1;
+  100% {
+    box-shadow: 0 0 0 0 hsl(var(--primary) / 0);
   }
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar for supported browsers */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
   background: hsl(var(--muted));
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb {
   background: hsl(var(--muted-foreground) / 0.3);
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
