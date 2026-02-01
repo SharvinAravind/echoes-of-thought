@@ -4,7 +4,7 @@ import { Mail, Lock, ArrowRight, Sparkles, Languages, CheckCircle2, Star, Zap, C
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { AnimatedMicLogo } from './AnimatedMicLogo';
+import { Logo } from './Logo';
 import { RocketAnimation } from './RocketAnimation';
 import { PREMIUM_FEATURES } from '@/types/echowrite';
 import { lovable } from '@/integrations/lovable';
@@ -95,9 +95,9 @@ export const AuthScreen = ({ onLogin }: AuthScreenProps) => {
         </div>
 
         <div className="relative z-10">
-          {/* Animated Mic Logo */}
+          {/* Vintage Mic Logo */}
           <div className="mb-12">
-            <AnimatedMicLogo size="xl" showText isAnimating />
+            <Logo size="3xl" showText animated />
           </div>
 
           <h2 className="text-3xl font-display font-bold text-foreground mb-4 leading-tight">
@@ -180,7 +180,7 @@ export const AuthScreen = ({ onLogin }: AuthScreenProps) => {
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="lg:hidden flex justify-center mb-8">
-            <AnimatedMicLogo size="xl" showText isAnimating />
+            <Logo size="2xl" showText animated />
           </div>
 
           {/* Form */}

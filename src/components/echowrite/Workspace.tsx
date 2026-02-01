@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { Mic, Trash2, Edit3, Square, Pause, Play } from 'lucide-react';
 import { VoiceWaveAnimation } from './VoiceWaveAnimation';
+import { LiveDictationBar } from './LiveDictationBar';
 import { cn } from '@/lib/utils';
 
 interface WorkspaceProps {
@@ -144,6 +145,22 @@ export const Workspace = ({
           </p>
         )}
       </div>
+
+      {/* Live Dictation Bar - Bottom of workspace */}
+      {isDictating && (
+        <div className="px-6 py-4 border-t border-border/30">
+          <LiveDictationBar
+            isActive={isDictating}
+            isPaused={isDictationPaused}
+            dictationTime={dictationTime}
+            interimText={interimText}
+            onTogglePause={onTogglePause}
+            onStop={onStopDictation}
+            barCount={16}
+            barStyle="classic"
+          />
+        </div>
+      )}
 
       {/* Character count footer */}
       <div className="px-6 py-3 border-t border-border/20 flex justify-between items-center">

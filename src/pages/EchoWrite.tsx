@@ -11,7 +11,7 @@ import { Workspace } from '@/components/echowrite/Workspace';
 import { HistorySidebar } from '@/components/echowrite/HistorySidebar';
 import { ProfileMenu } from '@/components/echowrite/ProfileMenu';
 import { AuthScreen } from '@/components/echowrite/AuthScreen';
-import { AnimatedMicLogo } from '@/components/echowrite/AnimatedMicLogo';
+import { Logo } from '@/components/echowrite/Logo';
 import { PremiumBadge } from '@/components/echowrite/PremiumBadge';
 import { SnowEffect } from '@/components/echowrite/SnowEffect';
 import { SettingsPanel } from '@/components/echowrite/SettingsPanel';
@@ -24,7 +24,6 @@ import { toast } from 'sonner';
 import { 
   History as HistoryIcon, 
   Languages, 
-  User as UserIcon,
   Sparkles,
   Snowflake,
   Settings
@@ -181,8 +180,8 @@ const EchoWrite = () => {
           >
             <HistoryIcon className="w-5 h-5" />
           </button>
-          <div className="flex items-center gap-3">
-            <AnimatedMicLogo size="lg" isAnimating={dictation.isDictating} />
+          <div className="flex items-center gap-4">
+            <Logo size="xl" animated />
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-display font-bold tracking-tight text-foreground">
@@ -232,27 +231,14 @@ const EchoWrite = () => {
             </select>
           </div>
 
-          {/* Profile Button */}
+          {/* Unified Profile/Settings Button */}
           <div className="relative">
             <button
-              onClick={() => setProfileOpen(!profileOpen)}
+              onClick={() => setSettingsOpen(!settingsOpen)}
               className="p-2.5 rounded-xl neu-button hover:scale-[1.02] transition-all"
             >
-              <UserIcon className="w-5 h-5 text-muted-foreground" />
+              <Settings className="w-5 h-5 text-muted-foreground" />
             </button>
-            <ProfileMenu
-              user={user}
-              isOpen={profileOpen}
-              onClose={() => setProfileOpen(false)}
-              onLogout={logout}
-              onUpgrade={() => {
-                upgradeToPremium();
-                toast.success("🎉 Welcome to Premium! All features unlocked.");
-                setProfileOpen(false);
-              }}
-              currentTheme={currentTheme}
-              onThemeChange={setCurrentTheme}
-            />
           </div>
 
           {/* Generate Button */}
