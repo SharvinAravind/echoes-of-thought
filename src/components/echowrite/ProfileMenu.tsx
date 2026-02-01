@@ -15,11 +15,12 @@ interface ProfileMenuProps {
   isOpen: boolean;
   onClose: () => void;
   onLogout: () => void;
+  onUpgrade: () => void;
   currentTheme: Theme;
   onThemeChange: (theme: Theme) => void;
 }
 
-const freeFeatures = [
+const currentFeatures = [
   "Standard Voice Transcription",
   "Basic AI Styles",
   "History (Last 5 items)",
@@ -34,11 +35,20 @@ const premiumFeatures = [
   "Global Output Translation"
 ];
 
+const premiumBenefits = [
+  "Advanced Noise Cancellation",
+  "Smart Formatting & Summaries",
+  "Unlimited Recordings",
+  "Export to PDF / DOCX",
+  "Cloud Sync Across Devices"
+];
+
 export const ProfileMenu = ({
   user,
   isOpen,
   onClose,
   onLogout,
+  onUpgrade,
   currentTheme,
   onThemeChange
 }: ProfileMenuProps) => {
@@ -157,13 +167,13 @@ export const ProfileMenu = ({
           </div>
         </div>
 
-        {/* Plan Benefits */}
+        {/* Current Features */}
         <div className="p-5 border-b border-border/30">
           <h4 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-3">
-            {user.tier === 'premium' ? 'Premium Benefits' : 'Free Plan'}
+            {user.tier === 'premium' ? 'Premium Benefits' : 'Your Features'}
           </h4>
           <div className="space-y-2">
-            {(user.tier === 'premium' ? premiumFeatures : freeFeatures).map((f, i) => (
+            {(user.tier === 'premium' ? premiumBenefits : currentFeatures).map((f, i) => (
               <div
                 key={i}
                 className="flex items-center gap-2 text-xs text-muted-foreground"
@@ -178,7 +188,10 @@ export const ProfileMenu = ({
         {/* Actions */}
         <div className="p-3">
           {user.tier === 'free' && (
-            <button className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl gold-gradient text-white font-bold text-sm mb-2 hover:shadow-premium transition-all">
+            <button 
+              onClick={onUpgrade}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl gold-gradient text-white font-bold text-sm mb-2 hover:shadow-premium transition-all hover:scale-[1.02] active:scale-[0.98]"
+            >
               <Crown className="w-4 h-4" />
               Upgrade to Premium
             </button>

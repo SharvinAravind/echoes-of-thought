@@ -5,6 +5,7 @@ interface LogoProps {
   showText?: boolean;
   className?: string;
   animated?: boolean;
+  themeColor?: boolean;
 }
 
 const sizeClasses = {
@@ -15,7 +16,13 @@ const sizeClasses = {
   '2xl': 'h-36 w-36',
 };
 
-export const Logo = ({ size = 'md', showText = false, className = '', animated = true }: LogoProps) => {
+export const Logo = ({ 
+  size = 'md', 
+  showText = false, 
+  className = '', 
+  animated = true,
+  themeColor = true 
+}: LogoProps) => {
   return (
     <div className={`flex items-center gap-4 ${className}`}>
       {/* 3D Logo Container */}
@@ -32,10 +39,13 @@ export const Logo = ({ size = 'md', showText = false, className = '', animated =
           transformStyle: 'preserve-3d',
         }}
       >
-        {/* Glow effect */}
+        {/* Animated glow ring */}
         <div 
-          className="absolute inset-0 rounded-2xl bg-primary/30 blur-xl opacity-60"
-          style={{ transform: 'translateZ(-20px)' }}
+          className="absolute inset-0 rounded-2xl opacity-60 blur-xl -z-10 animate-pulse"
+          style={{
+            background: 'radial-gradient(circle, hsl(var(--primary) / 0.5) 0%, hsl(var(--accent) / 0.3) 50%, transparent 70%)',
+            transform: 'translateZ(-20px)'
+          }}
         />
         
         {/* Main logo with 3D transform */}
@@ -55,16 +65,26 @@ export const Logo = ({ size = 'md', showText = false, className = '', animated =
           <img 
             src={logoImage} 
             alt="EchoWrite" 
-            className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-screen filter contrast-110 saturate-110"
+            className={`
+              w-full h-full object-contain 
+              mix-blend-multiply dark:mix-blend-screen 
+              transition-all duration-500
+              ${themeColor ? 'logo-theme-color' : ''}
+            `}
             style={{
-              filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.1))',
+              filter: themeColor 
+                ? 'drop-shadow(0 8px 20px hsl(var(--primary) / 0.4)) drop-shadow(0 4px 8px hsl(var(--accent) / 0.3)) contrast(1.1) saturate(1.1)'
+                : 'drop-shadow(0 4px 6px rgba(0,0,0,0.1)) contrast(1.1) saturate(1.1)',
             }}
           />
         </div>
         
-        {/* Subtle reflection */}
+        {/* Floating shadow */}
         <div 
-          className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-3/4 h-2 bg-primary/20 rounded-full blur-sm"
+          className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-3/4 h-4 rounded-full blur-lg opacity-40 -z-20"
+          style={{
+            background: 'hsl(var(--primary) / 0.5)'
+          }}
         />
       </div>
       
