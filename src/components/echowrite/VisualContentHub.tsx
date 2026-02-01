@@ -57,10 +57,10 @@ export const VisualContentHub = ({ workspaceText = '' }: VisualContentHubProps) 
   const lastTextRef = useRef<string>('');
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Manual generate function
+  // Manual generate function - now works with single word
   const handleManualGenerate = async () => {
-    if (!workspaceText.trim() || workspaceText.length < 20) {
-      toast.error('Please enter at least 20 characters in workspace');
+    if (!workspaceText.trim()) {
+      toast.error('Please enter some text in workspace');
       return;
     }
     
@@ -111,9 +111,10 @@ export const VisualContentHub = ({ workspaceText = '' }: VisualContentHubProps) 
   }, [generatedItems]);
 
   // Auto-generate visual content when workspace text changes (only if autoGenerate is enabled)
+  // Now works with any text (including single words)
   useEffect(() => {
     if (!autoGenerate) return;
-    if (!workspaceText.trim() || workspaceText.length < 20) return;
+    if (!workspaceText.trim()) return;
     if (workspaceText === lastTextRef.current) return;
 
     // Debounce the generation
@@ -198,10 +199,10 @@ export const VisualContentHub = ({ workspaceText = '' }: VisualContentHubProps) 
             Auto
           </label>
           
-          {/* Generate Button */}
+          {/* Generate Button - Now works with any text */}
           <Button
             onClick={handleManualGenerate}
-            disabled={isGenerating || !workspaceText.trim() || workspaceText.length < 20}
+            disabled={isGenerating || !workspaceText.trim()}
             size="sm"
             className="gap-2 primary-button"
           >
@@ -313,7 +314,7 @@ export const VisualContentHub = ({ workspaceText = '' }: VisualContentHubProps) 
           <p className="text-[10px] text-muted-foreground">
             {isGenerating 
               ? 'Creating visual content from your text...'
-              : 'Type at least 20 characters in workspace to auto-generate'
+              : 'Enter any text in workspace and click Generate'
             }
           </p>
         </div>

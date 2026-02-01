@@ -614,6 +614,38 @@ export const SettingsPanel = ({
             <SettingRow label="Waveform Visualization">
               <Switch checked={waveformVisualization} onCheckedChange={setWaveformVisualization} />
             </SettingRow>
+            <SettingRow 
+              label="Waveform Style" 
+              description="Customize dictation waveform appearance"
+            >
+              <Select>
+                <SelectTrigger className="w-[110px] h-8 text-xs neu-flat border-0">
+                  <SelectValue placeholder="Classic" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="classic">Classic</SelectItem>
+                  <SelectItem value="rounded">Rounded</SelectItem>
+                  <SelectItem value="dots">Dots</SelectItem>
+                  <SelectItem value="blocks">Blocks</SelectItem>
+                </SelectContent>
+              </Select>
+            </SettingRow>
+            <SettingRow 
+              label="Bar Count" 
+              description="Number of waveform bars"
+            >
+              <Select>
+                <SelectTrigger className="w-[80px] h-8 text-xs neu-flat border-0">
+                  <SelectValue placeholder="12" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="8">8</SelectItem>
+                  <SelectItem value="12">12</SelectItem>
+                  <SelectItem value="16">16</SelectItem>
+                  <SelectItem value="24">24</SelectItem>
+                </SelectContent>
+              </Select>
+            </SettingRow>
             
             <SettingRow 
               label="Unlimited Recording" 

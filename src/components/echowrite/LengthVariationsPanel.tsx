@@ -1,7 +1,13 @@
 import { useState, useEffect } from 'react';
 import { LengthVariations, getLengthVariations, LengthVariation } from '@/services/aiService';
-import { Copy, CheckCircle2, ArrowRight, RefreshCw, FileText, AlignLeft, BookOpen } from 'lucide-react';
+import { Copy, CheckCircle2, ArrowRight, RefreshCw, FileText, AlignLeft, BookOpen, Share2, Mail, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from '@/lib/utils';
 
 interface LengthVariationsPanelProps {
@@ -48,6 +54,19 @@ export const LengthVariationsPanel = ({ text, onApplyToWorkspace }: LengthVariat
     setCopiedId(variation.id);
     toast.success('Copied!');
     setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const shareToWhatsApp = (variation: LengthVariation) => {
+    const text = encodeURIComponent(variation.text);
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+    toast.success('Opening WhatsApp...');
+  };
+
+  const shareToEmail = (variation: LengthVariation) => {
+    const subject = encodeURIComponent('Shared from EchoWrite');
+    const body = encodeURIComponent(variation.text);
+    window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
+    toast.success('Opening email client...');
   };
 
   const lengthTypes: { id: LengthType; label: string; icon: typeof FileText; description: string }[] = [
@@ -142,6 +161,7 @@ export const LengthVariationsPanel = ({ text, onApplyToWorkspace }: LengthVariat
                     copyToClipboard(variation);
                   }}
                   className="p-1.5 rounded-lg neu-button hover:text-primary transition-colors"
+                  title="Copy"
                 >
                   {copiedId === variation.id ? (
                     <CheckCircle2 className="w-3 h-3 text-primary" />
@@ -149,6 +169,41 @@ export const LengthVariationsPanel = ({ text, onApplyToWorkspace }: LengthVariat
                     <Copy className="w-3 h-3" />
                   )}
                 </button>
+                
+                {/* Share Menu */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      onClick={(e) => e.stopPropagation()}
+                      className="p-1.5 rounded-lg neu-button hover:text-primary transition-colors"
+                      title="Share"
+                    >
+                      <Share2 className="w-3 h-3" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="neu-flat border-border">
+                    <DropdownMenuItem 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        shareToWhatsApp(variation);
+                      }}
+                      className="gap-2 cursor-pointer"
+                    >
+                      <MessageCircle className="w-4 h-4 text-accent" />
+                      Share to WhatsApp
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        shareToEmail(variation);
+                      }}
+                      className="gap-2 cursor-pointer"
+                    >
+                      <Mail className="w-4 h-4 text-primary" />
+                      Share via Email
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
 
