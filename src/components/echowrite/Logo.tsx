@@ -8,11 +8,11 @@ interface LogoProps {
 }
 
 const sizeClasses = {
-  sm: 'h-10 w-10',
-  md: 'h-14 w-14',
-  lg: 'h-20 w-20',
-  xl: 'h-28 w-28',
-  '2xl': 'h-36 w-36',
+  sm: 'h-8 w-8',
+  md: 'h-10 w-10',
+  lg: 'h-12 w-12',
+  xl: 'h-16 w-16',
+  '2xl': 'h-20 w-20',
 };
 
 export const Logo = ({ 
@@ -22,32 +22,29 @@ export const Logo = ({
   animated = true
 }: LogoProps) => {
   return (
-    <div className={`flex items-center gap-4 ${className}`}>
-      {/* Simple Plain Logo */}
+    <div className={`flex items-center gap-3 ${className}`}>
+      {/* Plain Black Logo with Theme Adaptation */}
       <div 
         className={`
           relative ${sizeClasses[size]} 
           flex items-center justify-center
-          ${animated ? 'animate-float' : ''}
+          ${animated ? 'hover:scale-105 transition-transform duration-300' : ''}
         `}
       >
         <img 
           src={logoBlack} 
           alt="EchoWrite" 
-          className="w-full h-full object-contain transition-all duration-500"
-          style={{
-            filter: 'brightness(0) saturate(100%)',
-          }}
+          className="w-full h-full object-contain logo-theme-adapt"
         />
       </div>
       
       {showText && (
         <div className="flex flex-col">
-          <span className="font-display text-2xl font-bold tracking-tight text-foreground drop-shadow-sm">
+          <span className="text-lg font-bold tracking-tight text-foreground">
             EchoWrite
           </span>
-          <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
-            Premium AI Writing
+          <span className="text-[8px] font-semibold uppercase tracking-widest text-muted-foreground">
+            AI Writing Assistant
           </span>
         </div>
       )}
