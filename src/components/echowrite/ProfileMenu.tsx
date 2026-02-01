@@ -2,8 +2,7 @@ import { User, Theme, THEMES } from '@/types/echowrite';
 import { 
   User as UserIcon, 
   Crown, 
-  LogOut, 
-  Settings,
+  LogOut,
   Check
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -33,7 +32,7 @@ export const ProfileMenu = ({
 
   const handleThemeClick = (theme: typeof THEMES[0]) => {
     if (theme.isPremium && user.tier !== 'premium') {
-      return; // Could show upgrade prompt
+      return;
     }
     onThemeChange(theme.id);
   };
@@ -144,7 +143,6 @@ export const ProfileMenu = ({
           </div>
         </div>
 
-
         {/* Actions */}
         <div className="p-3">
           {user.tier === 'free' && (
@@ -156,11 +154,6 @@ export const ProfileMenu = ({
               Upgrade to Premium
             </button>
           )}
-          
-          <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl neu-button text-muted-foreground hover:text-foreground text-xs font-semibold">
-            <Settings className="w-4 h-4" />
-            Settings
-          </button>
           
           <button 
             onClick={onLogout}

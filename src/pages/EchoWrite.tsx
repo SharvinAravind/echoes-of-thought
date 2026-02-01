@@ -124,7 +124,7 @@ const EchoWrite = () => {
       setVariations(result.variations);
       setSelectedVariation(result.variations[0] || null);
       addToHistory(text, targetStyle, result.variations);
-      toast.success("Generated 4 variations!");
+      toast.success("Generated 8 variations!");
     } catch (err: any) {
       console.error(err);
       toast.error(err.message || "Failed to generate variations. Please try again.");
@@ -200,7 +200,7 @@ const EchoWrite = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          {/* Settings Button */}
+          {/* Settings Button - Single unified settings icon */}
           <button
             onClick={() => setSettingsOpen(true)}
             className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors"
@@ -293,14 +293,15 @@ const EchoWrite = () => {
             onSelectVariation={setSelectedVariation}
             onApplyToWorkspace={handleApplyToWorkspace}
             isLoading={isLoading}
+            workspaceText={text}
           />
 
           {/* Row 3: Visual Content Creation */}
-          <VisualContentHub />
+          <VisualContentHub workspaceText={text} />
         </main>
       </div>
 
-      {/* Settings Panel */}
+      {/* Settings Panel - Unified with all options */}
       <SettingsPanel
         isOpen={settingsOpen}
         onClose={() => setSettingsOpen(false)}
