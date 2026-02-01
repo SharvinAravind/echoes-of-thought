@@ -80,7 +80,7 @@ export const AuthScreen = ({ onLogin }: AuthScreenProps) => {
         <div className="relative z-10">
           {/* Logo */}
           <div className="mb-12">
-            <Logo size="lg" showText />
+            <Logo size="xl" showText animated />
           </div>
 
           <h2 className="text-3xl font-display font-bold text-foreground mb-4 leading-tight">
@@ -158,7 +158,7 @@ export const AuthScreen = ({ onLogin }: AuthScreenProps) => {
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="lg:hidden flex justify-center mb-8">
-            <Logo size="lg" showText />
+            <Logo size="xl" showText animated />
           </div>
 
           {/* Form */}
