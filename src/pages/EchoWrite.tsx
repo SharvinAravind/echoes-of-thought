@@ -15,6 +15,7 @@ import { ProfileMenu } from '@/components/echowrite/ProfileMenu';
 import { AuthScreen } from '@/components/echowrite/AuthScreen';
 import { Logo } from '@/components/echowrite/Logo';
 import { PremiumBadge } from '@/components/echowrite/PremiumBadge';
+import { SnowEffect } from '@/components/echowrite/SnowEffect';
 import { useDictation } from '@/hooks/useDictation';
 import { useHistory } from '@/hooks/useHistory';
 import { useUser } from '@/hooks/useUser';
@@ -24,15 +25,18 @@ import {
   Languages, 
   User as UserIcon,
   Sparkles,
-  Crown
+  Snowflake
 } from 'lucide-react';
 
 const EchoWrite = () => {
   // User & Auth
-  const { user, login, logout } = useUser();
+  const { user, login, logout, upgradeToPremium } = useUser();
   
   // History
   const { history, addToHistory } = useHistory();
+  
+  // Snow effect toggle
+  const [snowEnabled, setSnowEnabled] = useState(false);
   
   // Main State
   const [text, setText] = useState('');
@@ -155,6 +159,8 @@ const EchoWrite = () => {
 
   return (
     <div className="min-h-screen flex flex-col relative transition-colors duration-700 bg-background overflow-hidden font-sans">
+      {/* Snow Effect */}
+      <SnowEffect enabled={snowEnabled} />
       {/* History Sidebar */}
       <HistorySidebar
         history={history}
@@ -191,6 +197,15 @@ const EchoWrite = () => {
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Snow Toggle */}
+          <button
+            onClick={() => setSnowEnabled(!snowEnabled)}
+            className={`p-2.5 rounded-xl neu-button transition-all ${snowEnabled ? 'text-primary' : 'text-muted-foreground'}`}
+            title={snowEnabled ? 'Disable snow effect' : 'Enable snow effect'}
+          >
+            <Snowflake className="w-5 h-5" />
+          </button>
+
           {/* Language Selector */}
           <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl neu-flat transition-transform hover:scale-[1.02]">
             <Languages className="w-4 h-4 text-primary" />
@@ -218,6 +233,11 @@ const EchoWrite = () => {
               isOpen={profileOpen}
               onClose={() => setProfileOpen(false)}
               onLogout={logout}
+              onUpgrade={() => {
+                upgradeToPremium();
+                toast.success("🎉 Welcome to Premium! All features unlocked.");
+                setProfileOpen(false);
+              }}
               currentTheme={currentTheme}
               onThemeChange={setCurrentTheme}
             />
