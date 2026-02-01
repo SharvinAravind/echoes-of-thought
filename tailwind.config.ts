@@ -14,7 +14,6 @@ export default {
     },
     extend: {
       fontFamily: {
-        serif: ['Crimson Pro', 'Georgia', 'serif'],
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       colors: {
@@ -51,15 +50,14 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        ink: {
-          light: "hsl(var(--ink-light))",
+        gold: {
+          DEFAULT: "hsl(var(--gold))",
+          dark: "hsl(var(--gold-dark))",
+          light: "hsl(var(--gold-light))",
         },
-        paper: {
-          warm: "hsl(var(--paper-warm))",
-          cream: "hsl(var(--paper-cream))",
-        },
-        echo: {
-          glow: "hsl(var(--echo-glow))",
+        cream: {
+          DEFAULT: "hsl(var(--cream))",
+          dark: "hsl(var(--cream-dark))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
@@ -76,6 +74,9 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        "2xl": "1.5rem",
+        "3xl": "2rem",
+        "4xl": "2.5rem",
       },
       keyframes: {
         "accordion-down": {
@@ -98,17 +99,8 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "fade-in": "fade-in 0.5s ease-out forwards",
-        "slide-in-right": "slide-in-right 0.4s ease-out forwards",
-      },
-      typography: {
-        DEFAULT: {
-          css: {
-            maxWidth: '70ch',
-            color: 'hsl(var(--foreground))',
-            fontFamily: 'var(--font-serif)',
-          },
-        },
+        "fade-in": "fade-in 0.4s ease-out forwards",
+        "slide-in-right": "slide-in-right 0.3s ease-out forwards",
       },
     },
   },
