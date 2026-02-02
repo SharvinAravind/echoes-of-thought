@@ -18,7 +18,8 @@ import {
   Crown,
   Lock,
   Check,
-  Info
+  Info,
+  LogOut
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { User as UserType, Theme, THEMES } from '@/types/echowrite';
@@ -44,6 +45,7 @@ interface SettingsPanelProps {
   currentTheme: Theme;
   onThemeChange: (theme: Theme) => void;
   onUpgrade: () => void;
+  onLogout?: () => void;
 }
 
 interface SettingsSectionProps {
@@ -155,7 +157,8 @@ export const SettingsPanel = ({
   user,
   currentTheme,
   onThemeChange,
-  onUpgrade
+  onUpgrade,
+  onLogout
 }: SettingsPanelProps) => {
   const isPremium = user.tier === 'premium';
   
@@ -937,7 +940,7 @@ export const SettingsPanel = ({
         </div>
 
         {/* Footer */}
-        <div className="p-5 border-t border-border/30 bg-gradient-to-r from-card to-muted/30">
+        <div className="p-5 border-t border-border/30 bg-gradient-to-r from-card to-muted/30 space-y-3">
           {!isPremium ? (
             <button
               onClick={onUpgrade}
@@ -952,6 +955,17 @@ export const SettingsPanel = ({
                 Thank you for being a Premium member! 💎
               </p>
             </div>
+          )}
+          
+          {/* Logout Button */}
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="w-full py-3 rounded-2xl neu-flat text-destructive font-semibold text-sm flex items-center justify-center gap-2 hover:bg-destructive/10 transition-all"
+            >
+              <LogOut className="w-4 h-4" />
+              Sign Out
+            </button>
           )}
         </div>
       </div>
