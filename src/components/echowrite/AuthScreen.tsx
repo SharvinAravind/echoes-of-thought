@@ -1,16 +1,20 @@
 import { useState } from 'react';
-import { User } from '@/types/echowrite';
 import { Mail, Lock, ArrowRight, Sparkles, Languages, CheckCircle2, Star, Zap, Crown } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { Logo } from './Logo';
 import { RocketAnimation } from './RocketAnimation';
-import { PREMIUM_FEATURES } from '@/types/echowrite';
 import { lovable } from '@/integrations/lovable';
+import { supabase } from '@/integrations/supabase/client';
+import { z } from 'zod';
+
+// Validation schemas
+const emailSchema = z.string().email('Please enter a valid email address');
+const passwordSchema = z.string().min(6, 'Password must be at least 6 characters');
 
 interface AuthScreenProps {
-  onLogin: (user: User) => void;
+  onAuthSuccess: () => void;
 }
 
 const freeFeatures = [
@@ -31,42 +35,96 @@ const premiumFeatures = [
   "Priority AI Processing"
 ];
 
-export const AuthScreen = ({ onLogin }: AuthScreenProps) => {
+export const AuthScreen = ({ onAuthSuccess }: AuthScreenProps) => {
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string; name?: string }>({});
+
+  const validateInputs = () => {
+    const newErrors: { email?: string; password?: string; name?: string } = {};
+    
+    const emailResult = emailSchema.safeParse(email);
+    if (!emailResult.success) {
+      newErrors.email = emailResult.error.errors[0].message;
+    }
+
+    const passwordResult = passwordSchema.safeParse(password);
+    if (!passwordResult.success) {
+      newErrors.password = passwordResult.error.errors[0].message;
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !password) {
-      toast.error("Please fill in all fields");
-      return;
-    }
-
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters");
+    if (!validateInputs()) {
       return;
     }
 
     setIsLoading(true);
     
-    // Simulate authentication (in production, use real auth)
-    setTimeout(() => {
-      const user: User = {
-        id: crypto.randomUUID(),
-        email,
-        name: name || email.split('@')[0],
-        tier: 'free',
-        usageCount: 0,
-        maxUsage: 10
-      };
-      onLogin(user);
-      toast.success(`Welcome${mode === 'signup' ? '' : ' back'}, ${user.name}!`);
+    try {
+      if (mode === 'signup') {
+        const redirectUrl = `${window.location.origin}/`;
+        
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: redirectUrl,
+            data: { name: name || email.split('@')[0] }
+          }
+        });
+
+        if (error) {
+          if (error.message.includes('already registered')) {
+            toast.error('This email is already registered. Please sign in instead.');
+          } else {
+            toast.error(error.message || 'Sign up failed');
+          }
+          return;
+        }
+
+        if (data.user && !data.session) {
+          // Email confirmation required
+          toast.success('Please check your email to confirm your account!');
+        } else if (data.session) {
+          toast.success(`Welcome, ${name || email.split('@')[0]}!`);
+          onAuthSuccess();
+        }
+      } else {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) {
+          if (error.message.includes('Invalid login')) {
+            toast.error('Invalid email or password');
+          } else if (error.message.includes('Email not confirmed')) {
+            toast.error('Please confirm your email before signing in');
+          } else {
+            toast.error(error.message || 'Sign in failed');
+          }
+          return;
+        }
+
+        if (data.session) {
+          toast.success(`Welcome back!`);
+          onAuthSuccess();
+        }
+      }
+    } catch (err: any) {
+      toast.error('An unexpected error occurred. Please try again.');
+    } finally {
       setIsLoading(false);
-    }, 800);
+    }
   };
 
   const handleGoogleSignIn = async () => {
@@ -205,6 +263,9 @@ export const AuthScreen = ({ onLogin }: AuthScreenProps) => {
                     onChange={(e) => setName(e.target.value)}
                     className="pl-12 h-14 rounded-2xl neu-pressed border-0 focus-visible:ring-primary"
                   />
+                  {errors.name && (
+                    <p className="text-xs text-destructive mt-1">{errors.name}</p>
+                  )}
                 </div>
               )}
               
@@ -217,6 +278,9 @@ export const AuthScreen = ({ onLogin }: AuthScreenProps) => {
                   onChange={(e) => setEmail(e.target.value)}
                   className="pl-12 h-14 rounded-2xl neu-pressed border-0 focus-visible:ring-primary"
                 />
+                {errors.email && (
+                  <p className="text-xs text-destructive mt-1">{errors.email}</p>
+                )}
               </div>
               
               <div className="relative">
@@ -228,6 +292,9 @@ export const AuthScreen = ({ onLogin }: AuthScreenProps) => {
                   onChange={(e) => setPassword(e.target.value)}
                   className="pl-12 h-14 rounded-2xl neu-pressed border-0 focus-visible:ring-primary"
                 />
+                {errors.password && (
+                  <p className="text-xs text-destructive mt-1">{errors.password}</p>
+                )}
               </div>
 
               <Button

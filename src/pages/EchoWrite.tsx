@@ -1,9 +1,8 @@
 import { useState, useCallback, useEffect } from 'react';
-import { WritingStyle, WritingVariation, SUPPORTED_LANGUAGES, HistoryItem, Theme } from '@/types/echowrite';
+import { WritingStyle, WritingVariation, SUPPORTED_LANGUAGES, HistoryItem, Theme, User } from '@/types/echowrite';
 import { getWritingVariations } from '@/services/aiService';
 import { Workspace } from '@/components/echowrite/Workspace';
 import { HistorySidebar } from '@/components/echowrite/HistorySidebar';
-import { ProfileMenu } from '@/components/echowrite/ProfileMenu';
 import { AuthScreen } from '@/components/echowrite/AuthScreen';
 import { Logo } from '@/components/echowrite/Logo';
 import { PremiumBadge } from '@/components/echowrite/PremiumBadge';
@@ -13,23 +12,16 @@ import { AIContentGenerator } from '@/components/echowrite/AIContentGenerator';
 import { VisualContentHub } from '@/components/echowrite/VisualContentHub';
 import { useDictation } from '@/hooks/useDictation';
 import { useHistory } from '@/hooks/useHistory';
-import { useUser } from '@/hooks/useUser';
+import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
-import { History as HistoryIcon, Languages, Sparkles, Snowflake, User } from 'lucide-react';
+import { History as HistoryIcon, Languages, Sparkles, Snowflake, User as UserIcon, Loader2 } from 'lucide-react';
+
 const EchoWrite = () => {
-  // User & Auth
-  const {
-    user,
-    login,
-    logout,
-    upgradeToPremium
-  } = useUser();
+  // Real Supabase Auth
+  const { authUser, loading, signOut } = useAuth();
 
   // History
-  const {
-    history,
-    addToHistory
-  } = useHistory();
+  const { history, addToHistory } = useHistory();
 
   // Snow effect toggle
   const [snowEnabled, setSnowEnabled] = useState(false);
@@ -44,7 +36,6 @@ const EchoWrite = () => {
   // UI State
   const [isLoading, setIsLoading] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [inputLang, setInputLang] = useState('en-US');
   const [currentTheme, setCurrentTheme] = useState<Theme>('neumorphic-green');
@@ -109,7 +100,13 @@ const EchoWrite = () => {
       toast.success("Generated 8 variations!");
     } catch (err: any) {
       console.error(err);
-      toast.error(err.message || "Failed to generate variations. Please try again.");
+      if (err.message?.includes('Unauthorized') || err.message?.includes('Invalid token')) {
+        toast.error("Please sign in to generate variations");
+      } else if (err.message?.includes('Usage limit exceeded')) {
+        toast.error("Daily limit reached. Upgrade to premium for unlimited generations!");
+      } else {
+        toast.error(err.message || "Failed to generate variations. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -137,11 +134,49 @@ const EchoWrite = () => {
     toast.success("Applied to workspace!");
   };
 
-  // Show auth screen if not logged in
-  if (!user) {
-    return <AuthScreen onLogin={login} />;
+  // Handle logout
+  const handleLogout = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast.error("Failed to sign out");
+    } else {
+      toast.success("Logged out successfully");
+    }
+    setSettingsOpen(false);
+  };
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <Logo size="xl" animated />
+          <div className="flex items-center gap-2 mt-4 text-muted-foreground">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span>Loading...</span>
+          </div>
+        </div>
+      </div>
+    );
   }
-  return <div className="min-h-screen flex flex-col relative transition-colors duration-700 bg-background overflow-hidden font-sans">
+
+  // Show auth screen if not logged in
+  if (!authUser) {
+    return <AuthScreen onAuthSuccess={() => {}} />;
+  }
+
+  // Convert authUser to User type for existing components
+  const user: User = {
+    id: authUser.id,
+    email: authUser.email,
+    name: authUser.name,
+    tier: authUser.tier,
+    usageCount: authUser.usageCount,
+    maxUsage: authUser.maxUsage
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col relative transition-colors duration-700 bg-background overflow-hidden font-sans">
       {/* Snow Effect */}
       <SnowEffect enabled={snowEnabled} />
       {/* History Sidebar */}
@@ -170,9 +205,6 @@ const EchoWrite = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          {/* Settings Button - Single unified settings icon */}
-          
-
           {/* Snow Toggle */}
           <button onClick={() => setSnowEnabled(!snowEnabled)} className={`p-2.5 rounded-xl neu-button transition-all ${snowEnabled ? 'text-primary' : 'text-muted-foreground'}`} title={snowEnabled ? 'Disable snow effect' : 'Enable snow effect'}>
             <Snowflake className="w-5 h-5" />
@@ -189,7 +221,7 @@ const EchoWrite = () => {
           {/* Unified Profile/Settings Button */}
           <div className="relative">
             <button onClick={() => setSettingsOpen(!settingsOpen)} className="p-2.5 rounded-xl neu-button hover:scale-[1.02] transition-all">
-              <User className="w-5 h-5 text-muted-foreground" />
+              <UserIcon className="w-5 h-5 text-muted-foreground" />
             </button>
           </div>
 
@@ -215,11 +247,21 @@ const EchoWrite = () => {
       </div>
 
       {/* Settings Panel - Unified with all options */}
-      <SettingsPanel isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} user={user} currentTheme={currentTheme} onThemeChange={setCurrentTheme} onUpgrade={() => {
-      upgradeToPremium();
-      toast.success("🎉 Welcome to Premium! All features unlocked.");
-      setSettingsOpen(false);
-    }} />
-    </div>;
+      <SettingsPanel 
+        isOpen={settingsOpen} 
+        onClose={() => setSettingsOpen(false)} 
+        user={user} 
+        currentTheme={currentTheme} 
+        onThemeChange={setCurrentTheme} 
+        onUpgrade={() => {
+          toast.info("Premium upgrade coming soon!", {
+            description: "Contact support to upgrade to premium"
+          });
+        }}
+        onLogout={handleLogout}
+      />
+    </div>
+  );
 };
+
 export default EchoWrite;
