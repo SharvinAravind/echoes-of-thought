@@ -1,15 +1,118 @@
 export enum WritingStyle {
+  // 🧑‍💼 Professional & Work (Daily Use)
   PROFESSIONAL_EMAIL = 'Professional Email',
-  CASUAL_TEXT = 'Casual Text',
-  ACADEMIC = 'Academic Paper',
-  IMPROVE_PHRASING = 'Improve Phrasing',
-  GRAMMAR_CHECK = 'Grammar Check',
-  CREATIVE = 'Creative Writing',
-  PROFESSIONAL_SUMMARY = 'Professional Summary',
+  FOLLOW_UP_MESSAGE = 'Follow-Up Message',
+  RESUME_CV_OPTIMIZER = 'Resume/CV Optimizer',
+  COVER_LETTER = 'Cover Letter',
+  CLIENT_PROPOSAL = 'Client Proposal',
+  
+  // ⚖️ Legal & Formal
+  LEGAL_DRAFT = 'Legal Draft',
+  
+  // 📈 Marketing & Sales
+  MARKETING_COPY = 'Marketing Copy',
+  SALES_PITCH = 'Sales Pitch',
+  PRODUCT_DESCRIPTION = 'Product Description',
+  LANDING_PAGE_COPY = 'Landing Page Copy',
+  
+  // ✍️ Content & Social
+  CONTENT_WRITING = 'Content Writing',
   SOCIAL_MEDIA_POST = 'Social Media Post',
+  VIDEO_REEL_SCRIPT = 'Video/Reel Script',
+  
+  // 🧠 Humanization & Clarity
+  HUMANIZER = 'Humanizer',
+  SIMPLIFY_LANGUAGE = 'Simplify Language',
+  POLITE_RESPECTFUL = 'Polite & Respectful',
+  
+  // 🎓 Academic & Technical
+  ACADEMIC_WRITING = 'Academic Writing',
   TECHNICAL_DOC = 'Technical Doc',
-  REWRITE_BULLETS = 'Rewrite as Bullets'
+  
+  // 🧑‍🤝‍🧑 Personal & High-Stress
+  COMPLAINT_REQUEST = 'Complaint/Request Letter',
+  NEGOTIATION_MESSAGE = 'Negotiation Message'
 }
+
+// Style categories for organized display
+export interface StyleCategory {
+  id: string;
+  emoji: string;
+  label: string;
+  styles: WritingStyle[];
+}
+
+export const STYLE_CATEGORIES: StyleCategory[] = [
+  {
+    id: 'professional',
+    emoji: '🧑‍💼',
+    label: 'Professional & Work',
+    styles: [
+      WritingStyle.PROFESSIONAL_EMAIL,
+      WritingStyle.FOLLOW_UP_MESSAGE,
+      WritingStyle.RESUME_CV_OPTIMIZER,
+      WritingStyle.COVER_LETTER,
+      WritingStyle.CLIENT_PROPOSAL,
+    ]
+  },
+  {
+    id: 'legal',
+    emoji: '⚖️',
+    label: 'Legal & Formal',
+    styles: [
+      WritingStyle.LEGAL_DRAFT,
+    ]
+  },
+  {
+    id: 'marketing',
+    emoji: '📈',
+    label: 'Marketing & Sales',
+    styles: [
+      WritingStyle.MARKETING_COPY,
+      WritingStyle.SALES_PITCH,
+      WritingStyle.PRODUCT_DESCRIPTION,
+      WritingStyle.LANDING_PAGE_COPY,
+    ]
+  },
+  {
+    id: 'content',
+    emoji: '✍️',
+    label: 'Content & Social',
+    styles: [
+      WritingStyle.CONTENT_WRITING,
+      WritingStyle.SOCIAL_MEDIA_POST,
+      WritingStyle.VIDEO_REEL_SCRIPT,
+    ]
+  },
+  {
+    id: 'humanization',
+    emoji: '🧠',
+    label: 'Humanization & Clarity',
+    styles: [
+      WritingStyle.HUMANIZER,
+      WritingStyle.SIMPLIFY_LANGUAGE,
+      WritingStyle.POLITE_RESPECTFUL,
+    ]
+  },
+  {
+    id: 'academic',
+    emoji: '🎓',
+    label: 'Academic & Technical',
+    styles: [
+      WritingStyle.ACADEMIC_WRITING,
+      WritingStyle.TECHNICAL_DOC,
+    ]
+  },
+  {
+    id: 'personal',
+    emoji: '🧑‍🤝‍🧑',
+    label: 'Personal & High-Stress',
+    styles: [
+      WritingStyle.COMPLAINT_REQUEST,
+      WritingStyle.NEGOTIATION_MESSAGE,
+    ]
+  },
+];
 
 export type Theme = 
   | 'neumorphic-green'

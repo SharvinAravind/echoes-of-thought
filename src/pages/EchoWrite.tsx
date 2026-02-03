@@ -189,16 +189,16 @@ const EchoWrite = () => {
             <HistoryIcon className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-4">
-            <Logo size="xl" animated />
+            <Logo size="2xl" animated />
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-display font-bold tracking-tight text-foreground">
+                <h1 className="text-2xl font-display font-black tracking-tight text-foreground logo-glow">
                   EchoWrite
                 </h1>
                 {user.tier === 'premium' && <PremiumBadge variant="badge" />}
               </div>
               <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-widest">
-                Premium AI Writing
+                Premium AI Writing • 20 Styles
               </p>
             </div>
           </div>

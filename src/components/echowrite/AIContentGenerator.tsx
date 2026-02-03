@@ -35,13 +35,16 @@ export const AIContentGenerator = ({
         <div>
           <h3 className="text-sm font-bold text-foreground">AI-Powered Content Generation</h3>
           <p className="text-[10px] text-muted-foreground">
-            8 writing style variations + 15 length variations • Powered by AI
+            20 writing style variations + 15 length variations • Powered by AI
           </p>
         </div>
       </div>
 
-      {/* Style Buttons */}
-      <div className="mb-6">
+      {/* Style Buttons - Full Width */}
+      <div className="mb-8">
+        <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-4">
+          Select Writing Style (20 Varieties)
+        </h4>
         <StyleButtons
           currentStyle={currentStyle}
           onSelect={onSelectStyle}
@@ -49,12 +52,12 @@ export const AIContentGenerator = ({
         />
       </div>
 
-      {/* Two Column Layout: Style Variations + Length Variations */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Single Column Layout: Style Variations then Length Variations */}
+      <div className="space-y-8">
         {/* Style Variation Output */}
         <div>
-          <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-3">
-            Style Variations (8)
+          <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-4">
+            Style Variations Output
           </h4>
           <VariationOutput
             variations={variations}
@@ -65,10 +68,10 @@ export const AIContentGenerator = ({
           />
         </div>
 
-        {/* Length Variations Panel */}
+        {/* Length Variations Panel - Below Style Variations */}
         <div>
-          <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-3">
-            Length Variations (5 each)
+          <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-4">
+            Length Variations (5 Simple • 5 Medium • 5 Long)
           </h4>
           <LengthVariationsPanel
             text={selectedVariation?.suggestedText || workspaceText}

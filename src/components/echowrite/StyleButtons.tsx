@@ -1,4 +1,4 @@
-import { WritingStyle } from '@/types/echowrite';
+import { WritingStyle, STYLE_CATEGORIES } from '@/types/echowrite';
 import { 
   Mail, 
   MessageCircle, 
@@ -9,7 +9,20 @@ import {
   FileText, 
   Share2, 
   Wrench, 
-  List 
+  List,
+  Briefcase,
+  FileCheck,
+  Target,
+  Megaphone,
+  ShoppingBag,
+  Layout,
+  PenTool,
+  Video,
+  Bot,
+  Languages,
+  Heart,
+  AlertTriangle,
+  Handshake
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -19,42 +32,92 @@ interface StyleButtonsProps {
   isLoading: boolean;
 }
 
-const styles = [
-  { id: WritingStyle.PROFESSIONAL_EMAIL, label: 'Prof. Email', icon: Mail },
-  { id: WritingStyle.CASUAL_TEXT, label: 'Casual Msg', icon: MessageCircle },
-  { id: WritingStyle.GRAMMAR_CHECK, label: 'Grammar', icon: Scale },
-  { id: WritingStyle.IMPROVE_PHRASING, label: 'Phrasing', icon: Sparkles },
-  { id: WritingStyle.ACADEMIC, label: 'Academic', icon: GraduationCap },
-  { id: WritingStyle.CREATIVE, label: 'Creative', icon: Palette },
-  { id: WritingStyle.PROFESSIONAL_SUMMARY, label: 'Summary', icon: FileText },
-  { id: WritingStyle.SOCIAL_MEDIA_POST, label: 'Social', icon: Share2 },
-  { id: WritingStyle.TECHNICAL_DOC, label: 'Tech Doc', icon: Wrench },
-  { id: WritingStyle.REWRITE_BULLETS, label: 'Bullets', icon: List },
-];
+// Icon mapping for each style
+const styleIcons: Record<WritingStyle, React.ComponentType<{ className?: string }>> = {
+  [WritingStyle.PROFESSIONAL_EMAIL]: Mail,
+  [WritingStyle.FOLLOW_UP_MESSAGE]: MessageCircle,
+  [WritingStyle.RESUME_CV_OPTIMIZER]: FileCheck,
+  [WritingStyle.COVER_LETTER]: Briefcase,
+  [WritingStyle.CLIENT_PROPOSAL]: Target,
+  [WritingStyle.LEGAL_DRAFT]: Scale,
+  [WritingStyle.MARKETING_COPY]: Megaphone,
+  [WritingStyle.SALES_PITCH]: Sparkles,
+  [WritingStyle.PRODUCT_DESCRIPTION]: ShoppingBag,
+  [WritingStyle.LANDING_PAGE_COPY]: Layout,
+  [WritingStyle.CONTENT_WRITING]: PenTool,
+  [WritingStyle.SOCIAL_MEDIA_POST]: Share2,
+  [WritingStyle.VIDEO_REEL_SCRIPT]: Video,
+  [WritingStyle.HUMANIZER]: Bot,
+  [WritingStyle.SIMPLIFY_LANGUAGE]: Languages,
+  [WritingStyle.POLITE_RESPECTFUL]: Heart,
+  [WritingStyle.ACADEMIC_WRITING]: GraduationCap,
+  [WritingStyle.TECHNICAL_DOC]: Wrench,
+  [WritingStyle.COMPLAINT_REQUEST]: AlertTriangle,
+  [WritingStyle.NEGOTIATION_MESSAGE]: Handshake,
+};
+
+// Short labels for chips
+const styleLabels: Record<WritingStyle, string> = {
+  [WritingStyle.PROFESSIONAL_EMAIL]: 'Prof. Email',
+  [WritingStyle.FOLLOW_UP_MESSAGE]: 'Follow-Up',
+  [WritingStyle.RESUME_CV_OPTIMIZER]: 'Resume/CV',
+  [WritingStyle.COVER_LETTER]: 'Cover Letter',
+  [WritingStyle.CLIENT_PROPOSAL]: 'Proposal',
+  [WritingStyle.LEGAL_DRAFT]: 'Legal',
+  [WritingStyle.MARKETING_COPY]: 'Marketing',
+  [WritingStyle.SALES_PITCH]: 'Sales Pitch',
+  [WritingStyle.PRODUCT_DESCRIPTION]: 'Product Desc',
+  [WritingStyle.LANDING_PAGE_COPY]: 'Landing Page',
+  [WritingStyle.CONTENT_WRITING]: 'Blog/Article',
+  [WritingStyle.SOCIAL_MEDIA_POST]: 'Social',
+  [WritingStyle.VIDEO_REEL_SCRIPT]: 'Video Script',
+  [WritingStyle.HUMANIZER]: 'Humanizer',
+  [WritingStyle.SIMPLIFY_LANGUAGE]: 'Simplify',
+  [WritingStyle.POLITE_RESPECTFUL]: 'Polite',
+  [WritingStyle.ACADEMIC_WRITING]: 'Academic',
+  [WritingStyle.TECHNICAL_DOC]: 'Tech Doc',
+  [WritingStyle.COMPLAINT_REQUEST]: 'Complaint',
+  [WritingStyle.NEGOTIATION_MESSAGE]: 'Negotiation',
+};
 
 export const StyleButtons = ({ currentStyle, onSelect, isLoading }: StyleButtonsProps) => {
   return (
-    <div className="flex flex-wrap items-center gap-2 py-2">
-      {styles.map((style) => {
-        const Icon = style.icon;
-        const isActive = currentStyle === style.id;
-        
-        return (
-          <button
-            key={style.id}
-            disabled={isLoading}
-            onClick={() => onSelect(style.id)}
-            className={cn(
-              'style-chip flex items-center gap-2',
-              isActive ? 'style-chip-active' : 'style-chip-inactive',
-              isLoading && 'opacity-50 cursor-not-allowed'
-            )}
-          >
-            <Icon className="w-3.5 h-3.5" />
-            <span>{style.label}</span>
-          </button>
-        );
-      })}
+    <div className="space-y-4">
+      {STYLE_CATEGORIES.map((category) => (
+        <div key={category.id} className="space-y-2">
+          {/* Category Header */}
+          <div className="flex items-center gap-2 px-1">
+            <span className="text-sm">{category.emoji}</span>
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+              {category.label}
+            </span>
+          </div>
+          
+          {/* Category Styles */}
+          <div className="flex flex-wrap items-center gap-2">
+            {category.styles.map((styleId) => {
+              const Icon = styleIcons[styleId];
+              const isActive = currentStyle === styleId;
+              
+              return (
+                <button
+                  key={styleId}
+                  disabled={isLoading}
+                  onClick={() => onSelect(styleId)}
+                  className={cn(
+                    'style-chip flex items-center gap-2',
+                    isActive ? 'style-chip-active' : 'style-chip-inactive',
+                    isLoading && 'opacity-50 cursor-not-allowed'
+                  )}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  <span>{styleLabels[styleId]}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ))}
     </div>
   );
 };
