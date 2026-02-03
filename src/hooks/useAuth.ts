@@ -19,30 +19,41 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(true);
 
   // Fetch user profile and role from database
-  const fetchUserData = useCallback(async (userId: string) => {
+  const fetchUserData = useCallback(async (userId: string, userEmail?: string) => {
     try {
-      // Fetch profile
+      // Fetch profile - use maybeSingle to handle missing profile gracefully
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('email, name')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
-      if (profileError) {
-        console.error('Error fetching profile:', profileError);
-        return null;
-      }
-
-      // Fetch role and usage
+      // Fetch role and usage - use maybeSingle to handle missing role gracefully
       const { data: roleData, error: roleError } = await supabase
         .from('user_roles')
         .select('role, usage_count, max_usage')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
+      // If profile or role doesn't exist (user created before trigger), return defaults
+      if (!profile || !roleData) {
+        console.log('User profile or role not found, using defaults for:', userId);
+        const email = profile?.email || userEmail || 'user@example.com';
+        return {
+          id: userId,
+          email: email,
+          name: profile?.name || email.split('@')[0],
+          tier: (roleData?.role || 'user') as UserTier,
+          usageCount: roleData?.usage_count || 0,
+          maxUsage: roleData?.max_usage || 10
+        };
+      }
+
+      if (profileError) {
+        console.error('Profile fetch error:', profileError);
+      }
       if (roleError) {
-        console.error('Error fetching role:', roleError);
-        return null;
+        console.error('Role fetch error:', roleError);
       }
 
       return {
@@ -70,7 +81,7 @@ export const useAuth = () => {
         // Defer database fetch to avoid deadlock
         if (newSession?.user) {
           setTimeout(() => {
-            fetchUserData(newSession.user.id).then(setAuthUser);
+            fetchUserData(newSession.user.id, newSession.user.email).then(setAuthUser);
           }, 0);
         } else {
           setAuthUser(null);
@@ -86,7 +97,7 @@ export const useAuth = () => {
       setUser(existingSession?.user ?? null);
       
       if (existingSession?.user) {
-        fetchUserData(existingSession.user.id).then(setAuthUser);
+        fetchUserData(existingSession.user.id, existingSession.user.email).then(setAuthUser);
       }
       
       setLoading(false);
@@ -134,7 +145,7 @@ export const useAuth = () => {
 
   const refreshUserData = useCallback(async () => {
     if (user) {
-      const data = await fetchUserData(user.id);
+      const data = await fetchUserData(user.id, user.email);
       if (data) {
         setAuthUser(data);
       }
