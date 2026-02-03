@@ -79,12 +79,12 @@ export const LengthVariationsPanel = ({ text, onApplyToWorkspace }: LengthVariat
 
   if (isLoading) {
     return (
-      <div className="neu-flat rounded-2xl p-6 flex flex-col items-center justify-center">
-        <RefreshCw className="w-6 h-6 text-primary animate-spin mb-3" />
+      <div className="neu-flat rounded-2xl p-8 flex flex-col items-center justify-center">
+        <RefreshCw className="w-8 h-8 text-primary animate-spin mb-4" />
         <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
           Generating 15 variations...
         </p>
-        <p className="text-[10px] text-muted-foreground mt-1">
+        <p className="text-[10px] text-muted-foreground mt-2">
           5 simple • 5 medium • 5 long
         </p>
       </div>
@@ -93,21 +93,21 @@ export const LengthVariationsPanel = ({ text, onApplyToWorkspace }: LengthVariat
 
   if (!variations) {
     return (
-      <div className="neu-pressed rounded-2xl p-6 text-center opacity-70">
+      <div className="neu-pressed rounded-2xl p-8 text-center opacity-70">
         <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
           Length Variations
         </p>
-        <p className="text-[10px] text-muted-foreground mt-1">
-          Generate content to see variations
+        <p className="text-[10px] text-muted-foreground mt-2">
+          Generate content above to see length variations
         </p>
       </div>
     );
   }
 
   return (
-    <div className="neu-flat rounded-2xl p-5">
+    <div className="neu-flat rounded-2xl p-6">
       {/* Length Type Tabs */}
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-3 mb-6">
         {lengthTypes.map((type) => {
           const Icon = type.icon;
           const count = variations?.[type.id]?.length || 0;
@@ -119,40 +119,40 @@ export const LengthVariationsPanel = ({ text, onApplyToWorkspace }: LengthVariat
                 setSelectedVariation(variations?.[type.id]?.[0] || null);
               }}
               className={cn(
-                'flex-1 flex flex-col items-center gap-1 px-3 py-3 rounded-xl transition-all',
+                'flex-1 flex flex-col items-center gap-2 px-4 py-4 rounded-xl transition-all',
                 selectedType === type.id
                   ? 'style-chip-active'
                   : 'neu-flat text-muted-foreground hover:text-foreground'
               )}
             >
-              <Icon className="w-4 h-4" />
-              <span className="text-[10px] font-bold uppercase">{type.label}</span>
-              <span className="text-[8px] text-muted-foreground">{count} variations</span>
+              <Icon className="w-5 h-5" />
+              <span className="text-xs font-bold uppercase">{type.label}</span>
+              <span className="text-[10px] text-muted-foreground">{count} variations</span>
             </button>
           );
         })}
       </div>
 
-      {/* Variations Grid - All 5 visible */}
-      <div className="grid grid-cols-1 gap-3 max-h-[400px] overflow-y-auto scrollbar-hide">
+      {/* Variations List - All 5 visible with spacing */}
+      <div className="space-y-4">
         {currentVariations.map((variation, index) => (
           <div
             key={variation.id}
             onClick={() => setSelectedVariation(variation)}
             className={cn(
-              'p-4 rounded-xl cursor-pointer transition-all',
+              'p-5 rounded-xl cursor-pointer transition-all',
               selectedVariation?.id === variation.id
                 ? 'neu-pressed ring-2 ring-primary'
                 : 'neu-flat hover:scale-[1.01]'
             )}
           >
             {/* Header */}
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] font-bold text-primary uppercase">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold text-primary uppercase">
                 Variation {index + 1}
               </span>
-              <div className="flex items-center gap-2">
-                <span className="text-[9px] text-muted-foreground">
+              <div className="flex items-center gap-3">
+                <span className="text-[10px] text-muted-foreground bg-muted px-2 py-1 rounded-lg">
                   {variation.wordCount} words
                 </span>
                 <button
@@ -160,13 +160,13 @@ export const LengthVariationsPanel = ({ text, onApplyToWorkspace }: LengthVariat
                     e.stopPropagation();
                     copyToClipboard(variation);
                   }}
-                  className="p-1.5 rounded-lg neu-button hover:text-primary transition-colors"
+                  className="p-2 rounded-lg neu-button hover:text-primary transition-colors"
                   title="Copy"
                 >
                   {copiedId === variation.id ? (
-                    <CheckCircle2 className="w-3 h-3 text-primary" />
+                    <CheckCircle2 className="w-4 h-4 text-primary" />
                   ) : (
-                    <Copy className="w-3 h-3" />
+                    <Copy className="w-4 h-4" />
                   )}
                 </button>
                 
@@ -175,10 +175,10 @@ export const LengthVariationsPanel = ({ text, onApplyToWorkspace }: LengthVariat
                   <DropdownMenuTrigger asChild>
                     <button
                       onClick={(e) => e.stopPropagation()}
-                      className="p-1.5 rounded-lg neu-button hover:text-primary transition-colors"
+                      className="p-2 rounded-lg neu-button hover:text-primary transition-colors"
                       title="Share"
                     >
-                      <Share2 className="w-3 h-3" />
+                      <Share2 className="w-4 h-4" />
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="neu-flat border-border">
@@ -207,8 +207,8 @@ export const LengthVariationsPanel = ({ text, onApplyToWorkspace }: LengthVariat
               </div>
             </div>
 
-            {/* Content */}
-            <p className="text-sm text-foreground leading-relaxed line-clamp-3">
+            {/* Content - Full text visible */}
+            <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
               {variation.text}
             </p>
 
@@ -219,10 +219,10 @@ export const LengthVariationsPanel = ({ text, onApplyToWorkspace }: LengthVariat
                   e.stopPropagation();
                   onApplyToWorkspace(variation.text);
                 }}
-                className="mt-3 w-full py-2.5 primary-button rounded-xl flex items-center justify-center gap-2 text-xs"
+                className="mt-4 w-full py-3 primary-button rounded-xl flex items-center justify-center gap-2 text-xs"
               >
                 Apply to Workspace
-                <ArrowRight className="w-3 h-3" />
+                <ArrowRight className="w-4 h-4" />
               </button>
             )}
           </div>

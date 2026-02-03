@@ -824,3 +824,27 @@
 .animate-smoke {
   animation: smoke 1.5s ease-out infinite;
 }
+
+/* Logo Glow Effect */
+@keyframes logo-glow {
+  0%, 100% {
+    text-shadow: 
+      0 0 10px hsl(var(--primary) / 0.5),
+      0 0 20px hsl(var(--primary) / 0.3),
+      0 0 30px hsl(var(--primary) / 0.2);
+  }
+  50% {
+    text-shadow: 
+      0 0 15px hsl(var(--primary) / 0.6),
+      0 0 30px hsl(var(--primary) / 0.4),
+      0 0 45px hsl(var(--primary) / 0.3);
+  }
+}
+
+.logo-glow {
+  animation: logo-glow 2s ease-in-out infinite;
+  text-shadow: 
+    0 0 10px hsl(var(--primary) / 0.5),
+    0 0 20px hsl(var(--primary) / 0.3),
+    0 0 30px hsl(var(--primary) / 0.2);
+}

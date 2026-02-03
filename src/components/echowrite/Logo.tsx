@@ -16,6 +16,15 @@ const sizeClasses = {
   '3xl': 'h-40 w-40',
 };
 
+const textSizeClasses = {
+  sm: 'text-lg',
+  md: 'text-xl',
+  lg: 'text-2xl',
+  xl: 'text-3xl',
+  '2xl': 'text-4xl',
+  '3xl': 'text-5xl',
+};
+
 export const Logo = ({ 
   size = 'lg', 
   showText = false, 
@@ -41,7 +50,7 @@ export const Logo = ({
       
       {showText && (
         <div className="flex flex-col">
-          <span className="text-2xl font-bold tracking-tight text-foreground">
+          <span className={`${textSizeClasses[size]} font-black tracking-tight text-foreground logo-glow`}>
             EchoWrite
           </span>
           <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
