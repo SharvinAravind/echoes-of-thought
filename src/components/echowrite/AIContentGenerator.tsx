@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { WritingStyle, WritingVariation } from '@/types/echowrite';
-import { StyleButtons } from './StyleButtons';
+import { StyleButtonsPopover } from './StyleButtonsPopover';
 import { VariationOutput } from './VariationOutput';
-import { LengthVariationsPanel } from './LengthVariationsPanel';
-import { Zap } from 'lucide-react';
+import { LengthVariationsDropdown } from './LengthVariationsDropdown';
+import { Zap, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface AIContentGeneratorProps {
   currentStyle: WritingStyle;
@@ -13,6 +15,7 @@ interface AIContentGeneratorProps {
   onApplyToWorkspace: (text: string) => void;
   isLoading: boolean;
   workspaceText?: string;
+  onClear?: () => void;
 }
 
 export const AIContentGenerator = ({
@@ -23,29 +26,50 @@ export const AIContentGenerator = ({
   onSelectVariation,
   onApplyToWorkspace,
   isLoading,
-  workspaceText = ''
+  workspaceText = '',
+  onClear
 }: AIContentGeneratorProps) => {
+  const handleClear = () => {
+    if (onClear) {
+      onClear();
+      toast.success('Workspace cleared!');
+    }
+  };
+
   return (
     <div className="neu-flat rounded-3xl p-6">
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-xl neu-convex flex items-center justify-center">
-          <Zap className="w-5 h-5 text-primary" />
+      {/* Header with Clear Button */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl neu-convex flex items-center justify-center">
+            <Zap className="w-5 h-5 text-primary" />
+          </div>
+          <div>
+            <h3 className="text-sm font-bold text-foreground">AI-Powered Content Generation</h3>
+            <p className="text-[10px] text-muted-foreground">
+              20 writing style variations + length variations • Powered by AI
+            </p>
+          </div>
         </div>
-        <div>
-          <h3 className="text-sm font-bold text-foreground">AI-Powered Content Generation</h3>
-          <p className="text-[10px] text-muted-foreground">
-            20 writing style variations + 15 length variations • Powered by AI
-          </p>
-        </div>
+        
+        {/* Clear Button */}
+        {onClear && (
+          <button
+            onClick={handleClear}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl neu-button text-destructive hover:bg-destructive/10 transition-colors"
+          >
+            <Trash2 className="w-4 h-4" />
+            <span className="text-xs font-bold uppercase">Clear All</span>
+          </button>
+        )}
       </div>
 
-      {/* Style Buttons - Full Width */}
+      {/* Style Buttons with Popover - Full Width */}
       <div className="mb-8">
         <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-4">
           Select Writing Style (20 Varieties)
         </h4>
-        <StyleButtons
+        <StyleButtonsPopover
           currentStyle={currentStyle}
           onSelect={onSelectStyle}
           isLoading={isLoading}
@@ -68,12 +92,12 @@ export const AIContentGenerator = ({
           />
         </div>
 
-        {/* Length Variations Panel - Below Style Variations */}
+        {/* Length Variations Panel with Dropdown - Below Style Variations */}
         <div>
           <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-4">
-            Length Variations (5 Simple • 5 Medium • 5 Long)
+            Length Variations (Select 1-5 Outputs with PDF Export)
           </h4>
-          <LengthVariationsPanel
+          <LengthVariationsDropdown
             text={selectedVariation?.suggestedText || workspaceText}
             onApplyToWorkspace={onApplyToWorkspace}
           />

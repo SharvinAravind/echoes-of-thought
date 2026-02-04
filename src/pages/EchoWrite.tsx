@@ -10,6 +10,8 @@ import { SnowEffect } from '@/components/echowrite/SnowEffect';
 import { SettingsPanel } from '@/components/echowrite/SettingsPanel';
 import { AIContentGenerator } from '@/components/echowrite/AIContentGenerator';
 import { VisualContentHub } from '@/components/echowrite/VisualContentHub';
+import { PaymentModal } from '@/components/echowrite/PaymentModal';
+import { ImageUpload } from '@/components/echowrite/ImageUpload';
 import { useDictation } from '@/hooks/useDictation';
 import { useHistory } from '@/hooks/useHistory';
 import { useAuth } from '@/hooks/useAuth';
@@ -18,7 +20,7 @@ import { History as HistoryIcon, Languages, Sparkles, Snowflake, User as UserIco
 
 const EchoWrite = () => {
   // Real Supabase Auth
-  const { authUser, loading, signOut } = useAuth();
+  const { authUser, loading, signOut, refreshUserData } = useAuth();
 
   // History
   const { history, addToHistory } = useHistory();
@@ -37,8 +39,15 @@ const EchoWrite = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [paymentOpen, setPaymentOpen] = useState(false);
   const [inputLang, setInputLang] = useState('en-US');
   const [currentTheme, setCurrentTheme] = useState<Theme>('neumorphic-green');
+  
+  // Image upload state
+  const [uploadedImage, setUploadedImage] = useState<{ file: File | null; preview: string | null }>({
+    file: null,
+    preview: null
+  });
 
   // Apply theme class to body
   useEffect(() => {
@@ -120,18 +129,24 @@ const EchoWrite = () => {
     setHistoryOpen(false);
   };
 
-  // Clear workspace
+  // Clear workspace - full reset
   const handleClear = () => {
     setText('');
     setVariations([]);
     setSelectedVariation(null);
     setInterimText('');
+    setUploadedImage({ file: null, preview: null });
   };
 
   // Apply variation to workspace
   const handleApplyToWorkspace = (content: string) => {
     setText(content);
     toast.success("Applied to workspace!");
+  };
+
+  // Handle image selection
+  const handleImageSelect = (file: File | null, preview: string | null) => {
+    setUploadedImage({ file, preview });
   };
 
   // Handle logout
@@ -143,6 +158,19 @@ const EchoWrite = () => {
       toast.success("Logged out successfully");
     }
     setSettingsOpen(false);
+  };
+
+  // Handle upgrade
+  const handleUpgrade = () => {
+    setSettingsOpen(false);
+    setPaymentOpen(true);
+  };
+
+  // Handle payment success
+  const handlePaymentSuccess = async () => {
+    // Refresh user data to get updated premium status
+    await refreshUserData();
+    toast.success('Welcome to Premium! 🎉');
   };
 
   // Show loading state
@@ -188,13 +216,19 @@ const EchoWrite = () => {
           <button onClick={() => setHistoryOpen(!historyOpen)} className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors">
             <HistoryIcon className="w-5 h-5" />
           </button>
-          <div className="flex items-center gap-4">
-            <Logo size="2xl" animated />
+          <div className="flex items-center gap-3">
+            {/* 2x Logo */}
+            <Logo size="xl" animated />
+            {/* 1x Brand Name with electric sparkle */}
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-display font-black tracking-tight text-foreground logo-glow">
-                  EchoWrite
-                </h1>
+                <span 
+                  data-text="ECHOWRITE"
+                  className="text-2xl font-black tracking-tight electric-sparkle"
+                  style={{ fontFamily: "'Orbitron', 'Space Grotesk', sans-serif" }}
+                >
+                  ECHOWRITE
+                </span>
                 {user.tier === 'premium' && <PremiumBadge variant="badge" />}
               </div>
               <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-widest">
@@ -235,11 +269,28 @@ const EchoWrite = () => {
       {/* Main Content - Vertical Layout */}
       <div className="flex flex-1 relative z-10 overflow-hidden">
         <main className="flex-1 overflow-y-auto p-6 flex flex-col gap-6 scrollbar-hide">
+          {/* Image Upload Section - Above Workspace */}
+          <div className="neu-flat rounded-2xl p-4">
+            <ImageUpload 
+              onImageSelect={handleImageSelect}
+            />
+          </div>
+
           {/* Row 1: Workspace - Full Width */}
           <Workspace text={text} onTextChange={setText} onClear={handleClear} onEnterPress={() => handleProcess(style)} interimText={interimText} isDictating={dictation.isDictating} isDictationPaused={dictation.isPaused} dictationTime={dictation.dictationTime} onStartDictation={dictation.start} onStopDictation={dictation.stop} onTogglePause={dictation.togglePause} />
 
-          {/* Row 2: AI-Powered Content Generation */}
-          <AIContentGenerator currentStyle={style} onSelectStyle={handleProcess} variations={variations} selectedVariation={selectedVariation} onSelectVariation={setSelectedVariation} onApplyToWorkspace={handleApplyToWorkspace} isLoading={isLoading} workspaceText={text} />
+          {/* Row 2: AI-Powered Content Generation with Clear */}
+          <AIContentGenerator 
+            currentStyle={style} 
+            onSelectStyle={handleProcess} 
+            variations={variations} 
+            selectedVariation={selectedVariation} 
+            onSelectVariation={setSelectedVariation} 
+            onApplyToWorkspace={handleApplyToWorkspace} 
+            isLoading={isLoading} 
+            workspaceText={text}
+            onClear={handleClear}
+          />
 
           {/* Row 3: Visual Content Creation */}
           <VisualContentHub workspaceText={text} />
@@ -253,12 +304,15 @@ const EchoWrite = () => {
         user={user} 
         currentTheme={currentTheme} 
         onThemeChange={setCurrentTheme} 
-        onUpgrade={() => {
-          toast.info("Premium upgrade coming soon!", {
-            description: "Contact support to upgrade to premium"
-          });
-        }}
+        onUpgrade={handleUpgrade}
         onLogout={handleLogout}
+      />
+
+      {/* Payment Modal */}
+      <PaymentModal
+        isOpen={paymentOpen}
+        onClose={() => setPaymentOpen(false)}
+        onSuccess={handlePaymentSuccess}
       />
     </div>
   );
