@@ -129,6 +129,10 @@ export default {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
+        "pulse-slow": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.7" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -139,6 +143,7 @@ export default {
         "voice-wave": "voice-wave 0.8s ease-in-out infinite alternate",
         "float": "float 3s ease-in-out infinite",
         "shimmer": "shimmer 2s linear infinite",
+        "pulse-slow": "pulse-slow 2s ease-in-out infinite",
       },
     },
   },

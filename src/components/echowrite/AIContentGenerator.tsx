@@ -64,9 +64,9 @@ export const AIContentGenerator = ({
       </div>
 
       {/* Style Buttons with Popover - Compact */}
-      <div className="mb-6">
-        <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-          🎨 Select Writing Style (20 Varieties)
+      <div className="mb-5">
+        <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
+          🎨 Select Writing Style (26 Varieties)
         </h4>
         <StyleButtonsPopover
           currentStyle={currentStyle}
