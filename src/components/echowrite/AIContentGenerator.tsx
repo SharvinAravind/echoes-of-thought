@@ -1,8 +1,7 @@
-import { useState } from 'react';
 import { WritingStyle, WritingVariation } from '@/types/echowrite';
 import { StyleButtonsPopover } from './StyleButtonsPopover';
 import { VariationOutput } from './VariationOutput';
-import { LengthVariationsDropdown } from './LengthVariationsDropdown';
+import { LengthVariationsPanel } from './LengthVariationsPanel';
 import { Zap, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -39,15 +38,15 @@ export const AIContentGenerator = ({
   return (
     <div className="neu-flat rounded-3xl p-6">
       {/* Header with Clear Button */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl neu-convex flex items-center justify-center">
             <Zap className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-foreground">AI-Powered Content Generation</h3>
+            <h3 className="text-sm font-bold text-foreground">⚡ AI-Powered Content Generation</h3>
             <p className="text-[10px] text-muted-foreground">
-              20 writing style variations + length variations • Powered by AI
+              20 writing styles + length variations • Powered by AI
             </p>
           </div>
         </div>
@@ -64,10 +63,10 @@ export const AIContentGenerator = ({
         )}
       </div>
 
-      {/* Style Buttons with Popover - Full Width */}
-      <div className="mb-8">
-        <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-4">
-          Select Writing Style (20 Varieties)
+      {/* Style Buttons with Popover - Compact */}
+      <div className="mb-6">
+        <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+          🎨 Select Writing Style (20 Varieties)
         </h4>
         <StyleButtonsPopover
           currentStyle={currentStyle}
@@ -77,11 +76,11 @@ export const AIContentGenerator = ({
       </div>
 
       {/* Single Column Layout: Style Variations then Length Variations */}
-      <div className="space-y-8">
-        {/* Style Variation Output */}
+      <div className="space-y-6">
+        {/* Style Variation Output - with emoji */}
         <div>
-          <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-4">
-            Style Variations Output
+          <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+            ✨ Style Variations Output
           </h4>
           <VariationOutput
             variations={variations}
@@ -92,12 +91,12 @@ export const AIContentGenerator = ({
           />
         </div>
 
-        {/* Length Variations Panel with Dropdown - Below Style Variations */}
+        {/* Length Variations Panel with Slider - Below Style Variations */}
         <div>
-          <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-4">
-            Length Variations (Select 1-5 Outputs with PDF Export)
+          <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+            📏 Length Variations (1-5 with PDF Export)
           </h4>
-          <LengthVariationsDropdown
+          <LengthVariationsPanel
             text={selectedVariation?.suggestedText || workspaceText}
             onApplyToWorkspace={onApplyToWorkspace}
           />

@@ -127,7 +127,8 @@ export const StyleButtonsPopover = ({ currentStyle, onSelect, isLoading }: Style
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
+      {/* Compact horizontal category chips */}
       <div className="flex flex-wrap gap-2">
         {STYLE_CATEGORIES.map((category) => {
           const isActiveCategory = category.styles.includes(currentStyle);
@@ -142,30 +143,30 @@ export const StyleButtonsPopover = ({ currentStyle, onSelect, isLoading }: Style
                 <button
                   disabled={isLoading}
                   className={cn(
-                    'flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold transition-all',
+                    'flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all',
                     isActiveCategory
                       ? 'style-chip-active'
                       : 'neu-flat text-muted-foreground hover:text-foreground hover:scale-[1.02]',
                     isLoading && 'opacity-50 cursor-not-allowed'
                   )}
                 >
-                  <span className="text-base">{category.emoji}</span>
-                  <span className="hidden sm:inline">{category.label}</span>
-                  <ChevronDown className="w-3.5 h-3.5 ml-1" />
+                  <span className="text-sm">{category.emoji}</span>
+                  <span className="hidden sm:inline text-[11px]">{category.label}</span>
+                  <ChevronDown className="w-3 h-3" />
                 </button>
               </PopoverTrigger>
               <PopoverContent 
-                className="w-80 p-0 neu-flat border-border shadow-xl" 
+                className="w-72 p-0 neu-flat border-border shadow-xl" 
                 align="start"
-                sideOffset={8}
+                sideOffset={6}
               >
-                <div className="p-4 border-b border-border/30">
+                <div className="p-3 border-b border-border/30">
                   <div className="flex items-center gap-2">
-                    <span className="text-lg">{category.emoji}</span>
-                    <h4 className="font-bold text-foreground">{category.label}</h4>
+                    <span className="text-base">{category.emoji}</span>
+                    <h4 className="font-bold text-sm text-foreground">{category.label}</h4>
                   </div>
                 </div>
-                <div className="p-2 max-h-[300px] overflow-y-auto">
+                <div className="p-1.5 max-h-[250px] overflow-y-auto">
                   {category.styles.map((styleId) => {
                     const Icon = styleIcons[styleId];
                     const isActive = currentStyle === styleId;
@@ -176,33 +177,33 @@ export const StyleButtonsPopover = ({ currentStyle, onSelect, isLoading }: Style
                         disabled={isLoading}
                         onClick={() => handleStyleSelect(styleId)}
                         className={cn(
-                          'w-full flex items-start gap-3 p-3 rounded-xl text-left transition-all',
+                          'w-full flex items-start gap-2.5 p-2.5 rounded-lg text-left transition-all',
                           isActive 
-                            ? 'neu-pressed ring-2 ring-primary' 
+                            ? 'neu-pressed ring-1 ring-primary' 
                             : 'hover:bg-muted/50',
                           isLoading && 'opacity-50 cursor-not-allowed'
                         )}
                       >
                         <div className={cn(
-                          'w-9 h-9 rounded-lg flex items-center justify-center shrink-0',
+                          'w-7 h-7 rounded-lg flex items-center justify-center shrink-0',
                           isActive ? 'bg-primary text-primary-foreground' : 'neu-flat'
                         )}>
-                          <Icon className="w-4 h-4" />
+                          <Icon className="w-3.5 h-3.5" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className={cn(
-                            'text-sm font-semibold truncate',
+                            'text-xs font-semibold truncate',
                             isActive ? 'text-primary' : 'text-foreground'
                           )}>
                             {styleLabels[styleId]}
                           </p>
-                          <p className="text-[10px] text-muted-foreground line-clamp-2">
+                          <p className="text-[9px] text-muted-foreground line-clamp-1">
                             {styleDescriptions[styleId]}
                           </p>
                         </div>
                         {isActive && (
-                          <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center shrink-0">
-                            <svg className="w-3 h-3 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <div className="w-4 h-4 rounded-full bg-primary flex items-center justify-center shrink-0">
+                            <svg className="w-2.5 h-2.5 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                             </svg>
                           </div>
@@ -217,10 +218,10 @@ export const StyleButtonsPopover = ({ currentStyle, onSelect, isLoading }: Style
         })}
       </div>
       
-      {/* Current selection indicator */}
-      <div className="flex items-center gap-2 px-3 py-2 rounded-xl neu-pressed text-sm">
-        <span className="text-muted-foreground">Selected:</span>
-        <span className="font-semibold text-primary">{getCurrentCategoryLabel()}</span>
+      {/* Current selection indicator - more compact */}
+      <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg neu-pressed text-xs">
+        <span className="text-muted-foreground text-[10px]">Selected:</span>
+        <span className="font-semibold text-primary text-[11px]">{getCurrentCategoryLabel()}</span>
       </div>
     </div>
   );

@@ -270,11 +270,10 @@ const EchoWrite = () => {
       <div className="flex flex-1 relative z-10 overflow-hidden">
         <main className="flex-1 overflow-y-auto p-6 flex flex-col gap-6 scrollbar-hide">
           {/* Image Upload Section - Above Workspace */}
-          <div className="neu-flat rounded-2xl p-4">
-            <ImageUpload 
-              onImageSelect={handleImageSelect}
-            />
-          </div>
+          <ImageUpload 
+            onImageSelect={handleImageSelect}
+            currentPreview={uploadedImage.preview}
+          />
 
           {/* Row 1: Workspace - Full Width */}
           <Workspace text={text} onTextChange={setText} onClear={handleClear} onEnterPress={() => handleProcess(style)} interimText={interimText} isDictating={dictation.isDictating} isDictationPaused={dictation.isPaused} dictationTime={dictation.dictationTime} onStartDictation={dictation.start} onStopDictation={dictation.stop} onTogglePause={dictation.togglePause} />
