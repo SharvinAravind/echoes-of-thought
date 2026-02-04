@@ -31,7 +31,15 @@ export enum WritingStyle {
   
   // 🧑‍🤝‍🧑 Personal & High-Stress
   COMPLAINT_REQUEST = 'Complaint/Request Letter',
-  NEGOTIATION_MESSAGE = 'Negotiation Message'
+  NEGOTIATION_MESSAGE = 'Negotiation Message',
+
+  // 💬 Casual & Everyday (NEW)
+  CASUAL_MESSAGE = 'Casual Message',
+  GRAMMAR_FIX = 'Grammar Fix',
+  PHRASING_IMPROVE = 'Phrasing Improve',
+  CREATIVE_WRITING = 'Creative Writing',
+  SUMMARY = 'Summary',
+  BULLET_POINTS = 'Bullet Points',
 }
 
 // Style categories for organized display
@@ -110,6 +118,19 @@ export const STYLE_CATEGORIES: StyleCategory[] = [
     styles: [
       WritingStyle.COMPLAINT_REQUEST,
       WritingStyle.NEGOTIATION_MESSAGE,
+    ]
+  },
+  {
+    id: 'casual',
+    emoji: '💬',
+    label: 'Casual & Everyday',
+    styles: [
+      WritingStyle.CASUAL_MESSAGE,
+      WritingStyle.GRAMMAR_FIX,
+      WritingStyle.PHRASING_IMPROVE,
+      WritingStyle.CREATIVE_WRITING,
+      WritingStyle.SUMMARY,
+      WritingStyle.BULLET_POINTS,
     ]
   },
 ];
@@ -204,38 +225,38 @@ export interface AIEnhancementOptions {
   sentenceLength: 'short' | 'medium' | 'detailed';
 }
 
-// 25+ Supported Languages
+// 25+ Supported Languages with flags and native script
 export const SUPPORTED_LANGUAGES = [
   // Major languages
-  { code: 'en-US', name: 'English (US)' },
-  { code: 'en-GB', name: 'English (UK)' },
-  { code: 'es-ES', name: 'Spanish' },
-  { code: 'fr-FR', name: 'French' },
-  { code: 'de-DE', name: 'German' },
-  { code: 'it-IT', name: 'Italian' },
-  { code: 'pt-BR', name: 'Portuguese (Brazil)' },
-  { code: 'pt-PT', name: 'Portuguese (Portugal)' },
-  { code: 'ru-RU', name: 'Russian' },
-  { code: 'zh-CN', name: 'Chinese (Simplified)' },
-  { code: 'zh-TW', name: 'Chinese (Traditional)' },
-  { code: 'ja-JP', name: 'Japanese' },
-  { code: 'ko-KR', name: 'Korean' },
-  { code: 'ar-SA', name: 'Arabic' },
-  { code: 'tr-TR', name: 'Turkish' },
-  { code: 'nl-NL', name: 'Dutch' },
-  { code: 'pl-PL', name: 'Polish' },
-  { code: 'vi-VN', name: 'Vietnamese' },
-  { code: 'th-TH', name: 'Thai' },
+  { code: 'en-US', name: 'English (US)', flag: '🇺🇸', native: 'English' },
+  { code: 'en-GB', name: 'English (UK)', flag: '🇬🇧', native: 'English' },
+  { code: 'es-ES', name: 'Spanish', flag: '🇪🇸', native: 'Español' },
+  { code: 'fr-FR', name: 'French', flag: '🇫🇷', native: 'Français' },
+  { code: 'de-DE', name: 'German', flag: '🇩🇪', native: 'Deutsch' },
+  { code: 'it-IT', name: 'Italian', flag: '🇮🇹', native: 'Italiano' },
+  { code: 'pt-BR', name: 'Portuguese (Brazil)', flag: '🇧🇷', native: 'Português' },
+  { code: 'pt-PT', name: 'Portuguese (Portugal)', flag: '🇵🇹', native: 'Português' },
+  { code: 'ru-RU', name: 'Russian', flag: '🇷🇺', native: 'Русский' },
+  { code: 'zh-CN', name: 'Chinese (Simplified)', flag: '🇨🇳', native: '简体中文' },
+  { code: 'zh-TW', name: 'Chinese (Traditional)', flag: '🇹🇼', native: '繁體中文' },
+  { code: 'ja-JP', name: 'Japanese', flag: '🇯🇵', native: '日本語' },
+  { code: 'ko-KR', name: 'Korean', flag: '🇰🇷', native: '한국어' },
+  { code: 'ar-SA', name: 'Arabic', flag: '🇸🇦', native: 'العربية' },
+  { code: 'tr-TR', name: 'Turkish', flag: '🇹🇷', native: 'Türkçe' },
+  { code: 'nl-NL', name: 'Dutch', flag: '🇳🇱', native: 'Nederlands' },
+  { code: 'pl-PL', name: 'Polish', flag: '🇵🇱', native: 'Polski' },
+  { code: 'vi-VN', name: 'Vietnamese', flag: '🇻🇳', native: 'Tiếng Việt' },
+  { code: 'th-TH', name: 'Thai', flag: '🇹🇭', native: 'ไทย' },
   // Indian languages
-  { code: 'hi-IN', name: 'Hindi' },
-  { code: 'ta-IN', name: 'Tamil' },
-  { code: 'te-IN', name: 'Telugu' },
-  { code: 'kn-IN', name: 'Kannada' },
-  { code: 'ml-IN', name: 'Malayalam' },
-  { code: 'mr-IN', name: 'Marathi' },
-  { code: 'bn-IN', name: 'Bengali' },
-  { code: 'gu-IN', name: 'Gujarati' },
-  { code: 'pa-IN', name: 'Punjabi' },
+  { code: 'hi-IN', name: 'Hindi', flag: '🇮🇳', native: 'हिन्दी' },
+  { code: 'ta-IN', name: 'Tamil', flag: '🇮🇳', native: 'தமிழ்' },
+  { code: 'te-IN', name: 'Telugu', flag: '🇮🇳', native: 'తెలుగు' },
+  { code: 'kn-IN', name: 'Kannada', flag: '🇮🇳', native: 'ಕನ್ನಡ' },
+  { code: 'ml-IN', name: 'Malayalam', flag: '🇮🇳', native: 'മലയാളം' },
+  { code: 'mr-IN', name: 'Marathi', flag: '🇮🇳', native: 'मराठी' },
+  { code: 'bn-IN', name: 'Bengali', flag: '🇮🇳', native: 'বাংলা' },
+  { code: 'gu-IN', name: 'Gujarati', flag: '🇮🇳', native: 'ગુજરાતી' },
+  { code: 'pa-IN', name: 'Punjabi', flag: '🇮🇳', native: 'ਪੰਜਾਬੀ' },
 ];
 
 // Premium feature definitions

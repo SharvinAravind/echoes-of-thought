@@ -58,6 +58,13 @@ const styleIcons: Record<WritingStyle, React.ComponentType<{ className?: string 
   [WritingStyle.TECHNICAL_DOC]: Wrench,
   [WritingStyle.COMPLAINT_REQUEST]: AlertTriangle,
   [WritingStyle.NEGOTIATION_MESSAGE]: Handshake,
+  // New styles
+  [WritingStyle.CASUAL_MESSAGE]: MessageCircle,
+  [WritingStyle.GRAMMAR_FIX]: FileCheck,
+  [WritingStyle.PHRASING_IMPROVE]: PenTool,
+  [WritingStyle.CREATIVE_WRITING]: Sparkles,
+  [WritingStyle.SUMMARY]: Layout,
+  [WritingStyle.BULLET_POINTS]: Target,
 };
 
 // Full labels for popover items
@@ -82,6 +89,13 @@ const styleLabels: Record<WritingStyle, string> = {
   [WritingStyle.TECHNICAL_DOC]: 'Technical Documentation',
   [WritingStyle.COMPLAINT_REQUEST]: 'Complaint/Request Letter',
   [WritingStyle.NEGOTIATION_MESSAGE]: 'Negotiation Message',
+  // New styles
+  [WritingStyle.CASUAL_MESSAGE]: 'Casual Message',
+  [WritingStyle.GRAMMAR_FIX]: 'Grammar Fix',
+  [WritingStyle.PHRASING_IMPROVE]: 'Phrasing Improve',
+  [WritingStyle.CREATIVE_WRITING]: 'Creative Writing',
+  [WritingStyle.SUMMARY]: 'Summary',
+  [WritingStyle.BULLET_POINTS]: 'Bullet Points',
 };
 
 // Style descriptions
@@ -106,6 +120,13 @@ const styleDescriptions: Record<WritingStyle, string> = {
   [WritingStyle.TECHNICAL_DOC]: 'Step-by-step explanations',
   [WritingStyle.COMPLAINT_REQUEST]: 'Firm but professional',
   [WritingStyle.NEGOTIATION_MESSAGE]: 'Salary, pricing negotiations',
+  // New styles
+  [WritingStyle.CASUAL_MESSAGE]: 'Friendly, informal tone',
+  [WritingStyle.GRAMMAR_FIX]: 'Fix grammar & spelling errors',
+  [WritingStyle.PHRASING_IMPROVE]: 'Better word choices',
+  [WritingStyle.CREATIVE_WRITING]: 'Imaginative, engaging prose',
+  [WritingStyle.SUMMARY]: 'Concise key points',
+  [WritingStyle.BULLET_POINTS]: 'Organized bullet format',
 };
 
 export const StyleButtonsPopover = ({ currentStyle, onSelect, isLoading }: StyleButtonsPopoverProps) => {

@@ -1,18 +1,21 @@
-import { Crown, Lock, Sparkles } from 'lucide-react';
+import { Crown, Lock, Sparkles, Star } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 
 interface PremiumBadgeProps {
-  variant?: 'badge' | 'lock' | 'icon';
+  variant?: 'badge' | 'lock' | 'icon' | 'large';
   tooltip?: string;
-  size?: 'sm' | 'md';
+  size?: 'sm' | 'md' | 'lg';
+  activated?: boolean;
 }
 
 export const PremiumBadge = ({ 
   variant = 'badge', 
   tooltip = 'Premium feature - Upgrade to unlock',
-  size = 'sm' 
+  size = 'sm',
+  activated = false
 }: PremiumBadgeProps) => {
-  const iconSize = size === 'sm' ? 'w-3 h-3' : 'w-4 h-4';
+  const iconSize = size === 'sm' ? 'w-3 h-3' : size === 'md' ? 'w-4 h-4' : 'w-5 h-5';
 
   const content = {
     badge: (
@@ -27,7 +30,24 @@ export const PremiumBadge = ({
     icon: (
       <Sparkles className={`${iconSize} text-gold`} />
     ),
+    large: (
+      <span className={cn(
+        'inline-flex items-center gap-2 px-4 py-2 rounded-2xl font-bold text-sm',
+        'bg-gradient-to-r from-primary via-accent to-primary',
+        'text-primary-foreground shadow-lg',
+        'animate-pulse-slow'
+      )}>
+        <Star className="w-5 h-5 fill-current" />
+        <span>PREMIUM</span>
+        <Crown className="w-5 h-5" />
+      </span>
+    ),
   };
+
+  // For activated premium, show large badge without tooltip
+  if (activated && variant === 'large') {
+    return content.large;
+  }
 
   return (
     <TooltipProvider>
@@ -41,7 +61,7 @@ export const PremiumBadge = ({
         >
           <p className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-gold" />
-            {tooltip}
+            {activated ? 'Premium member - All features unlocked!' : tooltip}
           </p>
         </TooltipContent>
       </Tooltip>
