@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import DOMPurify from 'dompurify';
 import { 
   Layout, 
@@ -40,11 +40,15 @@ interface VisualContentHubProps {
   workspaceText?: string;
 }
 
+export interface VisualContentHubRef {
+  generate: () => Promise<void>;
+}
+
 // Initialize mermaid with strict security
 mermaid.initialize({
   startOnLoad: false,
   theme: 'neutral',
-  securityLevel: 'strict', // Changed from 'loose' to 'strict' for XSS protection
+  securityLevel: 'strict',
   fontFamily: 'inherit',
 });
 
@@ -56,7 +60,8 @@ const sanitizeSvg = (svg: string): string => {
   });
 };
 
-export const VisualContentHub = ({ workspaceText = '' }: VisualContentHubProps) => {
+export const VisualContentHub = forwardRef<VisualContentHubRef, VisualContentHubProps>(
+  ({ workspaceText = '' }, ref) => {
   const [selectedType, setSelectedType] = useState<VisualType>('diagram');
   const [generatedItems, setGeneratedItems] = useState<VisualItem[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -98,6 +103,11 @@ export const VisualContentHub = ({ workspaceText = '' }: VisualContentHubProps) 
       setIsGenerating(false);
     }
   };
+
+  // Expose generate method for parent to call
+  useImperativeHandle(ref, () => ({
+    generate: handleManualGenerate
+  }));
 
   // Render mermaid diagrams with sanitization
   useEffect(() => {
@@ -367,4 +377,6 @@ export const VisualContentHub = ({ workspaceText = '' }: VisualContentHubProps) 
       )}
     </div>
   );
-};
+});
+
+VisualContentHub.displayName = 'VisualContentHub';
