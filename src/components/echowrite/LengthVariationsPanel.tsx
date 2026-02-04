@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useImperativeHandle, forwardRef } from 'react';
 import { LengthVariations, getLengthVariations, LengthVariation } from '@/services/aiService';
 import { Copy, CheckCircle2, ArrowRight, RefreshCw, FileText, AlignLeft, BookOpen, Share2, Mail, MessageCircle, Download, Wand2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -16,32 +16,36 @@ interface LengthVariationsPanelProps {
   onApplyToWorkspace: (text: string) => void;
 }
 
+export interface LengthVariationsPanelRef {
+  generate: () => Promise<void>;
+}
+
 type LengthType = 'simple' | 'medium' | 'long';
 
-export const LengthVariationsPanel = ({ text, onApplyToWorkspace }: LengthVariationsPanelProps) => {
+export const LengthVariationsPanel = forwardRef<LengthVariationsPanelRef, LengthVariationsPanelProps>(
+  ({ text, onApplyToWorkspace }, ref) => {
   const [variations, setVariations] = useState<LengthVariations | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedType, setSelectedType] = useState<LengthType>('medium');
   const [selectedVariation, setSelectedVariation] = useState<LengthVariation | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [sliderValue, setSliderValue] = useState<number[]>([3]); // 1-5 slider, default 3
+  const [sliderValue, setSliderValue] = useState<number[]>([3]); // 1-5 slider for variation count
 
   // Map slider value to number of variations to show
   const variationCount = sliderValue[0];
 
-  // Map slider position to length type
-  const getLengthTypeFromSlider = (value: number): LengthType => {
-    if (value <= 2) return 'simple';
-    if (value <= 4) return 'medium';
-    return 'long';
-  };
-
   const handleSliderChange = (value: number[]) => {
     setSliderValue(value);
-    const newType = getLengthTypeFromSlider(value[0]);
-    if (newType !== selectedType) {
-      setSelectedType(newType);
-      setSelectedVariation(variations?.[newType]?.[0] || null);
+    // Update displayed variations based on count
+    if (variations?.[selectedType]) {
+      setSelectedVariation(variations[selectedType][0] || null);
+    }
+  };
+
+  const handleLengthTypeChange = (type: LengthType) => {
+    setSelectedType(type);
+    if (variations?.[type]?.[0]) {
+      setSelectedVariation(variations[type][0]);
     }
   };
 
@@ -55,12 +59,11 @@ export const LengthVariationsPanel = ({ text, onApplyToWorkspace }: LengthVariat
     try {
       const result = await getLengthVariations(text);
       setVariations(result);
-      // Auto-select first variation based on slider
-      const type = getLengthTypeFromSlider(sliderValue[0]);
-      if (result[type]?.[0]) {
-        setSelectedVariation(result[type][0]);
+      // Auto-select first variation of current type
+      if (result[selectedType]?.[0]) {
+        setSelectedVariation(result[selectedType][0]);
       }
-      toast.success('Variations generated!');
+      toast.success('Length variations generated!');
     } catch (error) {
       console.error('Error fetching length variations:', error);
       toast.error('Failed to generate variations');
@@ -68,6 +71,11 @@ export const LengthVariationsPanel = ({ text, onApplyToWorkspace }: LengthVariat
       setIsLoading(false);
     }
   };
+
+  // Expose generate method for parent to call
+  useImperativeHandle(ref, () => ({
+    generate: fetchVariations
+  }));
 
   const copyToClipboard = async (variation: LengthVariation) => {
     await navigator.clipboard.writeText(variation.text);
@@ -88,7 +96,6 @@ export const LengthVariationsPanel = ({ text, onApplyToWorkspace }: LengthVariat
   };
 
   const downloadAsPdf = async (variation: LengthVariation) => {
-    // Create a simple HTML document and print as PDF
     const printWindow = window.open('', '_blank');
     if (printWindow) {
       printWindow.document.write(`
@@ -117,54 +124,55 @@ export const LengthVariationsPanel = ({ text, onApplyToWorkspace }: LengthVariat
   };
 
   const lengthLabels = {
-    simple: { icon: AlignLeft, label: 'Simple', color: 'text-accent' },
-    medium: { icon: FileText, label: 'Medium', color: 'text-primary' },
-    long: { icon: BookOpen, label: 'Long', color: 'text-secondary' },
+    simple: { icon: AlignLeft, label: 'Simple', emoji: '📝' },
+    medium: { icon: FileText, label: 'Medium', emoji: '📄' },
+    long: { icon: BookOpen, label: 'Long', emoji: '📚' },
   };
 
-  const currentLengthType = getLengthTypeFromSlider(sliderValue[0]);
-  const CurrentIcon = lengthLabels[currentLengthType].icon;
-  const currentVariations = variations?.[currentLengthType]?.slice(0, variationCount) || [];
+  const currentVariations = variations?.[selectedType]?.slice(0, variationCount) || [];
 
   return (
     <div className="neu-flat rounded-2xl p-5">
-      {/* Header with Slider and Generate Button */}
-      <div className="flex items-center gap-4 mb-5">
-        {/* Length Type Icon */}
-        <div className={cn(
-          'w-10 h-10 rounded-xl neu-convex flex items-center justify-center shrink-0',
-          lengthLabels[currentLengthType].color
-        )}>
-          <CurrentIcon className="w-5 h-5" />
+      {/* Header with Length Type Buttons + Slider + Generate Button */}
+      <div className="flex flex-wrap items-center gap-4 mb-5">
+        {/* Length Type Buttons - Simple / Medium / Long */}
+        <div className="flex items-center gap-2">
+          {(Object.keys(lengthLabels) as LengthType[]).map((type) => {
+            const { icon: Icon, label, emoji } = lengthLabels[type];
+            const isActive = selectedType === type;
+            return (
+              <button
+                key={type}
+                onClick={() => handleLengthTypeChange(type)}
+                className={cn(
+                  'flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all',
+                  isActive
+                    ? 'style-chip-active'
+                    : 'neu-flat text-muted-foreground hover:text-foreground hover:scale-[1.02]'
+                )}
+              >
+                <span>{emoji}</span>
+                <span>{label}</span>
+              </button>
+            );
+          })}
         </div>
         
-        {/* Slider Container */}
-        <div className="flex-1">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-              Variations: {variationCount}
-            </span>
-            <span className={cn(
-              'text-[10px] font-bold uppercase px-2 py-0.5 rounded-lg',
-              currentLengthType === 'simple' && 'bg-accent/20 text-accent',
-              currentLengthType === 'medium' && 'bg-primary/20 text-primary',
-              currentLengthType === 'long' && 'bg-secondary/20 text-secondary-foreground'
-            )}>
-              {lengthLabels[currentLengthType].label}
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-[10px] text-muted-foreground">Min</span>
-            <Slider
-              value={sliderValue}
-              onValueChange={handleSliderChange}
-              min={1}
-              max={5}
-              step={1}
-              className="flex-1"
-            />
-            <span className="text-[10px] text-muted-foreground">Max</span>
-          </div>
+        {/* Slider for Variation Count (1-5) */}
+        <div className="flex items-center gap-3 flex-1 min-w-[150px]">
+          <span className="text-[10px] text-muted-foreground font-bold">1</span>
+          <Slider
+            value={sliderValue}
+            onValueChange={handleSliderChange}
+            min={1}
+            max={5}
+            step={1}
+            className="flex-1"
+          />
+          <span className="text-[10px] text-muted-foreground font-bold">5</span>
+          <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-1 rounded-lg">
+            {variationCount}
+          </span>
         </div>
 
         {/* Generate Button */}
@@ -195,7 +203,7 @@ export const LengthVariationsPanel = ({ text, onApplyToWorkspace }: LengthVariat
         <div className="neu-pressed rounded-xl p-8 flex flex-col items-center justify-center">
           <RefreshCw className="w-8 h-8 text-primary animate-spin mb-4" />
           <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-            Generating {variationCount} {currentLengthType} variations...
+            Generating {variationCount} {selectedType} variations...
           </p>
         </div>
       ) : !variations ? (
@@ -320,4 +328,6 @@ export const LengthVariationsPanel = ({ text, onApplyToWorkspace }: LengthVariat
       )}
     </div>
   );
-};
+});
+
+LengthVariationsPanel.displayName = 'LengthVariationsPanel';
