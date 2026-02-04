@@ -173,7 +173,7 @@ export const StyleButtonsPopover = ({
       </div>
       
       {/* Current selection indicator - compact */}
-      <div className="flex items-center py-1 rounded-md neu-pressed text-[10px] px-[4px] gap-[4px]">
+      <div className="flex items-center rounded-md neu-pressed text-[10px] gap-[4px] px-[5px] py-[5px]">
         <span className="text-muted-foreground">✨</span>
         <span className="font-semibold text-primary">{getCurrentCategoryLabel()}</span>
       </div>
