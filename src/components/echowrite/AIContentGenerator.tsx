@@ -41,9 +41,7 @@ export const AIContentGenerator = ({
           </div>
           <div>
             <h3 className="text-sm font-bold text-foreground">⚡ AI-Powered Content Generation</h3>
-            <p className="text-[10px] text-muted-foreground">
-              20 writing styles + length variations • Powered by AI
-            </p>
+            <p className="text-[10px] text-muted-foreground">25 writing styles + length variations • Powered by AI</p>
           </div>
         </div>
         
