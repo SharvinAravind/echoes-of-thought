@@ -17,13 +17,20 @@ import { useHistory } from '@/hooks/useHistory';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { History as HistoryIcon, Languages, Sparkles, Snowflake, User as UserIcon, Loader2, Zap } from 'lucide-react';
-
 const EchoWrite = () => {
   // Real Supabase Auth
-  const { authUser, loading, signOut, refreshUserData } = useAuth();
+  const {
+    authUser,
+    loading,
+    signOut,
+    refreshUserData
+  } = useAuth();
 
   // History
-  const { history, addToHistory } = useHistory();
+  const {
+    history,
+    addToHistory
+  } = useHistory();
 
   // Snow effect toggle
   const [snowEnabled, setSnowEnabled] = useState(false);
@@ -121,10 +128,10 @@ const EchoWrite = () => {
   // Generate All - triggers style variations, length variations, and visual content simultaneously
   const handleGenerateAll = useCallback(async () => {
     if (!text.trim() || isLoading) return;
-    
+
     // Trigger style variations
     handleProcess(style);
-    
+
     // Trigger visual content generation
     if (visualContentRef.current) {
       visualContentRef.current.generate();
@@ -155,7 +162,9 @@ const EchoWrite = () => {
 
   // Handle logout
   const handleLogout = async () => {
-    const { error } = await signOut();
+    const {
+      error
+    } = await signOut();
     if (error) {
       toast.error("Failed to sign out");
     } else {
@@ -179,8 +188,7 @@ const EchoWrite = () => {
 
   // Show loading state
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+    return <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <Logo size="xl" animated />
           <div className="flex items-center gap-2 mt-4 text-muted-foreground">
@@ -188,8 +196,7 @@ const EchoWrite = () => {
             <span>Loading...</span>
           </div>
         </div>
-      </div>
-    );
+      </div>;
   }
 
   // Show auth screen if not logged in
@@ -206,9 +213,7 @@ const EchoWrite = () => {
     usageCount: authUser.usageCount,
     maxUsage: authUser.maxUsage
   };
-
-  return (
-    <div className="min-h-screen flex flex-col relative transition-colors duration-700 bg-background overflow-hidden font-sans">
+  return <div className="min-h-screen flex flex-col relative transition-colors duration-700 bg-background overflow-hidden font-sans">
       {/* Snow Effect */}
       <SnowEffect enabled={snowEnabled} />
       {/* History Sidebar */}
@@ -235,11 +240,9 @@ const EchoWrite = () => {
           <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl neu-flat transition-transform hover:scale-[1.02]">
             <Languages className="w-4 h-4 text-primary" />
             <select value={inputLang} onChange={e => setInputLang(e.target.value)} className="bg-transparent border-none text-[10px] font-bold text-muted-foreground outline-none cursor-pointer max-w-[180px]">
-              {SUPPORTED_LANGUAGES.map(l => (
-                <option key={l.code} value={l.code}>
+              {SUPPORTED_LANGUAGES.map(l => <option key={l.code} value={l.code}>
                   {l.flag} {l.name} [{l.native}]
-                </option>
-              ))}
+                </option>)}
             </select>
           </div>
 
@@ -267,32 +270,18 @@ const EchoWrite = () => {
                 <Zap className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-foreground">🎨 Select Writing Style (26 Varieties)</h3>
+                <h3 className="text-sm font-bold text-foreground">🎨 Select Writing Style.. 🖋</h3>
                 <p className="text-[10px] text-muted-foreground">Choose your preferred writing style before generating</p>
               </div>
             </div>
-            <StyleButtonsPopover
-              currentStyle={style}
-              onSelect={handleProcess}
-              isLoading={isLoading}
-            />
+            <StyleButtonsPopover currentStyle={style} onSelect={handleProcess} isLoading={isLoading} />
           </div>
 
           {/* Row 1: Workspace - Full Width */}
           <Workspace text={text} onTextChange={setText} onClear={handleClear} onEnterPress={() => handleProcess(style)} interimText={interimText} isDictating={dictation.isDictating} isDictationPaused={dictation.isPaused} dictationTime={dictation.dictationTime} onStartDictation={dictation.start} onStopDictation={dictation.stop} onTogglePause={dictation.togglePause} />
 
           {/* Row 2: AI-Powered Content Generation with Clear */}
-          <AIContentGenerator 
-            currentStyle={style} 
-            onSelectStyle={handleProcess} 
-            variations={variations} 
-            selectedVariation={selectedVariation} 
-            onSelectVariation={setSelectedVariation} 
-            onApplyToWorkspace={handleApplyToWorkspace} 
-            isLoading={isLoading} 
-            workspaceText={text}
-            onClear={handleClear}
-          />
+          <AIContentGenerator currentStyle={style} onSelectStyle={handleProcess} variations={variations} selectedVariation={selectedVariation} onSelectVariation={setSelectedVariation} onApplyToWorkspace={handleApplyToWorkspace} isLoading={isLoading} workspaceText={text} onClear={handleClear} />
 
           {/* Row 3: Visual Content Creation */}
           <VisualContentHub ref={visualContentRef} workspaceText={text} />
@@ -300,24 +289,10 @@ const EchoWrite = () => {
       </div>
 
       {/* Settings Panel - Unified with all options */}
-      <SettingsPanel 
-        isOpen={settingsOpen} 
-        onClose={() => setSettingsOpen(false)} 
-        user={user} 
-        currentTheme={currentTheme} 
-        onThemeChange={setCurrentTheme} 
-        onUpgrade={handleUpgrade}
-        onLogout={handleLogout}
-      />
+      <SettingsPanel isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} user={user} currentTheme={currentTheme} onThemeChange={setCurrentTheme} onUpgrade={handleUpgrade} onLogout={handleLogout} />
 
       {/* Payment Modal */}
-      <PaymentModal
-        isOpen={paymentOpen}
-        onClose={() => setPaymentOpen(false)}
-        onSuccess={handlePaymentSuccess}
-      />
-    </div>
-  );
+      <PaymentModal isOpen={paymentOpen} onClose={() => setPaymentOpen(false)} onSuccess={handlePaymentSuccess} />
+    </div>;
 };
-
 export default EchoWrite;
