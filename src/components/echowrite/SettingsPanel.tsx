@@ -217,26 +217,26 @@ export const SettingsPanel = ({
         onClick={onClose}
       />
       
-      {/* Panel */}
-      <div className="fixed right-0 top-0 h-full w-full max-w-lg bg-card z-50 overflow-hidden flex flex-col animate-slide-in-right shadow-2xl">
+      {/* Panel - Responsive */}
+      <div className="fixed right-0 top-0 h-full w-full sm:max-w-lg bg-card z-50 overflow-hidden flex flex-col animate-slide-in-right shadow-2xl">
         {/* Header */}
-        <div className="px-6 py-5 border-b border-border/30 flex items-center justify-between bg-gradient-to-r from-card to-muted/30">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl neu-convex flex items-center justify-center">
-              <Settings className="w-5 h-5 text-primary" />
+        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-border/30 flex items-center justify-between bg-gradient-to-r from-card to-muted/30">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl neu-convex flex items-center justify-center">
+              <Settings className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-foreground">Settings</h2>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
+              <h2 className="text-base sm:text-lg font-bold text-foreground">Settings</h2>
+              <p className="text-[9px] sm:text-[10px] text-muted-foreground uppercase tracking-wider">
                 Configure your experience
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-foreground transition-colors"
+            className="p-2 sm:p-2.5 rounded-xl neu-button text-muted-foreground hover:text-foreground transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
 
@@ -968,9 +968,14 @@ export const SettingsPanel = ({
               Upgrade to Premium — Unlock Everything
             </button>
           ) : (
-            <div className="text-center">
+            <div className="text-center space-y-2">
+              <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl gold-gradient text-white font-bold text-sm shadow-lg">
+                <Crown className="w-5 h-5 fill-current" />
+                <span>PREMIUM ACTIVATED</span>
+                <Check className="w-5 h-5" />
+              </div>
               <p className="text-xs text-muted-foreground">
-                Thank you for being a Premium member! 💎
+                All features unlocked! Thank you for your support 💎
               </p>
             </div>
           )}
