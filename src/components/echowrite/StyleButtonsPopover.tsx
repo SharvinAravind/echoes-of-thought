@@ -1,35 +1,8 @@
 import { WritingStyle, STYLE_CATEGORIES } from '@/types/echowrite';
-import { 
-  Mail, 
-  MessageCircle, 
-  Scale, 
-  Sparkles, 
-  GraduationCap, 
-  Wrench, 
-  Briefcase,
-  FileCheck,
-  Target,
-  Megaphone,
-  ShoppingBag,
-  Layout,
-  PenTool,
-  Video,
-  Bot,
-  Languages,
-  Heart,
-  AlertTriangle,
-  Handshake,
-  Share2,
-  ChevronDown
-} from 'lucide-react';
+import { Mail, MessageCircle, Scale, Sparkles, GraduationCap, Wrench, Briefcase, FileCheck, Target, Megaphone, ShoppingBag, Layout, PenTool, Video, Bot, Languages, Heart, AlertTriangle, Handshake, Share2, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useState } from 'react';
-
 interface StyleButtonsPopoverProps {
   currentStyle: WritingStyle;
   onSelect: (style: WritingStyle) => void;
@@ -37,7 +10,9 @@ interface StyleButtonsPopoverProps {
 }
 
 // Icon mapping for each style
-const styleIcons: Record<WritingStyle, React.ComponentType<{ className?: string }>> = {
+const styleIcons: Record<WritingStyle, React.ComponentType<{
+  className?: string;
+}>> = {
   [WritingStyle.PROFESSIONAL_EMAIL]: Mail,
   [WritingStyle.FOLLOW_UP_MESSAGE]: MessageCircle,
   [WritingStyle.RESUME_CV_OPTIMIZER]: FileCheck,
@@ -64,7 +39,7 @@ const styleIcons: Record<WritingStyle, React.ComponentType<{ className?: string 
   [WritingStyle.PHRASING_IMPROVE]: PenTool,
   [WritingStyle.CREATIVE_WRITING]: Sparkles,
   [WritingStyle.SUMMARY]: Layout,
-  [WritingStyle.BULLET_POINTS]: Target,
+  [WritingStyle.BULLET_POINTS]: Target
 };
 
 // Full labels for popover items
@@ -95,7 +70,7 @@ const styleLabels: Record<WritingStyle, string> = {
   [WritingStyle.PHRASING_IMPROVE]: 'Phrasing Improve',
   [WritingStyle.CREATIVE_WRITING]: 'Creative Writing',
   [WritingStyle.SUMMARY]: 'Summary',
-  [WritingStyle.BULLET_POINTS]: 'Bullet Points',
+  [WritingStyle.BULLET_POINTS]: 'Bullet Points'
 };
 
 // Style descriptions
@@ -126,12 +101,14 @@ const styleDescriptions: Record<WritingStyle, string> = {
   [WritingStyle.PHRASING_IMPROVE]: 'Better word choices',
   [WritingStyle.CREATIVE_WRITING]: 'Imaginative, engaging prose',
   [WritingStyle.SUMMARY]: 'Concise key points',
-  [WritingStyle.BULLET_POINTS]: 'Organized bullet format',
+  [WritingStyle.BULLET_POINTS]: 'Organized bullet format'
 };
-
-export const StyleButtonsPopover = ({ currentStyle, onSelect, isLoading }: StyleButtonsPopoverProps) => {
+export const StyleButtonsPopover = ({
+  currentStyle,
+  onSelect,
+  isLoading
+}: StyleButtonsPopoverProps) => {
   const [openPopover, setOpenPopover] = useState<string | null>(null);
-
   const handleStyleSelect = (style: WritingStyle) => {
     onSelect(style);
     setOpenPopover(null);
@@ -146,41 +123,20 @@ export const StyleButtonsPopover = ({ currentStyle, onSelect, isLoading }: Style
     }
     return 'Select Style';
   };
-
-  return (
-    <div className="space-y-2">
+  return <div className="space-y-2">
       {/* Compact horizontal category chips */}
       <div className="flex flex-wrap gap-1.5">
-        {STYLE_CATEGORIES.map((category) => {
-          const isActiveCategory = category.styles.includes(currentStyle);
-          
-          return (
-            <Popover 
-              key={category.id} 
-              open={openPopover === category.id}
-              onOpenChange={(open) => setOpenPopover(open ? category.id : null)}
-            >
+        {STYLE_CATEGORIES.map(category => {
+        const isActiveCategory = category.styles.includes(currentStyle);
+        return <Popover key={category.id} open={openPopover === category.id} onOpenChange={open => setOpenPopover(open ? category.id : null)}>
               <PopoverTrigger asChild>
-                <button
-                  disabled={isLoading}
-                  className={cn(
-                    'flex items-center gap-1 px-2 py-1.5 rounded-lg text-[10px] font-semibold transition-all',
-                    isActiveCategory
-                      ? 'style-chip-active'
-                      : 'neu-flat text-muted-foreground hover:text-foreground hover:scale-[1.02]',
-                    isLoading && 'opacity-50 cursor-not-allowed'
-                  )}
-                >
+                <button disabled={isLoading} className={cn('flex items-center gap-1 px-2 py-1.5 rounded-lg text-[10px] font-semibold transition-all', isActiveCategory ? 'style-chip-active' : 'neu-flat text-muted-foreground hover:text-foreground hover:scale-[1.02]', isLoading && 'opacity-50 cursor-not-allowed')}>
                   <span className="text-xs">{category.emoji}</span>
                   <span className="hidden sm:inline">{category.label}</span>
                   <ChevronDown className="w-2.5 h-2.5" />
                 </button>
               </PopoverTrigger>
-              <PopoverContent 
-                className="w-64 p-0 neu-flat border-border shadow-xl" 
-                align="start"
-                sideOffset={4}
-              >
+              <PopoverContent className="w-64 p-0 neu-flat border-border shadow-xl" align="start" sideOffset={4}>
                 <div className="p-2 border-b border-border/30">
                   <div className="flex items-center gap-1.5">
                     <span className="text-sm">{category.emoji}</span>
@@ -188,62 +144,38 @@ export const StyleButtonsPopover = ({ currentStyle, onSelect, isLoading }: Style
                   </div>
                 </div>
                 <div className="p-1 max-h-[200px] overflow-y-auto">
-                  {category.styles.map((styleId) => {
-                    const Icon = styleIcons[styleId];
-                    const isActive = currentStyle === styleId;
-                    
-                    return (
-                      <button
-                        key={styleId}
-                        disabled={isLoading}
-                        onClick={() => handleStyleSelect(styleId)}
-                        className={cn(
-                          'w-full flex items-start gap-2 p-2 rounded-lg text-left transition-all',
-                          isActive 
-                            ? 'neu-pressed ring-1 ring-primary' 
-                            : 'hover:bg-muted/50',
-                          isLoading && 'opacity-50 cursor-not-allowed'
-                        )}
-                      >
-                        <div className={cn(
-                          'w-6 h-6 rounded-md flex items-center justify-center shrink-0',
-                          isActive ? 'bg-primary text-primary-foreground' : 'neu-flat'
-                        )}>
+                  {category.styles.map(styleId => {
+                const Icon = styleIcons[styleId];
+                const isActive = currentStyle === styleId;
+                return <button key={styleId} disabled={isLoading} onClick={() => handleStyleSelect(styleId)} className={cn('w-full flex items-start gap-2 p-2 rounded-lg text-left transition-all', isActive ? 'neu-pressed ring-1 ring-primary' : 'hover:bg-muted/50', isLoading && 'opacity-50 cursor-not-allowed')}>
+                        <div className={cn('w-6 h-6 rounded-md flex items-center justify-center shrink-0', isActive ? 'bg-primary text-primary-foreground' : 'neu-flat')}>
                           <Icon className="w-3 h-3" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className={cn(
-                            'text-[10px] font-semibold truncate',
-                            isActive ? 'text-primary' : 'text-foreground'
-                          )}>
+                          <p className={cn('text-[10px] font-semibold truncate', isActive ? 'text-primary' : 'text-foreground')}>
                             {styleLabels[styleId]}
                           </p>
                           <p className="text-[8px] text-muted-foreground line-clamp-1">
                             {styleDescriptions[styleId]}
                           </p>
                         </div>
-                        {isActive && (
-                          <div className="w-3.5 h-3.5 rounded-full bg-primary flex items-center justify-center shrink-0">
+                        {isActive && <div className="w-3.5 h-3.5 rounded-full bg-primary flex items-center justify-center shrink-0">
                             <svg className="w-2 h-2 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                             </svg>
-                          </div>
-                        )}
-                      </button>
-                    );
-                  })}
+                          </div>}
+                      </button>;
+              })}
                 </div>
               </PopoverContent>
-            </Popover>
-          );
-        })}
+            </Popover>;
+      })}
       </div>
       
       {/* Current selection indicator - compact */}
-      <div className="flex items-center gap-1.5 px-2 py-1 rounded-md neu-pressed text-[10px]">
+      <div className="flex items-center gap-1.5 py-1 rounded-md neu-pressed text-[10px] px-[4px]">
         <span className="text-muted-foreground">✨</span>
         <span className="font-semibold text-primary">{getCurrentCategoryLabel()}</span>
       </div>
-    </div>
-  );
+    </div>;
 };
