@@ -1038,3 +1038,35 @@
   filter: drop-shadow(0 0 15px hsla(var(--primary), 0.4)) 
           drop-shadow(0 0 30px hsla(var(--accent), 0.2));
 }
+
+/* Premium shadow effect */
+.shadow-premium {
+  box-shadow: 
+    0 10px 40px hsl(var(--gold) / 0.4),
+    0 0 20px hsl(var(--gold) / 0.3),
+    inset 0 1px 0 hsl(var(--gold-light) / 0.5);
+}
+
+/* Responsive utilities */
+@media (max-width: 640px) {
+  .neu-flat {
+    box-shadow: 
+      4px 4px 8px hsl(var(--shadow-dark)),
+      -4px -4px 8px hsl(var(--shadow-light));
+  }
+  
+  .neu-button {
+    @apply px-3 py-2 rounded-xl;
+    box-shadow: 
+      3px 3px 6px hsl(var(--shadow-dark)),
+      -3px -3px 6px hsl(var(--shadow-light));
+  }
+  
+  .primary-button {
+    @apply px-3 py-2 rounded-xl text-[10px];
+  }
+  
+  .glass-frosted {
+    @apply backdrop-blur-lg;
+  }
+}

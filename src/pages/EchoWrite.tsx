@@ -219,25 +219,40 @@ const EchoWrite = () => {
       {/* History Sidebar */}
       <HistorySidebar history={history} isOpen={historyOpen} onClose={() => setHistoryOpen(false)} onSelectItem={handleHistorySelect} />
 
-      {/* Navbar - Matching Login Page Branding */}
-      <header className="px-6 py-4 glass-frosted flex justify-between items-center sticky top-0 z-40">
-        <div className="flex items-center gap-4">
-          <button onClick={() => setHistoryOpen(!historyOpen)} className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors">
-            <HistoryIcon className="w-5 h-5" />
+      {/* Navbar - Matching Login Page Branding - Responsive */}
+      <header className="px-3 sm:px-6 py-3 sm:py-4 glass-frosted flex justify-between items-center sticky top-0 z-40">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <button onClick={() => setHistoryOpen(!historyOpen)} className="p-2 sm:p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors">
+            <HistoryIcon className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
           {/* Logo + Brand - Matching AuthScreen styling exactly */}
-          <Logo size="2xl" showText animated />
-          {user.tier === 'premium' && <PremiumBadge variant="large" activated />}
+          <div className="hidden sm:block">
+            <Logo size="2xl" showText animated />
+          </div>
+          <div className="sm:hidden">
+            <Logo size="lg" showText={false} animated />
+          </div>
+          {/* Premium Badge - Visible when premium activated */}
+          {user.tier === 'premium' && (
+            <div className="hidden md:block">
+              <PremiumBadge variant="large" activated />
+            </div>
+          )}
+          {user.tier === 'premium' && (
+            <div className="md:hidden">
+              <PremiumBadge variant="badge" activated />
+            </div>
+          )}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3">
           {/* Snow Toggle */}
-          <button onClick={() => setSnowEnabled(!snowEnabled)} className={`p-2.5 rounded-xl neu-button transition-all ${snowEnabled ? 'text-primary' : 'text-muted-foreground'}`} title={snowEnabled ? 'Disable snow effect' : 'Enable snow effect'}>
-            <Snowflake className="w-5 h-5" />
+          <button onClick={() => setSnowEnabled(!snowEnabled)} className={`p-2 sm:p-2.5 rounded-xl neu-button transition-all ${snowEnabled ? 'text-primary' : 'text-muted-foreground'}`} title={snowEnabled ? 'Disable snow effect' : 'Enable snow effect'}>
+            <Snowflake className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
 
-          {/* Language Selector with Flags */}
-          <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl neu-flat transition-transform hover:scale-[1.02]">
+          {/* Language Selector with Flags - Hidden on mobile */}
+          <div className="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-2xl neu-flat transition-transform hover:scale-[1.02]">
             <Languages className="w-4 h-4 text-primary" />
             <select value={inputLang} onChange={e => setInputLang(e.target.value)} className="bg-transparent border-none text-[10px] font-bold text-muted-foreground outline-none cursor-pointer max-w-[180px]">
               {SUPPORTED_LANGUAGES.map(l => <option key={l.code} value={l.code}>
@@ -246,32 +261,43 @@ const EchoWrite = () => {
             </select>
           </div>
 
+          {/* Compact Language Selector - Mobile only */}
+          <div className="md:hidden flex items-center">
+            <select value={inputLang} onChange={e => setInputLang(e.target.value)} className="bg-transparent border-none text-xs font-bold text-muted-foreground outline-none cursor-pointer neu-flat rounded-xl px-2 py-2">
+              {SUPPORTED_LANGUAGES.map(l => <option key={l.code} value={l.code}>
+                  {l.flag}
+                </option>)}
+            </select>
+          </div>
+
           {/* Unified Profile/Settings Button */}
           <div className="relative">
-            <button onClick={() => setSettingsOpen(!settingsOpen)} className="p-2.5 rounded-xl neu-button hover:scale-[1.02] transition-all">
-              <UserIcon className="w-5 h-5 text-muted-foreground" />
+            <button onClick={() => setSettingsOpen(!settingsOpen)} className="p-2 sm:p-2.5 rounded-xl neu-button hover:scale-[1.02] transition-all">
+              <UserIcon className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
             </button>
           </div>
 
-          {/* Generate All Button - Triggers all variations + length variations + visual content */}
-          <button disabled={!text || isLoading} onClick={handleGenerateAll} className="primary-button flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-            <Sparkles className="w-4 h-4" /> GENERATE ALL
+          {/* Generate All Button - Responsive */}
+          <button disabled={!text || isLoading} onClick={handleGenerateAll} className="primary-button flex items-center gap-1 sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-[10px] sm:text-xs px-3 sm:px-6 py-2 sm:py-3">
+            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" /> 
+            <span className="hidden sm:inline">GENERATE ALL</span>
+            <span className="sm:hidden">GEN</span>
           </button>
         </div>
       </header>
 
-      {/* Main Content - Vertical Layout */}
+      {/* Main Content - Vertical Layout - Responsive */}
       <div className="flex flex-1 relative z-10 overflow-hidden">
-        <main className="flex-1 overflow-y-auto p-6 flex flex-col gap-6 scrollbar-hide">
+        <main className="flex-1 overflow-y-auto p-3 sm:p-6 flex flex-col gap-4 sm:gap-6 scrollbar-hide">
           {/* Row 0: Writing Style Selection - Above Workspace */}
-          <div className="neu-flat rounded-3xl p-5">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl neu-convex flex items-center justify-center">
-                <Zap className="w-5 h-5 text-primary" />
+          <div className="neu-flat rounded-2xl sm:rounded-3xl p-3 sm:p-5">
+            <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl neu-convex flex items-center justify-center flex-shrink-0">
+                <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
               </div>
-              <div>
-                <h3 className="text-sm font-bold text-foreground">🎨 Select Writing Style.. 🖋</h3>
-                <p className="text-[10px] text-muted-foreground">Choose your preferred writing style before generating</p>
+              <div className="min-w-0">
+                <h3 className="text-xs sm:text-sm font-bold text-foreground truncate">🎨 Select Writing Style.. 🖋</h3>
+                <p className="text-[9px] sm:text-[10px] text-muted-foreground">Choose your preferred writing style</p>
               </div>
             </div>
             <StyleButtonsPopover currentStyle={style} onSelect={handleProcess} isLoading={isLoading} />

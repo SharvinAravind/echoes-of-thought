@@ -1,4 +1,4 @@
-import { Crown, Lock, Sparkles, Star } from 'lucide-react';
+import { Crown, Lock, Sparkles, Star, Check } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
@@ -19,9 +19,12 @@ export const PremiumBadge = ({
 
   const content = {
     badge: (
-      <span className="premium-badge">
-        <Crown className={iconSize} />
-        <span>PRO</span>
+      <span className={cn(
+        "premium-badge",
+        activated && "animate-pulse-slow"
+      )}>
+        {activated ? <Check className={iconSize} /> : <Crown className={iconSize} />}
+        <span>{activated ? 'PRO ✓' : 'PRO'}</span>
       </span>
     ),
     lock: (
@@ -32,13 +35,15 @@ export const PremiumBadge = ({
     ),
     large: (
       <span className={cn(
-        'inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl font-bold text-sm',
+        'inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm',
         'gold-gradient text-primary-foreground shadow-xl',
-        'animate-pulse-slow ring-2 ring-gold/50'
+        'ring-2 ring-gold/50',
+        activated && 'animate-pulse-slow'
       )}>
-        <Star className="w-5 h-5 fill-current" />
+        <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
         <span className="tracking-wide">PREMIUM</span>
-        <Crown className="w-5 h-5" />
+        {activated && <Check className="w-4 h-4 sm:w-5 sm:h-5" />}
+        {!activated && <Crown className="w-4 h-4 sm:w-5 sm:h-5" />}
       </span>
     ),
   };
@@ -46,6 +51,11 @@ export const PremiumBadge = ({
   // For activated premium, show large badge without tooltip
   if (activated && variant === 'large') {
     return content.large;
+  }
+
+  // For activated badge variant, show without tooltip
+  if (activated && variant === 'badge') {
+    return content.badge;
   }
 
   return (
