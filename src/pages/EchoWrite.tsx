@@ -11,7 +11,6 @@ import { SettingsPanel } from '@/components/echowrite/SettingsPanel';
 import { AIContentGenerator } from '@/components/echowrite/AIContentGenerator';
 import { VisualContentHub } from '@/components/echowrite/VisualContentHub';
 import { PaymentModal } from '@/components/echowrite/PaymentModal';
-import { ImageUpload } from '@/components/echowrite/ImageUpload';
 import { useDictation } from '@/hooks/useDictation';
 import { useHistory } from '@/hooks/useHistory';
 import { useAuth } from '@/hooks/useAuth';
@@ -42,12 +41,6 @@ const EchoWrite = () => {
   const [paymentOpen, setPaymentOpen] = useState(false);
   const [inputLang, setInputLang] = useState('en-US');
   const [currentTheme, setCurrentTheme] = useState<Theme>('neumorphic-green');
-  
-  // Image upload state
-  const [uploadedImage, setUploadedImage] = useState<{ file: File | null; preview: string | null }>({
-    file: null,
-    preview: null
-  });
 
   // Apply theme class to body
   useEffect(() => {
@@ -135,18 +128,12 @@ const EchoWrite = () => {
     setVariations([]);
     setSelectedVariation(null);
     setInterimText('');
-    setUploadedImage({ file: null, preview: null });
   };
 
   // Apply variation to workspace
   const handleApplyToWorkspace = (content: string) => {
     setText(content);
     toast.success("Applied to workspace!");
-  };
-
-  // Handle image selection
-  const handleImageSelect = (file: File | null, preview: string | null) => {
-    setUploadedImage({ file, preview });
   };
 
   // Handle logout
@@ -210,14 +197,14 @@ const EchoWrite = () => {
       {/* History Sidebar */}
       <HistorySidebar history={history} isOpen={historyOpen} onClose={() => setHistoryOpen(false)} onSelectItem={handleHistorySelect} />
 
-      {/* Navbar */}
+      {/* Navbar - Aligned with login page styling */}
       <header className="px-6 py-4 glass-frosted flex justify-between items-center sticky top-0 z-40">
         <div className="flex items-center gap-4">
           <button onClick={() => setHistoryOpen(!historyOpen)} className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors">
             <HistoryIcon className="w-5 h-5" />
           </button>
-          <div className="flex items-center gap-3">
-            {/* 2x Logo */}
+          <div className="flex items-center gap-4">
+            {/* 2x Logo with bounce animation */}
             <Logo size="xl" animated />
             {/* 1x Brand Name with electric sparkle */}
             <div>
@@ -229,10 +216,10 @@ const EchoWrite = () => {
                 >
                   ECHOWRITE
                 </span>
-                {user.tier === 'premium' && <PremiumBadge variant="badge" />}
+                {user.tier === 'premium' && <PremiumBadge variant="large" activated />}
               </div>
               <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-widest">
-                Premium AI Writing • 20 Styles
+                Premium AI Writing • 26 Styles
               </p>
             </div>
           </div>
@@ -244,11 +231,15 @@ const EchoWrite = () => {
             <Snowflake className="w-5 h-5" />
           </button>
 
-          {/* Language Selector */}
+          {/* Language Selector with Flags */}
           <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl neu-flat transition-transform hover:scale-[1.02]">
             <Languages className="w-4 h-4 text-primary" />
-            <select value={inputLang} onChange={e => setInputLang(e.target.value)} className="bg-transparent border-none text-[10px] font-bold uppercase text-muted-foreground outline-none cursor-pointer">
-              {SUPPORTED_LANGUAGES.map(l => <option key={l.code} value={l.code}>{l.name}</option>)}
+            <select value={inputLang} onChange={e => setInputLang(e.target.value)} className="bg-transparent border-none text-[10px] font-bold text-muted-foreground outline-none cursor-pointer max-w-[180px]">
+              {SUPPORTED_LANGUAGES.map(l => (
+                <option key={l.code} value={l.code}>
+                  {l.flag} {l.name} [{l.native}]
+                </option>
+              ))}
             </select>
           </div>
 
@@ -259,9 +250,9 @@ const EchoWrite = () => {
             </button>
           </div>
 
-          {/* Generate Button */}
+          {/* Generate All Button - Triggers all variations + mind map */}
           <button disabled={!text || isLoading} onClick={() => handleProcess(style)} className="primary-button flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-            <Sparkles className="w-4 h-4" /> GENERATE
+            <Sparkles className="w-4 h-4" /> GENERATE ALL
           </button>
         </div>
       </header>
@@ -269,12 +260,6 @@ const EchoWrite = () => {
       {/* Main Content - Vertical Layout */}
       <div className="flex flex-1 relative z-10 overflow-hidden">
         <main className="flex-1 overflow-y-auto p-6 flex flex-col gap-6 scrollbar-hide">
-          {/* Image Upload Section - Above Workspace */}
-          <ImageUpload 
-            onImageSelect={handleImageSelect}
-            currentPreview={uploadedImage.preview}
-          />
-
           {/* Row 1: Workspace - Full Width */}
           <Workspace text={text} onTextChange={setText} onClear={handleClear} onEnterPress={() => handleProcess(style)} interimText={interimText} isDictating={dictation.isDictating} isDictationPaused={dictation.isPaused} dictationTime={dictation.dictationTime} onStartDictation={dictation.start} onStopDictation={dictation.stop} onTogglePause={dictation.togglePause} />
 

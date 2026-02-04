@@ -54,6 +54,13 @@ const styleIcons: Record<WritingStyle, React.ComponentType<{ className?: string 
   [WritingStyle.TECHNICAL_DOC]: Wrench,
   [WritingStyle.COMPLAINT_REQUEST]: AlertTriangle,
   [WritingStyle.NEGOTIATION_MESSAGE]: Handshake,
+  // New styles
+  [WritingStyle.CASUAL_MESSAGE]: MessageCircle,
+  [WritingStyle.GRAMMAR_FIX]: FileCheck,
+  [WritingStyle.PHRASING_IMPROVE]: PenTool,
+  [WritingStyle.CREATIVE_WRITING]: Sparkles,
+  [WritingStyle.SUMMARY]: List,
+  [WritingStyle.BULLET_POINTS]: List,
 };
 
 // Short labels for chips
@@ -78,6 +85,13 @@ const styleLabels: Record<WritingStyle, string> = {
   [WritingStyle.TECHNICAL_DOC]: 'Tech Doc',
   [WritingStyle.COMPLAINT_REQUEST]: 'Complaint',
   [WritingStyle.NEGOTIATION_MESSAGE]: 'Negotiation',
+  // New styles
+  [WritingStyle.CASUAL_MESSAGE]: 'Casual',
+  [WritingStyle.GRAMMAR_FIX]: 'Grammar',
+  [WritingStyle.PHRASING_IMPROVE]: 'Phrasing',
+  [WritingStyle.CREATIVE_WRITING]: 'Creative',
+  [WritingStyle.SUMMARY]: 'Summary',
+  [WritingStyle.BULLET_POINTS]: 'Bullets',
 };
 
 export const StyleButtons = ({ currentStyle, onSelect, isLoading }: StyleButtonsProps) => {
