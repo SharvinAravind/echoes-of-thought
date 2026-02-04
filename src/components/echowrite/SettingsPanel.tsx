@@ -105,10 +105,14 @@ const SettingRow = ({
   isLocked = false,
   children 
 }: SettingRowProps) => {
+  // When isPremium feature but NOT locked = user has premium and feature is unlocked
+  const isUnlockedPremium = isPremium && !isLocked;
+  
   return (
     <div className={cn(
       "flex items-center justify-between py-3 px-4 rounded-2xl transition-all",
-      isLocked ? "neu-pressed opacity-60" : "neu-flat hover:scale-[1.01]"
+      isLocked ? "neu-pressed opacity-60" : "neu-flat hover:scale-[1.01]",
+      isUnlockedPremium && "ring-1 ring-accent/30"
     )}>
       <div className="flex-1">
         <div className="flex items-center gap-2">
@@ -122,15 +126,29 @@ const SettingRow = ({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md gold-gradient text-primary-foreground text-[8px] font-bold uppercase">
-                    <Crown className="w-2.5 h-2.5" />
-                    PRO
+                  <span className={cn(
+                    "flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[8px] font-bold uppercase",
+                    isUnlockedPremium 
+                      ? "gold-gradient text-primary-foreground shadow-sm" 
+                      : "bg-muted text-muted-foreground"
+                  )}>
+                    {isUnlockedPremium ? (
+                      <>
+                        <Check className="w-2.5 h-2.5" />
+                        PRO
+                      </>
+                    ) : (
+                      <>
+                        <Crown className="w-2.5 h-2.5" />
+                        PRO
+                      </>
+                    )}
                   </span>
                 </TooltipTrigger>
                 <TooltipContent className="neu-flat border-border text-xs max-w-[200px]">
                   <p className="flex items-center gap-2">
                     <Sparkles className="w-3 h-3 text-accent" />
-                    {premiumTooltip}
+                    {isUnlockedPremium ? "Premium feature unlocked!" : premiumTooltip}
                   </p>
                 </TooltipContent>
               </Tooltip>
