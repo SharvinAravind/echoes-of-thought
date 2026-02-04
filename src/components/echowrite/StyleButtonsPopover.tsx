@@ -1,0 +1,227 @@
+import { WritingStyle, STYLE_CATEGORIES } from '@/types/echowrite';
+import { 
+  Mail, 
+  MessageCircle, 
+  Scale, 
+  Sparkles, 
+  GraduationCap, 
+  Wrench, 
+  Briefcase,
+  FileCheck,
+  Target,
+  Megaphone,
+  ShoppingBag,
+  Layout,
+  PenTool,
+  Video,
+  Bot,
+  Languages,
+  Heart,
+  AlertTriangle,
+  Handshake,
+  Share2,
+  ChevronDown
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useState } from 'react';
+
+interface StyleButtonsPopoverProps {
+  currentStyle: WritingStyle;
+  onSelect: (style: WritingStyle) => void;
+  isLoading: boolean;
+}
+
+// Icon mapping for each style
+const styleIcons: Record<WritingStyle, React.ComponentType<{ className?: string }>> = {
+  [WritingStyle.PROFESSIONAL_EMAIL]: Mail,
+  [WritingStyle.FOLLOW_UP_MESSAGE]: MessageCircle,
+  [WritingStyle.RESUME_CV_OPTIMIZER]: FileCheck,
+  [WritingStyle.COVER_LETTER]: Briefcase,
+  [WritingStyle.CLIENT_PROPOSAL]: Target,
+  [WritingStyle.LEGAL_DRAFT]: Scale,
+  [WritingStyle.MARKETING_COPY]: Megaphone,
+  [WritingStyle.SALES_PITCH]: Sparkles,
+  [WritingStyle.PRODUCT_DESCRIPTION]: ShoppingBag,
+  [WritingStyle.LANDING_PAGE_COPY]: Layout,
+  [WritingStyle.CONTENT_WRITING]: PenTool,
+  [WritingStyle.SOCIAL_MEDIA_POST]: Share2,
+  [WritingStyle.VIDEO_REEL_SCRIPT]: Video,
+  [WritingStyle.HUMANIZER]: Bot,
+  [WritingStyle.SIMPLIFY_LANGUAGE]: Languages,
+  [WritingStyle.POLITE_RESPECTFUL]: Heart,
+  [WritingStyle.ACADEMIC_WRITING]: GraduationCap,
+  [WritingStyle.TECHNICAL_DOC]: Wrench,
+  [WritingStyle.COMPLAINT_REQUEST]: AlertTriangle,
+  [WritingStyle.NEGOTIATION_MESSAGE]: Handshake,
+};
+
+// Full labels for popover items
+const styleLabels: Record<WritingStyle, string> = {
+  [WritingStyle.PROFESSIONAL_EMAIL]: 'Professional Email',
+  [WritingStyle.FOLLOW_UP_MESSAGE]: 'Follow-Up Message',
+  [WritingStyle.RESUME_CV_OPTIMIZER]: 'Resume/CV Optimizer',
+  [WritingStyle.COVER_LETTER]: 'Cover Letter',
+  [WritingStyle.CLIENT_PROPOSAL]: 'Client Proposal',
+  [WritingStyle.LEGAL_DRAFT]: 'Legal Draft',
+  [WritingStyle.MARKETING_COPY]: 'Marketing Copy',
+  [WritingStyle.SALES_PITCH]: 'Sales Pitch',
+  [WritingStyle.PRODUCT_DESCRIPTION]: 'Product Description',
+  [WritingStyle.LANDING_PAGE_COPY]: 'Landing Page Copy',
+  [WritingStyle.CONTENT_WRITING]: 'Blog/Article',
+  [WritingStyle.SOCIAL_MEDIA_POST]: 'Social Media Post',
+  [WritingStyle.VIDEO_REEL_SCRIPT]: 'Video/Reel Script',
+  [WritingStyle.HUMANIZER]: 'Humanizer',
+  [WritingStyle.SIMPLIFY_LANGUAGE]: 'Simplify Language',
+  [WritingStyle.POLITE_RESPECTFUL]: 'Polite & Respectful',
+  [WritingStyle.ACADEMIC_WRITING]: 'Academic Writing',
+  [WritingStyle.TECHNICAL_DOC]: 'Technical Documentation',
+  [WritingStyle.COMPLAINT_REQUEST]: 'Complaint/Request Letter',
+  [WritingStyle.NEGOTIATION_MESSAGE]: 'Negotiation Message',
+};
+
+// Style descriptions
+const styleDescriptions: Record<WritingStyle, string> = {
+  [WritingStyle.PROFESSIONAL_EMAIL]: 'Clear, polite, workplace-ready',
+  [WritingStyle.FOLLOW_UP_MESSAGE]: 'Confident without being pushy',
+  [WritingStyle.RESUME_CV_OPTIMIZER]: 'ATS-friendly, achievement-focused',
+  [WritingStyle.COVER_LETTER]: 'Role-specific, persuasive',
+  [WritingStyle.CLIENT_PROPOSAL]: 'Value-driven business proposals',
+  [WritingStyle.LEGAL_DRAFT]: 'Formal legal tone',
+  [WritingStyle.MARKETING_COPY]: 'Benefit-focused messaging',
+  [WritingStyle.SALES_PITCH]: 'Short, confident, objection-aware',
+  [WritingStyle.PRODUCT_DESCRIPTION]: 'Convert features to value',
+  [WritingStyle.LANDING_PAGE_COPY]: 'Headline → subtext → CTA',
+  [WritingStyle.CONTENT_WRITING]: 'Structured long-form content',
+  [WritingStyle.SOCIAL_MEDIA_POST]: 'Platform-ready, engaging',
+  [WritingStyle.VIDEO_REEL_SCRIPT]: 'Hook-based scripts',
+  [WritingStyle.HUMANIZER]: 'Remove robotic AI tone',
+  [WritingStyle.SIMPLIFY_LANGUAGE]: 'Plain English clarity',
+  [WritingStyle.POLITE_RESPECTFUL]: 'Fix harsh messages',
+  [WritingStyle.ACADEMIC_WRITING]: 'Formal, citation-ready',
+  [WritingStyle.TECHNICAL_DOC]: 'Step-by-step explanations',
+  [WritingStyle.COMPLAINT_REQUEST]: 'Firm but professional',
+  [WritingStyle.NEGOTIATION_MESSAGE]: 'Salary, pricing negotiations',
+};
+
+export const StyleButtonsPopover = ({ currentStyle, onSelect, isLoading }: StyleButtonsPopoverProps) => {
+  const [openPopover, setOpenPopover] = useState<string | null>(null);
+
+  const handleStyleSelect = (style: WritingStyle) => {
+    onSelect(style);
+    setOpenPopover(null);
+  };
+
+  // Find which category the current style belongs to
+  const getCurrentCategoryLabel = () => {
+    for (const category of STYLE_CATEGORIES) {
+      if (category.styles.includes(currentStyle)) {
+        return `${category.emoji} ${styleLabels[currentStyle]}`;
+      }
+    }
+    return 'Select Style';
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-wrap gap-2">
+        {STYLE_CATEGORIES.map((category) => {
+          const isActiveCategory = category.styles.includes(currentStyle);
+          
+          return (
+            <Popover 
+              key={category.id} 
+              open={openPopover === category.id}
+              onOpenChange={(open) => setOpenPopover(open ? category.id : null)}
+            >
+              <PopoverTrigger asChild>
+                <button
+                  disabled={isLoading}
+                  className={cn(
+                    'flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold transition-all',
+                    isActiveCategory
+                      ? 'style-chip-active'
+                      : 'neu-flat text-muted-foreground hover:text-foreground hover:scale-[1.02]',
+                    isLoading && 'opacity-50 cursor-not-allowed'
+                  )}
+                >
+                  <span className="text-base">{category.emoji}</span>
+                  <span className="hidden sm:inline">{category.label}</span>
+                  <ChevronDown className="w-3.5 h-3.5 ml-1" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent 
+                className="w-80 p-0 neu-flat border-border shadow-xl" 
+                align="start"
+                sideOffset={8}
+              >
+                <div className="p-4 border-b border-border/30">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{category.emoji}</span>
+                    <h4 className="font-bold text-foreground">{category.label}</h4>
+                  </div>
+                </div>
+                <div className="p-2 max-h-[300px] overflow-y-auto">
+                  {category.styles.map((styleId) => {
+                    const Icon = styleIcons[styleId];
+                    const isActive = currentStyle === styleId;
+                    
+                    return (
+                      <button
+                        key={styleId}
+                        disabled={isLoading}
+                        onClick={() => handleStyleSelect(styleId)}
+                        className={cn(
+                          'w-full flex items-start gap-3 p-3 rounded-xl text-left transition-all',
+                          isActive 
+                            ? 'neu-pressed ring-2 ring-primary' 
+                            : 'hover:bg-muted/50',
+                          isLoading && 'opacity-50 cursor-not-allowed'
+                        )}
+                      >
+                        <div className={cn(
+                          'w-9 h-9 rounded-lg flex items-center justify-center shrink-0',
+                          isActive ? 'bg-primary text-primary-foreground' : 'neu-flat'
+                        )}>
+                          <Icon className="w-4 h-4" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className={cn(
+                            'text-sm font-semibold truncate',
+                            isActive ? 'text-primary' : 'text-foreground'
+                          )}>
+                            {styleLabels[styleId]}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground line-clamp-2">
+                            {styleDescriptions[styleId]}
+                          </p>
+                        </div>
+                        {isActive && (
+                          <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center shrink-0">
+                            <svg className="w-3 h-3 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                            </svg>
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </PopoverContent>
+            </Popover>
+          );
+        })}
+      </div>
+      
+      {/* Current selection indicator */}
+      <div className="flex items-center gap-2 px-3 py-2 rounded-xl neu-pressed text-sm">
+        <span className="text-muted-foreground">Selected:</span>
+        <span className="font-semibold text-primary">{getCurrentCategoryLabel()}</span>
+      </div>
+    </div>
+  );
+};

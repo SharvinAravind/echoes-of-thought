@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, Lock, ArrowRight, Sparkles, Languages, CheckCircle2, Star, Zap, Crown, KeyRound } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Sparkles, Languages, CheckCircle2, Star, Zap, Crown, KeyRound, Mic, FileText, Palette, Globe } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -18,21 +18,23 @@ interface AuthScreenProps {
 }
 
 const freeFeatures = [
-  "Standard Voice Transcription",
-  "Basic AI Phrasing",
-  "10 Generations/Day",
+  "Voice-to-Text Transcription",
+  "10 AI Generations/Day",
+  "5 Writing Style Variations",
+  "Basic Formatting",
   "2 Theme Options",
   "Last 5 Items History"
 ];
 
 const premiumFeatures = [
-  "Elite Accuracy Mode",
-  "Unlimited Generations",
+  "Unlimited AI Generations",
+  "All 20 Writing Styles",
+  "Advanced Noise Cancellation",
+  "PDF, DOCX, Markdown Export",
+  "Cloud Sync Across Devices",
   "All 10 Premium Themes",
-  "4 Simultaneous Variations",
-  "Global Output Translation",
-  "Cloud Sync & Backup",
-  "Priority AI Processing"
+  "Priority AI Processing",
+  "Flowcharts & Mind Maps"
 ];
 
 export const AuthScreen = ({ onAuthSuccess }: AuthScreenProps) => {
@@ -167,7 +169,7 @@ export const AuthScreen = ({ onAuthSuccess }: AuthScreenProps) => {
         </div>
 
         <div className="relative z-10">
-          {/* Vintage Mic Logo */}
+          {/* Vintage Mic Logo with Text */}
           <div className="mb-12">
             <Logo size="3xl" showText animated />
           </div>
@@ -176,8 +178,8 @@ export const AuthScreen = ({ onAuthSuccess }: AuthScreenProps) => {
             Transform Your Words with AI-Powered Writing
           </h2>
           <p className="text-muted-foreground mb-8 max-w-md">
-            Voice-to-text processing with AI-powered content generation. 
-            Transform your ideas into polished content in seconds.
+            Voice-to-text with 20 AI writing styles, visual content generation, 
+            and seamless export. Your complete writing assistant.
           </p>
 
           {/* Tier Comparison */}
@@ -225,15 +227,17 @@ export const AuthScreen = ({ onAuthSuccess }: AuthScreenProps) => {
           </div>
 
           {/* Feature Icons */}
-          <div className="mt-8 flex items-center gap-6">
+          <div className="mt-8 flex items-center gap-4 flex-wrap">
             {[
-              { icon: Sparkles, label: '25+ Languages' },
+              { icon: Mic, label: 'Voice Input' },
               { icon: Sparkles, label: '20 AI Styles' },
-              { icon: Languages, label: 'Translate' },
+              { icon: Globe, label: '25+ Languages' },
+              { icon: FileText, label: 'Visual Export' },
+              { icon: Palette, label: '10 Themes' },
             ].map(({ icon: Icon, label }, idx) => (
               <div key={label + idx} className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-2xl neu-flat flex items-center justify-center">
-                  <Icon className="w-5 h-5 text-primary" />
+                <div className="w-9 h-9 rounded-xl neu-flat flex items-center justify-center">
+                  <Icon className="w-4 h-4 text-primary" />
                 </div>
                 <span className="text-xs font-semibold text-muted-foreground">{label}</span>
               </div>
@@ -405,7 +409,7 @@ export const AuthScreen = ({ onAuthSuccess }: AuthScreenProps) => {
           <div className="mt-6 p-4 rounded-2xl neu-flat text-center">
             <p className="text-xs text-muted-foreground">
               <span className="font-semibold text-foreground">Free tier includes:</span>{' '}
-              10 generations/day • Basic transcription • 2 themes
+              10 generations/day • Voice transcription • 5 writing styles
             </p>
           </div>
         </div>

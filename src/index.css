@@ -40,7 +40,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Crimson+Pro:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Crimson+Pro:wght@400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -848,3 +848,112 @@
     0 0 20px hsl(var(--primary) / 0.3),
     0 0 30px hsl(var(--primary) / 0.2);
 }
+
+/* Electric Sparkle Text Effect */
+@keyframes electric-sparkle {
+  0%, 100% {
+    text-shadow: 
+      0 0 5px hsl(var(--primary) / 0.8),
+      0 0 15px hsl(var(--primary) / 0.6),
+      0 0 25px hsl(var(--primary) / 0.4),
+      0 0 40px hsl(var(--accent) / 0.3),
+      0 0 60px hsl(var(--accent) / 0.2);
+    filter: brightness(1);
+  }
+  25% {
+    text-shadow: 
+      0 0 8px hsl(var(--accent) / 0.9),
+      0 0 20px hsl(var(--primary) / 0.7),
+      0 0 35px hsl(var(--accent) / 0.5),
+      0 0 55px hsl(var(--primary) / 0.4),
+      0 0 80px hsl(var(--accent) / 0.3);
+    filter: brightness(1.1);
+  }
+  50% {
+    text-shadow: 
+      0 0 10px hsl(var(--primary) / 1),
+      0 0 25px hsl(var(--accent) / 0.8),
+      0 0 45px hsl(var(--primary) / 0.6),
+      0 0 70px hsl(var(--accent) / 0.4),
+      0 0 100px hsl(var(--primary) / 0.3);
+    filter: brightness(1.15);
+  }
+  75% {
+    text-shadow: 
+      0 0 7px hsl(var(--accent) / 0.85),
+      0 0 18px hsl(var(--primary) / 0.65),
+      0 0 30px hsl(var(--accent) / 0.45),
+      0 0 50px hsl(var(--primary) / 0.35),
+      0 0 75px hsl(var(--accent) / 0.25);
+    filter: brightness(1.05);
+  }
+}
+
+@keyframes sparkle-particle {
+  0% {
+    transform: translateY(0) scale(0);
+    opacity: 0;
+  }
+  20% {
+    transform: translateY(-5px) scale(1);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(-15px) scale(0.8);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-20px) scale(0);
+    opacity: 0;
+  }
+}
+
+.electric-sparkle {
+  animation: electric-sparkle 2.5s ease-in-out infinite;
+  background: linear-gradient(
+    135deg, 
+    hsl(var(--foreground)) 0%, 
+    hsl(var(--primary)) 25%, 
+    hsl(var(--accent)) 50%, 
+    hsl(var(--primary)) 75%, 
+    hsl(var(--foreground)) 100%
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
+.electric-sparkle::before {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary)) 0%,
+    hsl(var(--accent)) 50%,
+    hsl(var(--primary)) 100%
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: electric-sparkle 2.5s ease-in-out infinite;
+  filter: blur(8px);
+  opacity: 0.7;
+}
+
+/* Sparkle animation for dots */
+.sparkle-dot {
+  animation: sparkle-particle 1.5s ease-out infinite;
+}
+
+.sparkle-dot:nth-child(2) { animation-delay: 0.3s; }
+.sparkle-dot:nth-child(3) { animation-delay: 0.6s; }
+.sparkle-dot:nth-child(4) { animation-delay: 0.9s; }
+.sparkle-dot:nth-child(5) { animation-delay: 1.2s; }

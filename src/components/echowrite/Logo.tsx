@@ -32,8 +32,8 @@ export const Logo = ({
   animated = true
 }: LogoProps) => {
   return (
-    <div className={`flex items-center gap-4 ${className}`}>
-      {/* Vintage Chrome Microphone Logo */}
+    <div className={`flex items-center gap-3 ${className}`}>
+      {/* Vintage Chrome Microphone Logo - 2x size relative */}
       <div 
         className={`
           relative ${sizeClasses[size]} 
@@ -49,10 +49,25 @@ export const Logo = ({
       </div>
       
       {showText && (
-        <div className="flex flex-col">
-          <span className={`${textSizeClasses[size]} font-black tracking-tight text-foreground logo-glow`}>
-            EchoWrite
-          </span>
+        <div className="flex flex-col gap-0.5">
+          {/* Electric sparkle text with sparkle particles */}
+          <div className="relative">
+            <span 
+              data-text="ECHOWRITE"
+              className={`${textSizeClasses[size]} font-black tracking-tight electric-sparkle`}
+              style={{ fontFamily: "'Orbitron', 'Space Grotesk', sans-serif" }}
+            >
+              ECHOWRITE
+            </span>
+            {/* Sparkle particles */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+              <div className="sparkle-dot absolute top-1 left-[20%] w-1 h-1 bg-accent rounded-full" />
+              <div className="sparkle-dot absolute top-0 left-[45%] w-1.5 h-1.5 bg-primary rounded-full" />
+              <div className="sparkle-dot absolute top-2 left-[70%] w-1 h-1 bg-accent rounded-full" />
+              <div className="sparkle-dot absolute bottom-0 left-[35%] w-1 h-1 bg-primary rounded-full" />
+              <div className="sparkle-dot absolute bottom-1 left-[85%] w-1.5 h-1.5 bg-accent rounded-full" />
+            </div>
+          </div>
           <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
             AI Writing Assistant
           </span>
