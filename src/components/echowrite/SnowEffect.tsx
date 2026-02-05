@@ -12,15 +12,15 @@ export const SnowEffect = ({ enabled }: SnowEffectProps) => {
 
     const container = containerRef.current;
     const snowflakes: HTMLDivElement[] = [];
-    const count = 120; // Dense snowflake effect
+    const count = 150; // Dense snowflake effect for maximum visibility
 
     for (let i = 0; i < count; i++) {
       const snowflake = document.createElement('div');
-      const size = Math.random() * 5 + 3; // Larger: 3-8px for better visibility
-      const opacity = Math.random() * 0.4 + 0.5; // More visible: 0.5-0.9
-      const duration = Math.random() * 12 + 10; // Smoother: 10-22s for gentle fall
-      const delay = Math.random() * 8;
-      const drift = Math.random() * 80 - 40; // More horizontal movement
+      const size = Math.random() * 8 + 4; // Larger: 4-12px for better visibility
+      const opacity = Math.random() * 0.3 + 0.7; // More visible: 0.7-1.0
+      const duration = Math.random() * 15 + 8; // Smoother: 8-23s for gentle fall
+      const delay = Math.random() * 10;
+      const drift = Math.random() * 100 - 50; // More horizontal movement
       const startX = Math.random() * 100;
       
       snowflake.className = 'snowflake-enhanced';
@@ -28,17 +28,22 @@ export const SnowEffect = ({ enabled }: SnowEffectProps) => {
         position: absolute;
         width: ${size}px;
         height: ${size}px;
-        background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.9) 30%, rgba(255, 255, 255, 0.4) 100%);
+        background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.95) 40%, rgba(255, 255, 255, 0.6) 100%);
         border-radius: 50%;
         left: ${startX}%;
-        top: -10px;
+        top: -20px;
         opacity: ${opacity};
         pointer-events: none;
         animation: snowfall-enhanced ${duration}s ease-in-out infinite;
         animation-delay: ${delay}s;
         --drift: ${drift}px;
-        box-shadow: 0 0 ${size * 3}px rgba(255, 255, 255, 0.7), 0 0 ${size * 1.5}px rgba(255, 255, 255, 0.5), inset 0 0 ${size}px rgba(255, 255, 255, 0.3);
-        filter: blur(${Math.random() * 0.3}px);
+        box-shadow: 
+          0 0 ${size * 4}px rgba(255, 255, 255, 0.9), 
+          0 0 ${size * 2}px rgba(255, 255, 255, 0.7), 
+          0 0 ${size}px rgba(255, 255, 255, 0.5),
+          inset 0 0 ${size * 0.5}px rgba(255, 255, 255, 0.4);
+        filter: blur(${Math.random() * 0.2}px);
+        z-index: 9999;
       `;
       container.appendChild(snowflake);
       snowflakes.push(snowflake);
@@ -92,8 +97,11 @@ export const SnowEffect = ({ enabled }: SnowEffectProps) => {
   return (
     <div 
       ref={containerRef} 
-      className="fixed inset-0 pointer-events-none z-30 overflow-hidden"
-      style={{ background: 'transparent' }}
+      className="fixed inset-0 pointer-events-none overflow-hidden"
+      style={{ 
+        background: 'transparent',
+        zIndex: 9999,
+      }}
       aria-hidden="true"
     />
   );
