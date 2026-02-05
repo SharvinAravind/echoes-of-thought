@@ -132,11 +132,11 @@ export const LengthVariationsPanel = forwardRef<LengthVariationsPanelRef, Length
   const currentVariations = variations?.[selectedType]?.slice(0, variationCount) || [];
 
   return (
-    <div className="neu-flat rounded-2xl p-5">
-      {/* Header with Length Type Buttons + Slider + Generate Button */}
-      <div className="flex flex-wrap items-center gap-4 mb-5">
+    <div className="neu-flat rounded-2xl p-4 sm:p-5">
+      {/* Header with Length Type Buttons + Slider + Generate Button - Responsive */}
+      <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-5">
         {/* Length Type Buttons - Simple / Medium / Long */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {(Object.keys(lengthLabels) as LengthType[]).map((type) => {
             const { icon: Icon, label, emoji } = lengthLabels[type];
             const isActive = selectedType === type;
@@ -145,22 +145,22 @@ export const LengthVariationsPanel = forwardRef<LengthVariationsPanelRef, Length
                 key={type}
                 onClick={() => handleLengthTypeChange(type)}
                 className={cn(
-                  'flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all',
+                  'flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-2 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all flex-1 sm:flex-none justify-center',
                   isActive
                     ? 'style-chip-active'
                     : 'neu-flat text-muted-foreground hover:text-foreground hover:scale-[1.02]'
                 )}
               >
                 <span>{emoji}</span>
-                <span>{label}</span>
+                <span className="hidden xs:inline">{label}</span>
               </button>
             );
           })}
         </div>
         
-        {/* Slider for Variation Count (1-5) */}
-        <div className="flex items-center gap-3 flex-1 min-w-[150px]">
-          <span className="text-[10px] text-muted-foreground font-bold">1</span>
+        {/* Slider for Variation Count (1-5) - Responsive */}
+        <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-[120px] sm:min-w-[150px] neu-flat px-3 py-2 rounded-xl">
+          <span className="text-[9px] sm:text-[10px] text-muted-foreground font-bold">1</span>
           <Slider
             value={sliderValue}
             onValueChange={handleSliderChange}
@@ -169,30 +169,30 @@ export const LengthVariationsPanel = forwardRef<LengthVariationsPanelRef, Length
             step={1}
             className="flex-1"
           />
-          <span className="text-[10px] text-muted-foreground font-bold">5</span>
-          <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-1 rounded-lg">
+          <span className="text-[9px] sm:text-[10px] text-muted-foreground font-bold">5</span>
+          <span className="text-[9px] sm:text-[10px] font-bold text-primary bg-primary/10 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg">
             {variationCount}
           </span>
         </div>
 
-        {/* Generate Button */}
+        {/* Generate Button - Prominent */}
         <button
           onClick={fetchVariations}
           disabled={isLoading || !text.trim()}
           className={cn(
-            'flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-xs transition-all shrink-0',
+            'flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-bold text-[10px] sm:text-xs transition-all shadow-md',
             isLoading ? 'neu-pressed opacity-70' : 'primary-button hover:scale-[1.02]'
           )}
         >
           {isLoading ? (
             <>
-              <RefreshCw className="w-4 h-4 animate-spin" />
+              <RefreshCw className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin" />
               <span>Generating...</span>
             </>
           ) : (
             <>
-              <Wand2 className="w-4 h-4" />
-              <span>Generate</span>
+              <Wand2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span>Generate Lengths</span>
             </>
           )}
         </button>

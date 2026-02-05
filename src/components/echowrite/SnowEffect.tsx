@@ -12,15 +12,15 @@ export const SnowEffect = ({ enabled }: SnowEffectProps) => {
 
     const container = containerRef.current;
     const snowflakes: HTMLDivElement[] = [];
-    const count = 120; // More snowflakes for denser effect
+    const count = 120; // Dense snowflake effect
 
     for (let i = 0; i < count; i++) {
       const snowflake = document.createElement('div');
-      const size = Math.random() * 4 + 2; // Slightly larger: 2-6px
-      const opacity = Math.random() * 0.6 + 0.3; // More visible: 0.3-0.9
-      const duration = Math.random() * 10 + 8; // Slower: 8-18s for smooth fall
-      const delay = Math.random() * 10;
-      const drift = Math.random() * 60 - 30; // More horizontal drift
+      const size = Math.random() * 5 + 3; // Larger: 3-8px for better visibility
+      const opacity = Math.random() * 0.4 + 0.5; // More visible: 0.5-0.9
+      const duration = Math.random() * 12 + 10; // Smoother: 10-22s for gentle fall
+      const delay = Math.random() * 8;
+      const drift = Math.random() * 80 - 40; // More horizontal movement
       const startX = Math.random() * 100;
       
       snowflake.className = 'snowflake-enhanced';
@@ -28,17 +28,17 @@ export const SnowEffect = ({ enabled }: SnowEffectProps) => {
         position: absolute;
         width: ${size}px;
         height: ${size}px;
-        background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.8) 40%, rgba(255, 255, 255, 0.2) 100%);
+        background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.9) 30%, rgba(255, 255, 255, 0.4) 100%);
         border-radius: 50%;
         left: ${startX}%;
         top: -10px;
         opacity: ${opacity};
         pointer-events: none;
-        animation: snowfall-enhanced ${duration}s linear infinite;
+        animation: snowfall-enhanced ${duration}s ease-in-out infinite;
         animation-delay: ${delay}s;
         --drift: ${drift}px;
-        box-shadow: 0 0 ${size * 2}px rgba(255, 255, 255, 0.5), 0 0 ${size}px rgba(255, 255, 255, 0.3);
-        filter: blur(${Math.random() * 0.5}px);
+        box-shadow: 0 0 ${size * 3}px rgba(255, 255, 255, 0.7), 0 0 ${size * 1.5}px rgba(255, 255, 255, 0.5), inset 0 0 ${size}px rgba(255, 255, 255, 0.3);
+        filter: blur(${Math.random() * 0.3}px);
       `;
       container.appendChild(snowflake);
       snowflakes.push(snowflake);
@@ -51,21 +51,30 @@ export const SnowEffect = ({ enabled }: SnowEffectProps) => {
       style.textContent = `
         @keyframes snowfall-enhanced {
           0% {
-            transform: translateY(-10px) translateX(0) rotate(0deg);
+            transform: translateY(-10px) translateX(0) rotate(0deg) scale(0.8);
             opacity: 0;
           }
-          5% {
-            opacity: 0.8;
+          8% {
+            opacity: 0.9;
+            transform: translateY(8vh) translateX(calc(var(--drift) * 0.1)) rotate(30deg) scale(1);
+          }
+          25% {
+            transform: translateY(25vh) translateX(calc(var(--drift) * 0.3)) rotate(90deg) scale(1);
+            opacity: 0.85;
           }
           50% {
-            transform: translateY(50vh) translateX(calc(var(--drift) / 2)) rotate(180deg);
+            transform: translateY(50vh) translateX(calc(var(--drift) * 0.5)) rotate(180deg) scale(1);
+            opacity: 0.75;
+          }
+          75% {
+            transform: translateY(75vh) translateX(calc(var(--drift) * 0.8)) rotate(270deg) scale(1);
             opacity: 0.6;
           }
-          85% {
-            opacity: 0.4;
+          90% {
+            opacity: 0.3;
           }
           100% {
-            transform: translateY(100vh) translateX(var(--drift)) rotate(360deg);
+            transform: translateY(105vh) translateX(var(--drift)) rotate(360deg) scale(0.9);
             opacity: 0;
           }
         }
