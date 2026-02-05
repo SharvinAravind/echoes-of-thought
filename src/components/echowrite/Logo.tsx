@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import vintageMicLogo from '@/assets/vintage-mic-logo.png';
 
 interface LogoProps {
@@ -14,7 +15,7 @@ const logoSizeClasses = {
   lg: 'h-14 w-14',
   xl: 'h-20 w-20',
   '2xl': 'h-28 w-28',
-  '3xl': 'h-36 w-36',
+  '3xl': 'h-36 h-36',
 };
 
 const textSizeClasses = {
@@ -26,14 +27,14 @@ const textSizeClasses = {
   '3xl': 'text-5xl',
 };
 
-export const Logo = ({ 
+export const Logo = forwardRef<HTMLDivElement, LogoProps>(({ 
   size = 'lg', 
   showText = false, 
   className = '', 
   animated = true
-}: LogoProps) => {
+}, ref) => {
   return (
-    <div className={`flex items-center gap-5 ${className}`}>
+    <div ref={ref} className={`flex items-center gap-5 ${className}`}>
       {/* Vintage Chrome Microphone Logo - 2x size with bounce animation */}
       <div 
         className={`
@@ -84,4 +85,6 @@ export const Logo = ({
       )}
     </div>
   );
-};
+});
+
+Logo.displayName = 'Logo';

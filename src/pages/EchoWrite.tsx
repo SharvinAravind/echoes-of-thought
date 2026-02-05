@@ -231,24 +231,24 @@ const EchoWrite = () => {
       <HistorySidebar history={history} isOpen={historyOpen} onClose={() => setHistoryOpen(false)} onSelectItem={handleHistorySelect} />
 
       {/* Navbar - Matching Login Page Branding - Responsive */}
-      <header className="px-3 sm:px-6 py-3 sm:py-4 glass-frosted flex justify-between items-center sticky top-0 z-40">
+      <header className="px-2 sm:px-4 lg:px-6 py-2 sm:py-3 lg:py-4 glass-frosted flex justify-between items-center sticky top-0 z-40">
         <TooltipProvider delayDuration={300}>
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
             {/* History Button with Tooltip */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <button onClick={() => setHistoryOpen(!historyOpen)} className="p-2 sm:p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
                   <HistoryIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <span className="hidden lg:inline text-xs font-semibold">History</span>
+                  <span className="hidden xl:inline text-xs font-semibold">History</span>
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="lg:hidden">
+              <TooltipContent side="bottom" className="xl:hidden">
                 <p>View History</p>
               </TooltipContent>
             </Tooltip>
             
-            {/* Logo + Brand with PRO badge overlay */}
-            <div className="relative hidden sm:block">
+            {/* Logo + Brand with PRO badge - Desktop/Tablet */}
+            <div className="relative hidden sm:flex items-center">
               <Logo size="2xl" showText animated />
               {user.tier === 'premium' && (
                 <div className="absolute -top-1 -right-2">
@@ -256,53 +256,68 @@ const EchoWrite = () => {
                 </div>
               )}
             </div>
-            <div className="relative sm:hidden">
+            
+            {/* Logo only - Mobile (no PRO badge here, moved to right side) */}
+            <div className="sm:hidden">
               <Logo size="lg" showText={false} animated />
-              {user.tier === 'premium' && (
-                <div className="absolute -top-1 -right-2">
-                  <PremiumBadge variant="badge" activated size="sm" />
-                </div>
-              )}
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 sm:gap-3">
+          <div className="flex items-center gap-1 sm:gap-2 lg:gap-3">
+            {/* Mobile PRO Badge - Separate from logo for better positioning */}
+            {user.tier === 'premium' && (
+              <div className="sm:hidden">
+                <PremiumBadge variant="badge" activated size="sm" />
+              </div>
+            )}
+
             {/* Snow Toggle with Tooltip */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <button onClick={() => setSnowEnabled(!snowEnabled)} className={`p-2 sm:p-2.5 rounded-xl neu-button transition-all flex items-center gap-2 ${snowEnabled ? 'text-primary' : 'text-muted-foreground'}`}>
                   <Snowflake className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <span className="hidden lg:inline text-xs font-semibold">{snowEnabled ? 'Snow On' : 'Snow'}</span>
+                  <span className="hidden xl:inline text-xs font-semibold">{snowEnabled ? 'Snow On' : 'Snow'}</span>
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="lg:hidden">
+              <TooltipContent side="bottom" className="xl:hidden">
                 <p>{snowEnabled ? 'Disable snow effect' : 'Enable snow effect'}</p>
               </TooltipContent>
             </Tooltip>
 
-            {/* Language Selector with Flags - Hidden on mobile */}
-            <div className="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-2xl neu-flat transition-transform hover:scale-[1.02]">
-              <Languages className="w-4 h-4 text-primary" />
-              <select value={inputLang} onChange={e => setInputLang(e.target.value)} className="bg-transparent border-none text-[10px] font-bold text-muted-foreground outline-none cursor-pointer max-w-[180px]">
-                {SUPPORTED_LANGUAGES.map(l => <option key={l.code} value={l.code}>
-                    {l.flag} {l.name} [{l.native}]
-                  </option>)}
-              </select>
-            </div>
-
-            {/* Compact Language Selector - Mobile only with Tooltip */}
+            {/* Language Selector with Flags - Hidden on mobile/tablet, shown on desktop */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="md:hidden flex items-center">
-                  <select value={inputLang} onChange={e => setInputLang(e.target.value)} className="bg-transparent border-none text-xs font-bold text-muted-foreground outline-none cursor-pointer neu-flat rounded-xl px-2 py-2">
+                <div className="hidden lg:flex items-center gap-2 px-3 py-2 rounded-2xl neu-flat transition-transform hover:scale-[1.02]">
+                  <Languages className="w-4 h-4 text-primary flex-shrink-0" />
+                  <select value={inputLang} onChange={e => setInputLang(e.target.value)} className="bg-transparent border-none text-[10px] font-bold text-muted-foreground outline-none cursor-pointer max-w-[160px] truncate">
+                    {SUPPORTED_LANGUAGES.map(l => <option key={l.code} value={l.code}>
+                        {l.flag} {l.name}
+                      </option>)}
+                  </select>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-[200px]">
+                <p className="text-xs">
+                  {SUPPORTED_LANGUAGES.find(l => l.code === inputLang)?.name} [{SUPPORTED_LANGUAGES.find(l => l.code === inputLang)?.native}]
+                </p>
+              </TooltipContent>
+            </Tooltip>
+
+            {/* Compact Language Selector - Mobile/Tablet only with Tooltip for full label */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="lg:hidden flex items-center">
+                  <select value={inputLang} onChange={e => setInputLang(e.target.value)} className="bg-transparent border-none text-sm font-bold text-muted-foreground outline-none cursor-pointer neu-flat rounded-xl px-2 py-2 min-w-[48px]">
                     {SUPPORTED_LANGUAGES.map(l => <option key={l.code} value={l.code}>
                         {l.flag}
                       </option>)}
                   </select>
                 </div>
               </TooltipTrigger>
-              <TooltipContent side="bottom">
-                <p>Select Language</p>
+              <TooltipContent side="bottom" className="max-w-[200px]">
+                <p className="text-xs font-medium">
+                  {SUPPORTED_LANGUAGES.find(l => l.code === inputLang)?.flag} {SUPPORTED_LANGUAGES.find(l => l.code === inputLang)?.name} [{SUPPORTED_LANGUAGES.find(l => l.code === inputLang)?.native}]
+                </p>
               </TooltipContent>
             </Tooltip>
 
@@ -311,10 +326,10 @@ const EchoWrite = () => {
               <TooltipTrigger asChild>
                 <button onClick={() => setSettingsOpen(!settingsOpen)} className="p-2 sm:p-2.5 rounded-xl neu-button hover:scale-[1.02] transition-all flex items-center gap-2">
                   <UserIcon className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
-                  <span className="hidden lg:inline text-xs font-semibold text-muted-foreground">Settings</span>
+                  <span className="hidden xl:inline text-xs font-semibold text-muted-foreground">Settings</span>
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="lg:hidden">
+              <TooltipContent side="bottom" className="xl:hidden">
                 <p>Settings & Profile</p>
               </TooltipContent>
             </Tooltip>
@@ -322,13 +337,13 @@ const EchoWrite = () => {
             {/* Generate All Button - Responsive with Tooltip */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <button disabled={!text || isLoading} onClick={handleGenerateAll} className="primary-button flex items-center gap-1 sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-[10px] sm:text-xs px-3 sm:px-6 py-2 sm:py-3">
+                <button disabled={!text || isLoading} onClick={handleGenerateAll} className="primary-button flex items-center gap-1 sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-[10px] sm:text-xs px-2 sm:px-4 lg:px-6 py-2 sm:py-2.5 lg:py-3">
                   <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" /> 
-                  <span className="hidden sm:inline">GENERATE ALL</span>
-                  <span className="sm:hidden">GEN</span>
+                  <span className="hidden md:inline">GENERATE ALL</span>
+                  <span className="md:hidden">GEN</span>
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="sm:hidden">
+              <TooltipContent side="bottom" className="md:hidden">
                 <p>Generate All Variations</p>
               </TooltipContent>
             </Tooltip>
