@@ -9,12 +9,12 @@ interface LogoProps {
 
 // Logo is 2x the size of text - matching reference video animation
 const logoSizeClasses = {
-  sm: 'h-12 w-12',
-  md: 'h-16 w-16',
-  lg: 'h-24 w-24',
-  xl: 'h-32 w-32',
-  '2xl': 'h-40 w-40',
-  '3xl': 'h-48 w-48',
+  sm: 'h-8 w-8',
+  md: 'h-10 w-10',
+  lg: 'h-14 w-14',
+  xl: 'h-20 w-20',
+  '2xl': 'h-28 w-28',
+  '3xl': 'h-36 w-36',
 };
 
 const textSizeClasses = {
