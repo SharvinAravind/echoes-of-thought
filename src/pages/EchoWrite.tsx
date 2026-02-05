@@ -247,24 +247,23 @@ const EchoWrite = () => {
               </TooltipContent>
             </Tooltip>
             
-            {/* Logo + Brand - Matching AuthScreen styling exactly */}
-            <div className="hidden sm:block">
+            {/* Logo + Brand with PRO badge overlay */}
+            <div className="relative hidden sm:block">
               <Logo size="2xl" showText animated />
-            </div>
-            <div className="sm:hidden">
-              <Logo size="lg" showText={false} animated />
-            </div>
-            {/* Premium Badge - Always visible on Home Screen when premium activated */}
-            {user.tier === 'premium' && (
-              <>
-                <div className="hidden md:flex">
+              {user.tier === 'premium' && (
+                <div className="absolute -top-1 -right-2">
                   <PremiumBadge variant="large" activated />
                 </div>
-                <div className="md:hidden flex">
-                  <PremiumBadge variant="badge" activated size="md" />
+              )}
+            </div>
+            <div className="relative sm:hidden">
+              <Logo size="lg" showText={false} animated />
+              {user.tier === 'premium' && (
+                <div className="absolute -top-1 -right-2">
+                  <PremiumBadge variant="badge" activated size="sm" />
                 </div>
-              </>
-            )}
+              )}
+            </div>
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-3">
