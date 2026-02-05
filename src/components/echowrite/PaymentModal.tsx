@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -57,17 +58,26 @@ export const PaymentModal = ({ isOpen, onClose, onSuccess }: PaymentModalProps) 
 
   const handlePayment = async () => {
     setIsProcessing(true);
-    
+
     try {
       // Simulate payment processing
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // In production, this would integrate with Razorpay/Stripe
+
+      // Persist premium activation in backend (user_roles table)
+      const { data, error } = await supabase.functions.invoke('user-account', {
+        body: { action: 'activate-premium' },
+      });
+
+      if (error || !data?.ok) {
+        throw new Error(error?.message || data?.error || 'Premium activation failed');
+      }
+
       toast.success('Payment successful! Welcome to Premium! 🎉');
       onSuccess();
       onClose();
-    } catch (error) {
-      toast.error('Payment failed. Please try again.');
+    } catch (error: any) {
+      console.error('Payment/activation error:', error);
+      toast.error(error?.message || 'Payment failed. Please try again.');
     } finally {
       setIsProcessing(false);
     }
