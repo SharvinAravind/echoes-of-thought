@@ -232,16 +232,16 @@ const EchoWrite = () => {
           <div className="sm:hidden">
             <Logo size="lg" showText={false} animated />
           </div>
-          {/* Premium Badge - Visible when premium activated */}
+          {/* Premium Badge - Always visible on Home Screen when premium activated */}
           {user.tier === 'premium' && (
-            <div className="hidden md:block">
-              <PremiumBadge variant="large" activated />
-            </div>
-          )}
-          {user.tier === 'premium' && (
-            <div className="md:hidden">
-              <PremiumBadge variant="badge" activated />
-            </div>
+            <>
+              <div className="hidden md:flex">
+                <PremiumBadge variant="large" activated />
+              </div>
+              <div className="md:hidden flex">
+                <PremiumBadge variant="badge" activated size="md" />
+              </div>
+            </>
           )}
         </div>
 

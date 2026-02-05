@@ -194,56 +194,62 @@ export const VisualContentHub = forwardRef<VisualContentHubRef, VisualContentHub
   const filteredItems = generatedItems.filter(item => item.type === selectedType);
 
   return (
-    <div className="neu-flat rounded-3xl p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl neu-convex flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-primary" />
+    <div className="neu-flat rounded-2xl sm:rounded-3xl p-4 sm:p-6">
+      {/* Header - Responsive */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 sm:mb-6">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl neu-convex flex items-center justify-center flex-shrink-0">
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
           </div>
-          <div>
-            <h3 className="text-sm font-bold text-foreground">Visual Content Creation</h3>
-            <p className="text-[10px] text-muted-foreground">
+          <div className="min-w-0">
+            <h3 className="text-xs sm:text-sm font-bold text-foreground">🎨 Visual Content Creation</h3>
+            <p className="text-[9px] sm:text-[10px] text-muted-foreground">
               Generate diagrams, flowcharts, mind maps, and timelines
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
           {/* Auto-generate toggle */}
-          <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer">
+          <label className="flex items-center gap-2 text-[10px] sm:text-xs text-muted-foreground cursor-pointer neu-flat px-3 py-2 rounded-xl">
             <input
               type="checkbox"
               checked={autoGenerate}
               onChange={(e) => setAutoGenerate(e.target.checked)}
-              className="w-4 h-4 rounded accent-primary"
+              className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded accent-primary"
             />
-            Auto
+            Auto-Generate
           </label>
           
-          {/* Generate Button - Now works with any text */}
+          {/* Generate Button - Prominent and clearly visible */}
           <Button
             onClick={handleManualGenerate}
             disabled={isGenerating || !workspaceText.trim()}
             size="sm"
-            className="gap-2 primary-button"
+            className={cn(
+              "gap-2 font-bold text-xs px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl transition-all",
+              isGenerating 
+                ? "neu-pressed opacity-70" 
+                : "primary-button hover:scale-[1.02] shadow-lg"
+            )}
           >
             {isGenerating ? (
               <>
                 <RefreshCw className="w-4 h-4 animate-spin" />
-                Generating...
+                <span className="hidden sm:inline">Generating...</span>
+                <span className="sm:hidden">...</span>
               </>
             ) : (
               <>
                 <Wand2 className="w-4 h-4" />
-                Generate
+                <span>Generate Visuals</span>
               </>
             )}
           </Button>
         </div>
       </div>
 
-      {/* Visual Type Selector */}
-      <div className="flex gap-2 mb-6 overflow-x-auto scrollbar-hide pb-1">
+      {/* Visual Type Selector - Responsive */}
+      <div className="flex gap-1.5 sm:gap-2 mb-4 sm:mb-6 overflow-x-auto scrollbar-hide pb-1">
         {visualTypes.map((type) => {
           const Icon = type.icon;
           const count = generatedItems.filter(i => i.type === type.id).length;
@@ -252,16 +258,16 @@ export const VisualContentHub = forwardRef<VisualContentHubRef, VisualContentHub
               key={type.id}
               onClick={() => setSelectedType(type.id)}
               className={cn(
-                'flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all shrink-0',
+                'flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-semibold transition-all shrink-0',
                 selectedType === type.id
                   ? 'style-chip-active'
                   : 'neu-flat text-muted-foreground hover:text-foreground'
               )}
             >
-              <Icon className="w-4 h-4" />
-              {type.label}
+              <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline">{type.label}</span>
               {count > 0 && (
-                <span className="ml-1 px-1.5 py-0.5 rounded-full bg-primary/20 text-primary text-[10px]">
+                <span className="ml-0.5 sm:ml-1 px-1 sm:px-1.5 py-0.5 rounded-full bg-primary/20 text-primary text-[8px] sm:text-[10px] font-bold">
                   {count}
                 </span>
               )}
