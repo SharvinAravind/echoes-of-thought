@@ -3,6 +3,8 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { UserTier } from '@/types/echowrite';
 
+const roleToTier = (role?: string | null): UserTier => (role === 'premium' ? 'premium' : 'free');
+
 export interface AuthUser {
   id: string;
   email: string;
@@ -35,17 +37,44 @@ export const useAuth = () => {
         .eq('user_id', userId)
         .maybeSingle();
 
-      // If profile or role doesn't exist (user created before trigger), return defaults
+      // If profile or role doesn't exist, bootstrap them via backend function, then re-fetch
       if (!profile || !roleData) {
         console.log('User profile or role not found, using defaults for:', userId);
-        const email = profile?.email || userEmail || 'user@example.com';
+
+        try {
+          const { error: bootstrapError } = await supabase.functions.invoke('user-account', {
+            body: { action: 'bootstrap' },
+          });
+          if (bootstrapError) {
+            console.warn('User bootstrap error:', bootstrapError);
+          }
+        } catch (e) {
+          console.warn('User bootstrap failed:', e);
+        }
+
+        const { data: profile2 } = await supabase
+          .from('profiles')
+          .select('email, name')
+          .eq('user_id', userId)
+          .maybeSingle();
+
+        const { data: roleData2 } = await supabase
+          .from('user_roles')
+          .select('role, usage_count, max_usage')
+          .eq('user_id', userId)
+          .maybeSingle();
+
+        const finalProfile = profile2 || profile;
+        const finalRole = roleData2 || roleData;
+        const email = finalProfile?.email || userEmail || 'user@example.com';
+
         return {
           id: userId,
-          email: email,
-          name: profile?.name || email.split('@')[0],
-          tier: (roleData?.role || 'user') as UserTier,
-          usageCount: roleData?.usage_count || 0,
-          maxUsage: roleData?.max_usage || 10
+          email,
+          name: finalProfile?.name || email.split('@')[0],
+          tier: roleToTier(finalRole?.role),
+          usageCount: finalRole?.usage_count || 0,
+          maxUsage: finalRole?.max_usage || 10,
         };
       }
 
@@ -60,9 +89,9 @@ export const useAuth = () => {
         id: userId,
         email: profile.email,
         name: profile.name || profile.email.split('@')[0],
-        tier: roleData.role as UserTier,
+        tier: roleToTier(roleData.role),
         usageCount: roleData.usage_count,
-        maxUsage: roleData.max_usage
+        maxUsage: roleData.max_usage,
       };
     } catch (err) {
       console.error('Error fetching user data:', err);

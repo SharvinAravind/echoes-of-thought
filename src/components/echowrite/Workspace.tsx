@@ -109,9 +109,12 @@ export const Workspace = ({
           )}
           <button
             onClick={onClear}
-            className="neu-button p-2.5 rounded-xl text-muted-foreground hover:text-destructive transition-colors"
+            className="neu-button p-2.5 sm:px-4 sm:py-2.5 rounded-xl text-muted-foreground hover:text-destructive transition-colors flex items-center gap-2"
+            title="Clear workspace"
+            aria-label="Clear workspace"
           >
             <Trash2 className="w-5 h-5" />
+            <span className="hidden lg:inline text-[10px] font-bold uppercase tracking-wider">Clear</span>
           </button>
         </div>
       </div>

@@ -131,18 +131,22 @@ const EchoWrite = () => {
   const handleGenerateAll = useCallback(async () => {
     if (!text.trim() || isLoading) return;
 
+    const tasks: Promise<unknown>[] = [];
+
     // Trigger style variations
-    handleProcess(style);
+    tasks.push(handleProcess(style));
 
     // Trigger visual content generation
     if (visualContentRef.current) {
-      visualContentRef.current.generate();
+      tasks.push(visualContentRef.current.generate());
     }
 
     // Trigger length variations generation
     if (aiContentRef.current) {
-      aiContentRef.current.generateLengthVariations();
+      tasks.push(aiContentRef.current.generateLengthVariations());
     }
+
+    await Promise.allSettled(tasks);
   }, [text, isLoading, style, handleProcess]);
 
   // Handle history item selection

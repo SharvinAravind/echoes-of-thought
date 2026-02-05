@@ -170,23 +170,34 @@ export const VariationOutput = ({
             <div className="flex gap-2">
               <button
                 onClick={() => shareOutput('whatsapp')}
-                className="p-2.5 rounded-xl neu-button text-primary hover:scale-105 transition-transform"
+                className="p-2.5 lg:px-4 lg:py-2.5 rounded-xl neu-button text-primary hover:scale-105 transition-transform flex items-center gap-2"
                 title="Share via WhatsApp"
+                aria-label="Share via WhatsApp"
               >
                 <Share2 className="w-4 h-4" />
+                <span className="hidden lg:inline text-[10px] font-bold uppercase tracking-wider">WhatsApp</span>
               </button>
               <button
                 onClick={() => shareOutput('email')}
-                className="p-2.5 rounded-xl neu-button text-accent hover:scale-105 transition-transform"
+                className="p-2.5 lg:px-4 lg:py-2.5 rounded-xl neu-button text-accent hover:scale-105 transition-transform flex items-center gap-2"
                 title="Send via Email"
+                aria-label="Send via Email"
               >
                 <Mail className="w-4 h-4" />
+                <span className="hidden lg:inline text-[10px] font-bold uppercase tracking-wider">Email</span>
               </button>
               <button
                 onClick={copyToClipboard}
-                className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors"
+                className="p-2.5 lg:px-4 lg:py-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
+                title="Copy to clipboard"
+                aria-label="Copy to clipboard"
               >
-                {copied ? <CheckCircle2 className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
+                {copied ? (
+                  <CheckCircle2 className="w-4 h-4 text-primary" />
+                ) : (
+                  <Copy className="w-4 h-4" />
+                )}
+                <span className="hidden lg:inline text-[10px] font-bold uppercase tracking-wider">Copy</span>
               </button>
             </div>
           </div>
