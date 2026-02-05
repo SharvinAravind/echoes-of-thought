@@ -46,6 +46,8 @@ export const Logo = ({
           src={vintageMicLogo} 
           alt="EchoWrite" 
           className="w-full h-full object-contain drop-shadow-2xl logo-glow-filter"
+          fetchPriority="high"
+          decoding="async"
         />
         {/* Glow effect behind logo */}
         {animated && (
