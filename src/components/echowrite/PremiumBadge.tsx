@@ -35,15 +35,13 @@ export const PremiumBadge = ({
     ),
     large: (
       <span className={cn(
-        'inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm',
-        'gold-gradient text-primary-foreground shadow-xl',
-        'ring-2 ring-gold/50',
+        'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold text-[10px] uppercase tracking-wider',
+        'gold-gradient text-primary-foreground shadow-md',
+        'ring-1 ring-gold/40',
         activated && 'animate-pulse-slow'
       )}>
-        <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
-        <span className="tracking-wide">PREMIUM</span>
-        {activated && <Check className="w-4 h-4 sm:w-5 sm:h-5" />}
-        {!activated && <Crown className="w-4 h-4 sm:w-5 sm:h-5" />}
+        <Crown className="w-3 h-3" />
+        <span>PRO</span>
       </span>
     ),
   };
