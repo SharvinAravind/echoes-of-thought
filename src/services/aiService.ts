@@ -52,7 +52,7 @@ export const getLengthVariations = async (
 
 export const generateVisualContent = async (
   text: string,
-  visualType: 'diagram' | 'flowchart' | 'mindmap' | 'timeline'
+  visualType: 'diagram' | 'flowchart' | 'mindmap' | 'timeline' | 'orgchart' | 'sequence'
 ): Promise<VisualContent> => {
   const { data, error } = await supabase.functions.invoke('echowrite', {
     body: { action: 'generate-visual', text, visualType }
