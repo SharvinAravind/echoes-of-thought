@@ -16,7 +16,7 @@ import { useDictation } from '@/hooks/useDictation';
 import { useHistory } from '@/hooks/useHistory';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
-import { History as HistoryIcon, Languages, Sparkles, Snowflake, User as UserIcon, Loader2, Zap } from 'lucide-react';
+import { History as HistoryIcon, Languages, Sparkles, Snowflake, User as UserIcon, Loader2, Zap, Settings } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 const EchoWrite = () => {
   // Real Supabase Auth
@@ -233,60 +233,76 @@ const EchoWrite = () => {
       {/* Navbar - Matching Login Page Branding - Responsive */}
       <header className="px-2 sm:px-4 lg:px-6 py-2 sm:py-3 lg:py-4 glass-frosted sticky top-0 z-40">
         <TooltipProvider delayDuration={300}>
-          {/* Mobile: Two-row layout for better visibility */}
+          {/* Mobile: Three-row layout for complete visibility */}
           <div className="flex flex-col gap-2 sm:hidden">
-            {/* Row 1: Logo + PRO badge + Settings */}
-            <div className="flex justify-between items-center">
+            {/* Row 1: Logo + PRO badge */}
+            <div className="flex justify-center items-center">
               <div className="flex items-center gap-2">
                 <Logo size="lg" showText animated />
                 {user.tier === 'premium' && (
                   <PremiumBadge variant="badge" activated size="sm" />
                 )}
               </div>
-              <div className="flex items-center gap-1">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button onClick={() => setHistoryOpen(!historyOpen)} className="p-2 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors">
-                      <HistoryIcon className="w-4 h-4" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom">
-                    <p>History</p>
-                  </TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button onClick={() => setSnowEnabled(!snowEnabled)} className={`p-2 rounded-xl neu-button transition-all ${snowEnabled ? 'text-primary' : 'text-muted-foreground'}`}>
-                      <Snowflake className="w-4 h-4" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom">
-                    <p>{snowEnabled ? 'Snow On' : 'Snow'}</p>
-                  </TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button onClick={() => setSettingsOpen(!settingsOpen)} className="p-2 rounded-xl neu-button hover:scale-[1.02] transition-all">
-                      <UserIcon className="w-4 h-4 text-muted-foreground" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom">
-                    <p>Settings</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
             </div>
-            {/* Row 2: Language + Generate All */}
-            <div className="flex justify-between items-center gap-2">
-              <select value={inputLang} onChange={e => setInputLang(e.target.value)} className="bg-transparent border-none text-[10px] font-bold text-muted-foreground outline-none cursor-pointer neu-flat rounded-xl px-2 py-2 flex-1 min-w-0 max-w-[180px]">
+            
+            {/* Row 2: All action buttons - evenly spaced */}
+            <div className="flex justify-between items-center px-1">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button onClick={() => setHistoryOpen(!historyOpen)} className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors flex flex-col items-center gap-0.5">
+                    <HistoryIcon className="w-4 h-4" />
+                    <span className="text-[8px] font-semibold">History</span>
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>View History</p>
+                </TooltipContent>
+              </Tooltip>
+              
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button onClick={() => setSnowEnabled(!snowEnabled)} className={`p-2.5 rounded-xl neu-button transition-all flex flex-col items-center gap-0.5 ${snowEnabled ? 'text-primary' : 'text-muted-foreground'}`}>
+                    <Snowflake className="w-4 h-4" />
+                    <span className="text-[8px] font-semibold">{snowEnabled ? 'On' : 'Snow'}</span>
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>{snowEnabled ? 'Disable Snow' : 'Enable Snow'}</p>
+                </TooltipContent>
+              </Tooltip>
+              
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button onClick={() => setSettingsOpen(!settingsOpen)} className="p-2.5 rounded-xl neu-button hover:scale-[1.02] transition-all flex flex-col items-center gap-0.5 text-muted-foreground hover:text-primary">
+                    <Settings className="w-4 h-4" />
+                    <span className="text-[8px] font-semibold">Settings</span>
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>Settings & Profile</p>
+                </TooltipContent>
+              </Tooltip>
+              
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button disabled={!text || isLoading} onClick={handleGenerateAll} className="p-2.5 rounded-xl primary-button flex flex-col items-center gap-0.5 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <Sparkles className="w-4 h-4" />
+                    <span className="text-[8px] font-bold">Generate</span>
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>Generate All Content</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+            
+            {/* Row 3: Language selector - full width */}
+            <div className="flex justify-center">
+              <select value={inputLang} onChange={e => setInputLang(e.target.value)} className="bg-transparent border-none text-[10px] font-bold text-muted-foreground outline-none cursor-pointer neu-flat rounded-xl px-3 py-2 w-full text-center">
                 {SUPPORTED_LANGUAGES.map(l => <option key={l.code} value={l.code}>
                     {l.flag} {l.name} {l.displayNative}
                   </option>)}
               </select>
-              <button disabled={!text || isLoading} onClick={handleGenerateAll} className="primary-button flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed text-[10px] px-3 py-2 whitespace-nowrap">
-                <Sparkles className="w-3 h-3" /> 
-                <span>GENERATE ALL</span>
-              </button>
             </div>
           </div>
 
@@ -372,7 +388,7 @@ const EchoWrite = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button onClick={() => setSettingsOpen(!settingsOpen)} className="p-2 sm:p-2.5 rounded-xl neu-button hover:scale-[1.02] transition-all flex items-center gap-2">
-                    <UserIcon className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
+                    <Settings className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
                     <span className="hidden xl:inline text-xs font-semibold text-muted-foreground">Settings</span>
                   </button>
                 </TooltipTrigger>
