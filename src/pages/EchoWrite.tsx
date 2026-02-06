@@ -289,16 +289,16 @@ const EchoWrite = () => {
               <TooltipTrigger asChild>
                 <div className="hidden lg:flex items-center gap-2 px-3 py-2 rounded-2xl neu-flat transition-transform hover:scale-[1.02]">
                   <Languages className="w-4 h-4 text-primary flex-shrink-0" />
-                  <select value={inputLang} onChange={e => setInputLang(e.target.value)} className="bg-transparent border-none text-[10px] font-bold text-muted-foreground outline-none cursor-pointer max-w-[160px] truncate">
+                  <select value={inputLang} onChange={e => setInputLang(e.target.value)} className="bg-transparent border-none text-[10px] font-bold text-muted-foreground outline-none cursor-pointer max-w-[200px] truncate">
                     {SUPPORTED_LANGUAGES.map(l => <option key={l.code} value={l.code}>
-                        {l.flag} {l.name}
+                        {l.flag} {l.name} {l.displayNative}
                       </option>)}
                   </select>
                 </div>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="max-w-[200px]">
+              <TooltipContent side="bottom" className="max-w-[250px]">
                 <p className="text-xs">
-                  {SUPPORTED_LANGUAGES.find(l => l.code === inputLang)?.name} [{SUPPORTED_LANGUAGES.find(l => l.code === inputLang)?.native}]
+                  {SUPPORTED_LANGUAGES.find(l => l.code === inputLang)?.flag} {SUPPORTED_LANGUAGES.find(l => l.code === inputLang)?.name} {SUPPORTED_LANGUAGES.find(l => l.code === inputLang)?.displayNative}
                 </p>
               </TooltipContent>
             </Tooltip>
@@ -314,9 +314,9 @@ const EchoWrite = () => {
                   </select>
                 </div>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="max-w-[200px]">
+              <TooltipContent side="bottom" className="max-w-[250px]">
                 <p className="text-xs font-medium">
-                  {SUPPORTED_LANGUAGES.find(l => l.code === inputLang)?.flag} {SUPPORTED_LANGUAGES.find(l => l.code === inputLang)?.name} [{SUPPORTED_LANGUAGES.find(l => l.code === inputLang)?.native}]
+                  {SUPPORTED_LANGUAGES.find(l => l.code === inputLang)?.flag} {SUPPORTED_LANGUAGES.find(l => l.code === inputLang)?.name} {SUPPORTED_LANGUAGES.find(l => l.code === inputLang)?.displayNative}
                 </p>
               </TooltipContent>
             </Tooltip>
