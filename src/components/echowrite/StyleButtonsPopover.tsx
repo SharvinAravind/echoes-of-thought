@@ -130,7 +130,7 @@ export const StyleButtonsPopover = ({
         const isActiveCategory = category.styles.includes(currentStyle);
         return <Popover key={category.id} open={openPopover === category.id} onOpenChange={open => setOpenPopover(open ? category.id : null)}>
               <PopoverTrigger asChild>
-                <button disabled={isLoading} className={cn('flex items-center gap-1 px-2 py-1.5 rounded-lg text-[10px] font-semibold transition-all', isActiveCategory ? 'style-chip-active' : 'neu-flat text-muted-foreground hover:text-foreground hover:scale-[1.02]', isLoading && 'opacity-50 cursor-not-allowed')}>
+                <button disabled={isLoading} className={cn("flex items-center gap-1 px-2 py-1.5 rounded-lg font-semibold transition-all text-xs", isActiveCategory ? 'style-chip-active' : 'neu-flat text-muted-foreground hover:text-foreground hover:scale-[1.02]', isLoading && 'opacity-50 cursor-not-allowed')}>
                   <span className="text-xs">{category.emoji}</span>
                   <span className="hidden sm:inline">{category.label}</span>
                   <ChevronDown className="w-2.5 h-2.5" />
