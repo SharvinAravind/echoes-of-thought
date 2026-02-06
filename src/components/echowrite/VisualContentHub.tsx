@@ -299,7 +299,7 @@ export const VisualContentHub = forwardRef<VisualContentHubRef, VisualContentHub
                 {item.svg ? (
                   <div 
                     className="w-full overflow-auto"
-                    dangerouslySetInnerHTML={{ __html: item.svg }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeSvg(item.svg) }}
                   />
                 ) : (
                   <RefreshCw className="w-6 h-6 text-muted-foreground animate-spin" />
@@ -373,7 +373,7 @@ export const VisualContentHub = forwardRef<VisualContentHubRef, VisualContentHub
             {fullscreenItem.svg && (
               <div 
                 className="w-full"
-                dangerouslySetInnerHTML={{ __html: fullscreenItem.svg }}
+                dangerouslySetInnerHTML={{ __html: sanitizeSvg(fullscreenItem.svg) }}
               />
             )}
             <button
