@@ -6,7 +6,9 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
-type Action = 'bootstrap' | 'activate-premium';
+// Valid actions for strict validation
+const VALID_ACTIONS = ['bootstrap', 'activate-premium'] as const;
+type Action = typeof VALID_ACTIONS[number];
 
 interface UserAccountRequest {
   action: Action;
@@ -37,7 +39,7 @@ serve(async (req) => {
 
     const { data: userData, error: userError } = await authClient.auth.getUser();
     if (userError || !userData?.user) {
-      return new Response(JSON.stringify({ ok: false, error: 'Unauthorized - Invalid token' }), {
+      return new Response(JSON.stringify({ ok: false, error: 'Unauthorized' }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -47,14 +49,22 @@ serve(async (req) => {
     const userId = user.id;
     const email = user.email ?? '';
     const name =
-      (user.user_metadata as any)?.name ||
-      (user.user_metadata as any)?.full_name ||
+      (user.user_metadata as Record<string, unknown>)?.name ||
+      (user.user_metadata as Record<string, unknown>)?.full_name ||
       (email ? email.split('@')[0] : 'User');
 
-    const { action } = (await req.json().catch(() => ({}))) as Partial<UserAccountRequest>;
+    let requestBody: Partial<UserAccountRequest> = {};
+    try {
+      requestBody = await req.json();
+    } catch {
+      // If no body or invalid JSON, treat as empty
+    }
 
-    if (action !== 'bootstrap' && action !== 'activate-premium') {
-      return new Response(JSON.stringify({ ok: false, error: 'Invalid action' }), {
+    const { action } = requestBody;
+
+    // Validate action against allowed values
+    if (!action || !VALID_ACTIONS.includes(action)) {
+      return new Response(JSON.stringify({ ok: false, error: 'Invalid request' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -71,14 +81,14 @@ serve(async (req) => {
           {
             user_id: userId,
             email,
-            name,
+            name: typeof name === 'string' ? name : String(name),
           },
           { onConflict: 'user_id' },
         );
 
       if (profileUpsertError) {
-        console.error('profiles upsert error:', profileUpsertError);
-        return new Response(JSON.stringify({ ok: false, error: 'Failed to sync profile' }), {
+        console.error('Profile sync failed:', profileUpsertError.code);
+        return new Response(JSON.stringify({ ok: false, error: 'Unable to sync account' }), {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
@@ -95,8 +105,8 @@ serve(async (req) => {
       .maybeSingle();
 
     if (existingRoleError) {
-      console.error('user_roles select error:', existingRoleError);
-      return new Response(JSON.stringify({ ok: false, error: 'Failed to read role' }), {
+      console.error('Role check failed:', existingRoleError.code);
+      return new Response(JSON.stringify({ ok: false, error: 'Unable to access account' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -111,8 +121,8 @@ serve(async (req) => {
       });
 
       if (insertRoleError) {
-        console.error('user_roles insert error:', insertRoleError);
-        return new Response(JSON.stringify({ ok: false, error: 'Failed to initialize role' }), {
+        console.error('Role init failed:', insertRoleError.code);
+        return new Response(JSON.stringify({ ok: false, error: 'Unable to initialize account' }), {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
@@ -126,8 +136,8 @@ serve(async (req) => {
         .eq('user_id', userId);
 
       if (updateError) {
-        console.error('user_roles premium update error:', updateError);
-        return new Response(JSON.stringify({ ok: false, error: 'Failed to activate premium' }), {
+        console.error('Premium activation failed:', updateError.code);
+        return new Response(JSON.stringify({ ok: false, error: 'Unable to activate premium' }), {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
@@ -143,8 +153,8 @@ serve(async (req) => {
       .maybeSingle();
 
     if (finalRoleError) {
-      console.error('user_roles final select error:', finalRoleError);
-      return new Response(JSON.stringify({ ok: false, error: 'Failed to confirm role' }), {
+      console.error('Role confirm failed:', finalRoleError.code);
+      return new Response(JSON.stringify({ ok: false, error: 'Unable to confirm account' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -162,8 +172,8 @@ serve(async (req) => {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     );
   } catch (error) {
-    console.error('Error in user-account function:', error);
-    return new Response(JSON.stringify({ ok: false, error: 'Internal error' }), {
+    console.error('Edge function error:', error instanceof Error ? error.message : 'unknown');
+    return new Response(JSON.stringify({ ok: false, error: 'An error occurred' }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
