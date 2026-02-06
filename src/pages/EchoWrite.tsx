@@ -303,18 +303,18 @@ const EchoWrite = () => {
               </TooltipContent>
             </Tooltip>
 
-            {/* Compact Language Selector - Mobile/Tablet only with Tooltip for full label */}
+            {/* Compact Language Selector - Mobile/Tablet only with flags + name + native script */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="lg:hidden flex items-center">
-                  <select value={inputLang} onChange={e => setInputLang(e.target.value)} className="bg-transparent border-none text-sm font-bold text-muted-foreground outline-none cursor-pointer neu-flat rounded-xl px-2 py-2 min-w-[48px]">
+                  <select value={inputLang} onChange={e => setInputLang(e.target.value)} className="bg-transparent border-none text-[10px] sm:text-xs font-bold text-muted-foreground outline-none cursor-pointer neu-flat rounded-xl px-2 py-2 min-w-[140px] sm:min-w-[180px] max-w-[200px]">
                     {SUPPORTED_LANGUAGES.map(l => <option key={l.code} value={l.code}>
-                        {l.flag}
+                        {l.flag} {l.name} {l.displayNative}
                       </option>)}
                   </select>
                 </div>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="max-w-[250px]">
+              <TooltipContent side="bottom" className="max-w-[280px]">
                 <p className="text-xs font-medium">
                   {SUPPORTED_LANGUAGES.find(l => l.code === inputLang)?.flag} {SUPPORTED_LANGUAGES.find(l => l.code === inputLang)?.name} {SUPPORTED_LANGUAGES.find(l => l.code === inputLang)?.displayNative}
                 </p>

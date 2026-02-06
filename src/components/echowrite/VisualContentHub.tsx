@@ -18,7 +18,7 @@ import { toast } from 'sonner';
 import mermaid from 'mermaid';
 import { Button } from '@/components/ui/button';
 
-type VisualType = 'diagram' | 'flowchart' | 'mindmap' | 'timeline';
+type VisualType = 'diagram' | 'flowchart' | 'mindmap' | 'timeline' | 'orgchart' | 'sequence';
 
 interface VisualItem {
   id: string;
@@ -30,10 +30,12 @@ interface VisualItem {
 }
 
 const visualTypes = [
-  { id: 'diagram', label: 'Diagrams', icon: Layout },
-  { id: 'flowchart', label: 'Flowcharts', icon: GitBranch },
-  { id: 'mindmap', label: 'Mind Maps', icon: Brain },
-  { id: 'timeline', label: 'Timelines', icon: Clock },
+  { id: 'diagram', label: 'Diagrams', icon: Layout, emoji: '📊' },
+  { id: 'flowchart', label: 'Flowcharts', icon: GitBranch, emoji: '🔀' },
+  { id: 'mindmap', label: 'Mind Maps', icon: Brain, emoji: '🧠' },
+  { id: 'timeline', label: 'Timelines', icon: Clock, emoji: '⏱️' },
+  { id: 'orgchart', label: 'Org Charts', icon: Layout, emoji: '🏢' },
+  { id: 'sequence', label: 'Sequences', icon: GitBranch, emoji: '🔄' },
 ] as const;
 
 interface VisualContentHubProps {
@@ -251,7 +253,7 @@ export const VisualContentHub = forwardRef<VisualContentHubRef, VisualContentHub
         </div>
       </div>
 
-      {/* Visual Type Selector - Responsive */}
+      {/* Visual Type Selector with Icons + Labels - Responsive */}
       <div className="flex gap-1.5 sm:gap-2 mb-4 sm:mb-6 overflow-x-auto scrollbar-hide pb-1">
         {visualTypes.map((type) => {
           const Icon = type.icon;
@@ -268,7 +270,7 @@ export const VisualContentHub = forwardRef<VisualContentHubRef, VisualContentHub
               )}
             >
               <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span className="hidden xs:inline">{type.label}</span>
+              <span>{type.label}</span>
               {count > 0 && (
                 <span className="ml-0.5 sm:ml-1 px-1 sm:px-1.5 py-0.5 rounded-full bg-primary/20 text-primary text-[8px] sm:text-[10px] font-bold">
                   {count}
