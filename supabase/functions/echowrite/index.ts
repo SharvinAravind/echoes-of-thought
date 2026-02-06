@@ -6,13 +6,43 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
+// Valid enum values for strict validation
+const VALID_ACTIONS = ['variations', 'translate', 'rephrase', 'length-variations', 'generate-visual'] as const;
+const VALID_VISUAL_TYPES = ['diagram', 'flowchart', 'mindmap', 'timeline', 'orgchart', 'sequence'] as const;
+const VALID_LENGTH_TYPES = ['simple', 'medium', 'long'] as const;
+const VALID_STYLES = [
+  'Improve Phrasing', 'Professional Email', 'Follow-Up Message', 'Resume/CV Optimizer',
+  'Cover Letter', 'Client Proposal', 'Legal Draft', 'Marketing Copy', 'Sales Pitch',
+  'Product Description', 'Landing Page Copy', 'Content Writing', 'Social Media Post',
+  'Video/Reel Script', 'Humanizer', 'Simplify Language', 'Polite & Respectful',
+  'Academic Writing', 'Technical Doc', 'Complaint/Request Letter', 'Negotiation Message'
+] as const;
+
+// Max string lengths for validation
+const MAX_TEXT_LENGTH = 10000;
+const MAX_STYLE_LENGTH = 100;
+const MAX_LANGUAGE_LENGTH = 50;
+
 interface WriteRequest {
-  action: 'variations' | 'translate' | 'rephrase' | 'length-variations' | 'generate-visual';
+  action: typeof VALID_ACTIONS[number];
   text: string;
   style?: string;
   targetLanguage?: string;
-  lengthType?: 'simple' | 'medium' | 'long';
-  visualType?: 'diagram' | 'flowchart' | 'mindmap' | 'timeline';
+  lengthType?: typeof VALID_LENGTH_TYPES[number];
+  visualType?: typeof VALID_VISUAL_TYPES[number];
+}
+
+// Sanitize string for use in prompts - removes control characters and limits length
+function sanitizeString(input: string, maxLength: number): string {
+  return input
+    .replace(/[\x00-\x1F\x7F]/g, '') // Remove control characters
+    .trim()
+    .slice(0, maxLength);
+}
+
+// Validate enum value against allowed list
+function isValidEnum<T extends readonly string[]>(value: unknown, validValues: T): value is T[number] {
+  return typeof value === 'string' && validValues.includes(value as T[number]);
 }
 
 serve(async (req) => {
@@ -58,47 +88,84 @@ serve(async (req) => {
       .rpc('get_user_usage', { _user_id: userId });
 
     if (usageError) {
-      console.error("Error fetching user usage:", usageError);
-      // If user doesn't exist in roles table, create a default entry
-      // This handles new users who haven't been set up yet
-      console.log("Creating default user role for:", userId);
+      console.error("Usage check failed:", usageError.code);
+      // Continue with request - usage tracking is non-blocking
     }
 
     const userUsage = usageData?.[0];
     
-    // If no usage data, allow the request but with limited functionality
-    if (userUsage) {
-      // Check if user has exceeded their usage limit (premium users have no limit)
-      if (userUsage.role !== 'premium' && userUsage.usage_count >= userUsage.max_usage) {
-        console.log(`User ${userId} has exceeded usage limit: ${userUsage.usage_count}/${userUsage.max_usage}`);
-        return new Response(
-          JSON.stringify({ error: "Usage limit exceeded. Upgrade to premium for unlimited access." }),
-          { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
+    // Check if user has exceeded their usage limit (premium users have no limit)
+    if (userUsage && userUsage.role !== 'premium' && userUsage.usage_count >= userUsage.max_usage) {
+      return new Response(
+        JSON.stringify({ error: "Usage limit exceeded. Upgrade to premium for unlimited access." }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+      console.error("API key configuration error");
+      return new Response(
+        JSON.stringify({ error: "Service temporarily unavailable" }),
+        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    const { action, text, style, targetLanguage, lengthType, visualType } = await req.json() as WriteRequest;
+    let requestBody: WriteRequest;
+    try {
+      requestBody = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: "Invalid request format" }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
+    const { action, text, style, targetLanguage, lengthType, visualType } = requestBody;
+
+    // Validate required fields
     if (!text || !action) {
       return new Response(
-        JSON.stringify({ error: "Missing required fields: text and action" }),
+        JSON.stringify({ error: "Missing required fields" }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Validate and sanitize input
-    if (typeof text !== 'string' || text.length > 10000) {
+    // Validate action enum
+    if (!isValidEnum(action, VALID_ACTIONS)) {
       return new Response(
-        JSON.stringify({ error: "Invalid text input - must be a string under 10000 characters" }),
+        JSON.stringify({ error: "Invalid action" }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
+    // Validate and sanitize text input
+    if (typeof text !== 'string' || text.length > MAX_TEXT_LENGTH) {
+      return new Response(
+        JSON.stringify({ error: "Text exceeds maximum allowed length" }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    const sanitizedText = sanitizeString(text, MAX_TEXT_LENGTH);
+
+    // Validate optional enum fields
+    if (visualType !== undefined && !isValidEnum(visualType, VALID_VISUAL_TYPES)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid visual type" }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (lengthType !== undefined && !isValidEnum(lengthType, VALID_LENGTH_TYPES)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid length type" }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Sanitize optional string parameters
+    const sanitizedStyle = style ? sanitizeString(style, MAX_STYLE_LENGTH) : undefined;
+    const sanitizedLanguage = targetLanguage ? sanitizeString(targetLanguage, MAX_LANGUAGE_LENGTH) : undefined;
 
     let systemPrompt = "";
     let userPrompt = "";
@@ -106,7 +173,7 @@ serve(async (req) => {
     switch (action) {
       case 'variations':
         systemPrompt = `You are an elite writing suite with 20 writing style specializations.
-Generate 8 distinct variations of the user's text for the goal: ${style || 'Improve Phrasing'}.
+Generate 8 distinct variations of the user's text for the goal: ${sanitizedStyle || 'Improve Phrasing'}.
 
 Style-specific guidance:
 - Professional Email: Include Subject Line, Greeting, Body, Closing
@@ -138,7 +205,7 @@ Return ONLY a valid JSON object with a 'variations' array. Each item has:
 - 'changes': array of {field: string, reason: string} explaining key changes
 
 IMPORTANT: Return ONLY the JSON, no markdown code blocks, no extra text.`;
-        userPrompt = `Refine this text into 8 variations for "${style}":\n\n${text}`;
+        userPrompt = `Refine this text into 8 variations for "${sanitizedStyle || 'Improve Phrasing'}":\n\n${sanitizedText}`;
         break;
 
       case 'length-variations':
@@ -175,7 +242,7 @@ Return ONLY a valid JSON object with this structure:
 }
 
 IMPORTANT: Return ONLY the JSON, no markdown code blocks, no extra text.`;
-        userPrompt = `Create 5 variations for each length type (simple, medium, long) of this text:\n\n${text}`;
+        userPrompt = `Create 5 variations for each length type (simple, medium, long) of this text:\n\n${sanitizedText}`;
         break;
 
       case 'generate-visual':
@@ -239,13 +306,13 @@ IMPORTANT:
 - The mermaidCode must be valid and renderable
 - Return ONLY the JSON, no markdown code blocks
 - Escape newlines properly in the JSON string`;
-        userPrompt = `Generate a ${visualType || 'diagram'} for this content:\n\n${text}`;
+        userPrompt = `Generate a ${visualType || 'diagram'} for this content:\n\n${sanitizedText}`;
         break;
 
       case 'translate':
-        systemPrompt = `You are a professional translator. Translate the given text to ${targetLanguage || 'English'}. 
+        systemPrompt = `You are a professional translator. Translate the given text to ${sanitizedLanguage || 'English'}. 
 Keep the same tone, formatting, and meaning. Return ONLY the translated text, nothing else.`;
-        userPrompt = text;
+        userPrompt = sanitizedText;
         break;
 
       case 'rephrase':
@@ -255,7 +322,7 @@ Keep the same tone, formatting, and meaning. Return ONLY the translated text, no
           long: "Rewrite this text to be more detailed and comprehensive. Expand on the points while maintaining the same core message."
         };
         systemPrompt = rephrasePrompts[lengthType || 'medium'] + " Return ONLY the rephrased text, nothing else.";
-        userPrompt = text;
+        userPrompt = sanitizedText;
         break;
 
       default:
@@ -265,16 +332,13 @@ Keep the same tone, formatting, and meaning. Return ONLY the translated text, no
         );
     }
 
-    console.log(`Processing ${action} request for user ${userId}, text length: ${text.length}`);
-
     // Increment usage count before processing (only if user has usage data)
     if (userUsage) {
-      const { data: incrementResult, error: incrementError } = await supabase
+      const { error: incrementError } = await supabase
         .rpc('increment_user_usage', { _user_id: userId });
 
       if (incrementError) {
-        console.error("Failed to increment usage:", incrementError);
-        // Don't block the request if increment fails
+        console.error("Usage increment failed");
       }
     }
 
@@ -295,8 +359,7 @@ Keep the same tone, formatting, and meaning. Return ONLY the translated text, no
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error("AI Gateway error:", response.status, errorText);
+      console.error("AI Gateway error:", response.status);
       
       if (response.status === 429) {
         return new Response(
@@ -311,13 +374,14 @@ Keep the same tone, formatting, and meaning. Return ONLY the translated text, no
         );
       }
       
-      throw new Error(`AI Gateway error: ${response.status}`);
+      return new Response(
+        JSON.stringify({ error: "Processing failed. Please try again." }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     const aiResponse = await response.json();
     const content = aiResponse.choices?.[0]?.message?.content || "";
-
-    console.log(`AI response received for ${action}, user ${userId}, length: ${content.length}`);
 
     let result;
     if (action === 'variations' || action === 'length-variations' || action === 'generate-visual') {
@@ -342,8 +406,8 @@ Keep the same tone, formatting, and meaning. Return ONLY the translated text, no
           // Replace literal \n with actual newlines if needed
           result.mermaidCode = result.mermaidCode.replace(/\\n/g, '\n');
         }
-      } catch (parseError) {
-        console.error("JSON parse error:", parseError, "Content:", content);
+      } catch {
+        // Fallback responses for parse failures
         if (action === 'variations') {
           result = {
             variations: [{
@@ -361,10 +425,11 @@ Keep the same tone, formatting, and meaning. Return ONLY the translated text, no
             long: [{ id: "l1", text: content, wordCount: 100 }]
           };
         } else {
-          // Generate a simple fallback diagram
+          // Generate a simple fallback diagram using sanitized text
+          const safeLabel = sanitizedText.split(' ').slice(0, 3).join(' ').replace(/[^\w\s]/g, '');
           result = {
             title: "Generated Visual",
-            mermaidCode: `graph TD\n    A[${text.split(' ').slice(0, 3).join(' ')}] --> B[Analysis]\n    B --> C[Result]`,
+            mermaidCode: `graph TD\n    A[${safeLabel || 'Content'}] --> B[Analysis]\n    B --> C[Result]`,
             description: "Auto-generated diagram based on your content"
           };
         }
@@ -379,7 +444,7 @@ Keep the same tone, formatting, and meaning. Return ONLY the translated text, no
     );
 
   } catch (error) {
-    console.error("Error in echowrite function:", error);
+    console.error("Edge function error:", error instanceof Error ? error.message : "unknown");
     return new Response(
       JSON.stringify({ error: "An internal error occurred. Please try again." }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
