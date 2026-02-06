@@ -199,12 +199,15 @@ export const VisualContentHub = forwardRef<VisualContentHubRef, VisualContentHub
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 sm:mb-6">
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl neu-convex flex items-center justify-center flex-shrink-0">
-            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+            <Layout className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
           </div>
           <div className="min-w-0">
-            <h3 className="text-xs sm:text-sm font-bold text-foreground">🎨 Visual Content Creation</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="text-xs sm:text-sm font-bold text-foreground">Visual Content Creation</h3>
+              <Sparkles className="w-3.5 h-3.5 text-accent" />
+            </div>
             <p className="text-[9px] sm:text-[10px] text-muted-foreground">
-              Generate diagrams, flowcharts, mind maps, and timelines
+              Diagrams • Flowcharts • Mind Maps • Timelines
             </p>
           </div>
         </div>

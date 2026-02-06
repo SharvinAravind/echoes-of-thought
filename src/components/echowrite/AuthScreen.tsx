@@ -18,23 +18,26 @@ interface AuthScreenProps {
 }
 
 const freeFeatures = [
-  "Voice-to-Text Transcription",
+  "Voice-to-Text in 25+ Languages",
   "10 AI Generations/Day",
   "5 Writing Style Variations",
-  "Basic Formatting",
-  "2 Theme Options",
-  "Last 5 Items History"
+  "Basic Noise Reduction",
+  "3 Free Theme Options",
+  "Last 5 Items History",
+  "Diagrams & Flowcharts Preview"
 ];
 
 const premiumFeatures = [
   "Unlimited AI Generations",
-  "All 20 Writing Styles",
-  "Advanced Noise Cancellation",
+  "All 26 Writing Styles",
+  "AI Art Generation (2-4 Images)",
+  "Advanced AI Noise Cancellation",
   "PDF, DOCX, Markdown Export",
   "Cloud Sync Across Devices",
   "All 10 Premium Themes",
   "Priority AI Processing",
-  "Flowcharts & Mind Maps"
+  "Emojis, Bullet Points & More",
+  "One-Click Enable All Features"
 ];
 
 export const AuthScreen = ({ onAuthSuccess }: AuthScreenProps) => {
@@ -178,8 +181,8 @@ export const AuthScreen = ({ onAuthSuccess }: AuthScreenProps) => {
             Transform Your Words with AI-Powered Writing
           </h2>
           <p className="text-muted-foreground mb-8 max-w-md">
-            Voice-to-text with 20 AI writing styles, visual content generation, 
-            and seamless export. Your complete writing assistant.
+            Voice-to-text in 25+ languages with 26 AI writing styles, AI art generation, 
+            visual diagrams, and seamless export. Your complete writing assistant.
           </p>
 
           {/* Tier Comparison */}
@@ -230,9 +233,9 @@ export const AuthScreen = ({ onAuthSuccess }: AuthScreenProps) => {
           <div className="mt-8 flex items-center gap-4 flex-wrap">
             {[
               { icon: Mic, label: 'Voice Input' },
-              { icon: Sparkles, label: '20 AI Styles' },
+              { icon: Sparkles, label: '26 AI Styles' },
               { icon: Globe, label: '25+ Languages' },
-              { icon: FileText, label: 'Visual Export' },
+              { icon: FileText, label: 'AI Art & Export' },
               { icon: Palette, label: '10 Themes' },
             ].map(({ icon: Icon, label }, idx) => (
               <div key={label + idx} className="flex items-center gap-2">
@@ -409,7 +412,7 @@ export const AuthScreen = ({ onAuthSuccess }: AuthScreenProps) => {
           <div className="mt-6 p-4 rounded-2xl neu-flat text-center">
             <p className="text-xs text-muted-foreground">
               <span className="font-semibold text-foreground">Free tier includes:</span>{' '}
-              10 generations/day • Voice transcription • 5 writing styles
+              10 generations/day • Voice in 25+ languages • 5 writing styles • Diagrams preview
             </p>
           </div>
         </div>

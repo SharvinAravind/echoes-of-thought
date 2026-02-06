@@ -3,7 +3,7 @@ import { WritingStyle, WritingVariation } from '@/types/echowrite';
 import { StyleButtonsPopover } from './StyleButtonsPopover';
 import { VariationOutput } from './VariationOutput';
 import { LengthVariationsPanel, LengthVariationsPanelRef } from './LengthVariationsPanel';
-import { Zap, Trash2 } from 'lucide-react';
+import { Zap, Trash2, Sparkles, Ruler } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface AIContentGeneratorProps {
@@ -79,11 +79,14 @@ export const AIContentGenerator = forwardRef<AIContentGeneratorRef, AIContentGen
 
       {/* Single Column Layout: Style Variations then Length Variations */}
       <div className="space-y-4 sm:space-y-6">
-        {/* Style Variation Output - with emoji */}
+        {/* Style Variation Output - with emoji and icon */}
         <div>
-          <h4 className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2 sm:mb-3 flex items-center gap-2">
-            ✨ Style Variations Output
-          </h4>
+          <div className="flex items-center gap-2 mb-2 sm:mb-3">
+            <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-accent" />
+            <h4 className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+              Style Variations Output
+            </h4>
+          </div>
           <VariationOutput 
             variations={variations} 
             selectedVariation={selectedVariation} 
@@ -95,9 +98,12 @@ export const AIContentGenerator = forwardRef<AIContentGeneratorRef, AIContentGen
 
         {/* Length Variations Panel with Slider - Below Style Variations */}
         <div>
-          <h4 className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2 sm:mb-3 flex items-center gap-2">
-            📏 Length Variations (1-5 with PDF Export)
-          </h4>
+          <div className="flex items-center gap-2 mb-2 sm:mb-3">
+            <Ruler className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+            <h4 className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+              Length Variations — Simple | Medium | Long
+            </h4>
+          </div>
           <LengthVariationsPanel 
             ref={lengthVariationsRef}
             text={selectedVariation?.suggestedText || workspaceText} 

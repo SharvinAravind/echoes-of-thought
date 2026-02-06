@@ -192,6 +192,7 @@ export const SettingsPanel = ({
   const [autoGrammar, setAutoGrammar] = useState(false);
   const [timestamps, setTimestamps] = useState(false);
   const [emojis, setEmojis] = useState(false);
+  const [bulletPoints, setBulletPoints] = useState(false);
   const [unlimitedRecording, setUnlimitedRecording] = useState(false);
   const [backgroundRecording, setBackgroundRecording] = useState(false);
   const [autoPauseOnSilence, setAutoPauseOnSilence] = useState(false);
@@ -206,6 +207,42 @@ export const SettingsPanel = ({
   const [autoSummarize, setAutoSummarize] = useState(false);
   const [autoExport, setAutoExport] = useState(false);
   const [autoRename, setAutoRename] = useState(false);
+  const [aiArtGeneration, setAiArtGeneration] = useState(false);
+  
+  // Master toggle for all pro features
+  const [allProEnabled, setAllProEnabled] = useState(false);
+  
+  // Enable all pro features at once
+  const handleEnableAllPro = (enabled: boolean) => {
+    if (!isPremium) return;
+    setAllProEnabled(enabled);
+    if (enabled) {
+      setAdvancedNoiseCancellation(true);
+      setMicCalibration(true);
+      setRealTimePunctuation(true);
+      setSpeakerDiarization(true);
+      setAccentOptimization(true);
+      setAutoLanguageDetection(true);
+      setSmartFormatting(true);
+      setAutoGrammar(true);
+      setTimestamps(true);
+      setEmojis(true);
+      setBulletPoints(true);
+      setUnlimitedRecording(true);
+      setBackgroundRecording(true);
+      setAutoPauseOnSilence(true);
+      setBookmarkMoments(true);
+      setCloudSync(true);
+      setSearchableHistory(true);
+      setE2eEncryption(true);
+      setLocalOnlyProcessing(true);
+      setNoAiTraining(true);
+      setAutoSummarize(true);
+      setAutoExport(true);
+      setAutoRename(true);
+      setAiArtGeneration(true);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -242,6 +279,22 @@ export const SettingsPanel = ({
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto scrollbar-hide">
+          {/* Quick Enable All Pro Features - Only for premium users */}
+          {isPremium && (
+            <div className="p-5 border-b border-border/30 bg-gradient-to-r from-accent/10 to-primary/10">
+              <SettingRow 
+                label="Enable All Pro Features" 
+                description="One-click to activate all premium features. You can customize individually below."
+                isPremium 
+                isLocked={false}
+              >
+                <Switch 
+                  checked={allProEnabled} 
+                  onCheckedChange={handleEnableAllPro} 
+                />
+              </SettingRow>
+            </div>
+          )}
           {/* Account & Profile */}
           <SettingsSection 
             title="Account & Profile" 
@@ -456,10 +509,19 @@ export const SettingsPanel = ({
             </SettingRow>
             <SettingRow 
               label="Enable Emojis" 
+              description="Add emojis to AI-generated content"
               isPremium 
               isLocked={!isPremium}
             >
               <Switch checked={emojis} onCheckedChange={setEmojis} disabled={!isPremium} />
+            </SettingRow>
+            <SettingRow 
+              label="Bullet Point Format" 
+              description="Generate content in bullet points"
+              isPremium 
+              isLocked={!isPremium}
+            >
+              <Switch checked={bulletPoints} onCheckedChange={setBulletPoints} disabled={!isPremium} />
             </SettingRow>
           </SettingsSection>
 
@@ -468,6 +530,17 @@ export const SettingsPanel = ({
             title="AI Enhancement" 
             icon={<Sparkles className="w-4 h-4 text-primary" />}
           >
+            {/* AI Art Generation - Premium Feature */}
+            <SettingRow 
+              label="AI Art Generation" 
+              description="Generate 2-4 AI images based on your content"
+              isPremium 
+              premiumTooltip="Create unique AI-generated artwork from your text"
+              isLocked={!isPremium}
+            >
+              <Switch checked={aiArtGeneration} onCheckedChange={setAiArtGeneration} disabled={!isPremium} />
+            </SettingRow>
+            
             <SettingRow 
               label="AI Mode" 
               isPremium 
