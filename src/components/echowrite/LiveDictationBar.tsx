@@ -46,23 +46,23 @@ export const LiveDictationBar = ({
   };
 
   return (
-    <div className="w-full neu-pressed rounded-2xl p-4 animate-fade-in">
-      <div className="flex items-center gap-4">
+    <div className="w-full neu-pressed rounded-xl sm:rounded-2xl p-3 sm:p-4 animate-fade-in">
+      <div className="flex items-center gap-2 sm:gap-4">
         {/* Recording indicator */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <div className={cn(
-            'w-3 h-3 rounded-full',
+            'w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full',
             isPaused 
               ? 'bg-accent' 
               : 'bg-destructive animate-pulse'
           )} />
-          <span className="text-xs font-bold uppercase tracking-wider text-foreground">
+          <span className="text-[9px] sm:text-xs font-bold uppercase tracking-wider text-foreground">
             {isPaused ? 'Paused' : 'Live'}
           </span>
         </div>
 
         {/* Waveform visualization */}
-        <div className="flex-1 flex items-center justify-center gap-1 h-10">
+        <div className="flex-1 flex items-center justify-center gap-0.5 sm:gap-1 h-8 sm:h-10">
           {bars.map((i) => (
             <div
               key={i}
@@ -83,37 +83,37 @@ export const LiveDictationBar = ({
         </div>
 
         {/* Timer */}
-        <span className="text-sm font-mono font-bold text-primary min-w-[50px]">
+        <span className="text-xs sm:text-sm font-mono font-bold text-primary min-w-[40px] sm:min-w-[50px]">
           {formatTime(dictationTime)}
         </span>
 
         {/* Controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <button
             onClick={onTogglePause}
-            className="p-2 rounded-xl neu-button text-accent hover:text-primary transition-colors"
+            className="p-1.5 sm:p-2 rounded-lg sm:rounded-xl neu-button text-accent hover:text-primary transition-colors"
           >
-            {isPaused ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
+            {isPaused ? <Play className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Pause className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
           </button>
           <button
             onClick={onStop}
-            className="p-2 rounded-xl bg-destructive text-destructive-foreground hover:opacity-90 transition-opacity"
+            className="p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-destructive text-destructive-foreground hover:opacity-90 transition-opacity"
           >
-            <Square className="w-4 h-4" />
+            <Square className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
         </div>
       </div>
 
       {/* Live transcript preview */}
       {interimText && (
-        <div className="mt-3 pt-3 border-t border-border/30">
-          <div className="flex items-center gap-2 mb-1">
-            <Mic className="w-3 h-3 text-primary animate-pulse" />
-            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+        <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-border/30">
+          <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
+            <Mic className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-primary animate-pulse" />
+            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
               Live Transcript
             </span>
           </div>
-          <p className="text-sm text-foreground/80 italic animate-pulse">
+          <p className="text-xs sm:text-sm text-foreground/80 italic animate-pulse line-clamp-2">
             {interimText}
           </p>
         </div>
