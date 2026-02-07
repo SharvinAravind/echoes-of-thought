@@ -257,7 +257,7 @@ const EchoWrite = () => {
               
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button onClick={() => setSnowEnabled(!snowEnabled)} className={`p-2.5 rounded-xl neu-button transition-all flex flex-col items-center gap-0.5 px-[15px] py-[3px] ${snowEnabled ? 'text-primary' : 'text-muted-foreground'}`}>
+                  <button onClick={() => setSnowEnabled(!snowEnabled)} className={`p-2.5 rounded-xl neu-button transition-all flex flex-col items-center gap-0.5 px-[15px] py-[3px] min-w-[52px] ${snowEnabled ? 'text-primary' : 'text-muted-foreground'}`}>
                     <Snowflake className="w-4 h-4" />
                     <span className="text-[8px] font-semibold">{snowEnabled ? 'On' : 'Snow'}</span>
                   </button>
