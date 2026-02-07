@@ -130,7 +130,6 @@ const EchoWrite = () => {
   // Generate All - triggers style variations, length variations, and visual content simultaneously
   const handleGenerateAll = useCallback(async () => {
     if (!text.trim() || isLoading) return;
-
     const tasks: Promise<unknown>[] = [];
 
     // Trigger style variations
@@ -145,7 +144,6 @@ const EchoWrite = () => {
     if (aiContentRef.current) {
       tasks.push(aiContentRef.current.generateLengthVariations());
     }
-
     await Promise.allSettled(tasks);
   }, [text, isLoading, style, handleProcess]);
 
@@ -239,9 +237,7 @@ const EchoWrite = () => {
             <div className="flex justify-center items-center">
               <div className="flex items-center gap-2">
                 <Logo size="lg" showText animated />
-                {user.tier === 'premium' && (
-                  <PremiumBadge variant="badge" activated size="sm" />
-                )}
+                {user.tier === 'premium' && <PremiumBadge variant="badge" activated size="sm" />}
               </div>
             </div>
             
@@ -249,7 +245,7 @@ const EchoWrite = () => {
             <div className="flex justify-between items-center px-1">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button onClick={() => setHistoryOpen(!historyOpen)} className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors flex flex-col items-center gap-0.5">
+                  <button onClick={() => setHistoryOpen(!historyOpen)} className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors flex flex-col items-center gap-0.5 px-[15px] py-[3px]">
                     <HistoryIcon className="w-4 h-4" />
                     <span className="text-[8px] font-semibold">History</span>
                   </button>
@@ -325,11 +321,9 @@ const EchoWrite = () => {
               {/* Logo + Brand with PRO badge */}
               <div className="relative flex items-center">
                 <Logo size="2xl" showText animated />
-                {user.tier === 'premium' && (
-                  <div className="absolute -top-1 -right-2">
+                {user.tier === 'premium' && <div className="absolute -top-1 -right-2">
                     <PremiumBadge variant="large" activated />
-                  </div>
-                )}
+                  </div>}
               </div>
             </div>
 
