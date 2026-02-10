@@ -245,7 +245,7 @@ const EchoWrite = () => {
             <div className="flex justify-between items-center px-1">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button onClick={() => setHistoryOpen(!historyOpen)} className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors gap-0.5 flex-row px-[6px] flex items-center justify-start py-[7px]">
+                  <button onClick={() => setHistoryOpen(!historyOpen)} className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors gap-0.5 flex-row px-[6px] flex items-center justify-start py-[6px]">
                     <HistoryIcon className="w-4 h-4" />
                     <span className="text-[8px] font-semibold">History</span>
                   </button>
