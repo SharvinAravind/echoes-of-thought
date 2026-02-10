@@ -123,16 +123,75 @@ export const StyleButtonsPopover = ({
     }
     return 'Select Style';
   };
+  // Mobile category labels - 2 rows of 4
+  const mobileCategoryLabels: Record<string, string> = {
+    professional: 'Profession',
+    legal: 'Legal',
+    marketing: 'Marketing',
+    content: 'Content',
+    humanization: 'Clarity',
+    academic: 'Technical',
+    personal: 'Personal',
+    casual: 'Everyday',
+  };
+
   return <div className="space-y-2">
-      {/* Compact horizontal category chips */}
-      <div className="flex flex-wrap gap-1.5">
+      {/* Mobile: 2 rows of 4 buttons */}
+      <div className="grid grid-cols-4 gap-1.5 sm:hidden">
         {STYLE_CATEGORIES.map(category => {
         const isActiveCategory = category.styles.includes(currentStyle);
         return <Popover key={category.id} open={openPopover === category.id} onOpenChange={open => setOpenPopover(open ? category.id : null)}>
               <PopoverTrigger asChild>
+                <button disabled={isLoading} className={cn("flex items-center justify-center gap-1 px-1.5 py-2 rounded-lg font-semibold transition-all text-[11px]", isActiveCategory ? 'style-chip-active' : 'neu-flat text-muted-foreground hover:text-foreground hover:scale-[1.02]', isLoading && 'opacity-50 cursor-not-allowed')}>
+                  <span className="text-[11px]">{category.emoji}</span>
+                  <span className="truncate">{mobileCategoryLabels[category.id] || category.label}</span>
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-64 p-0 neu-flat border-border shadow-xl" align="start" sideOffset={4}>
+                <div className="p-2 border-b border-border/30">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-sm">{category.emoji}</span>
+                    <h4 className="font-bold text-xs text-foreground">{category.label}</h4>
+                  </div>
+                </div>
+                <div className="p-1 max-h-[200px] overflow-y-auto">
+                  {category.styles.map(styleId => {
+                const Icon = styleIcons[styleId];
+                const isActive = currentStyle === styleId;
+                return <button key={styleId} disabled={isLoading} onClick={() => handleStyleSelect(styleId)} className={cn('w-full flex items-start gap-2 p-2 rounded-lg text-left transition-all', isActive ? 'neu-pressed ring-1 ring-primary' : 'hover:bg-muted/50', isLoading && 'opacity-50 cursor-not-allowed')}>
+                        <div className={cn('w-6 h-6 rounded-md flex items-center justify-center shrink-0', isActive ? 'bg-primary text-primary-foreground' : 'neu-flat')}>
+                          <Icon className="w-3 h-3" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className={cn('text-[11px] font-semibold truncate', isActive ? 'text-primary' : 'text-foreground')}>
+                            {styleLabels[styleId]}
+                          </p>
+                          <p className="text-[9px] text-muted-foreground line-clamp-1">
+                            {styleDescriptions[styleId]}
+                          </p>
+                        </div>
+                        {isActive && <div className="w-3.5 h-3.5 rounded-full bg-primary flex items-center justify-center shrink-0">
+                            <svg className="w-2 h-2 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                            </svg>
+                          </div>}
+                      </button>;
+              })}
+                </div>
+              </PopoverContent>
+            </Popover>;
+      })}
+      </div>
+
+      {/* Tablet/Desktop: horizontal chips */}
+      <div className="hidden sm:flex flex-wrap gap-1.5">
+        {STYLE_CATEGORIES.map(category => {
+        const isActiveCategory = category.styles.includes(currentStyle);
+        return <Popover key={category.id} open={openPopover === category.id} onOpenChange={open => setOpenPopover(open ? category.id : null)}>
+               <PopoverTrigger asChild>
                 <button disabled={isLoading} className={cn("flex items-center gap-1 px-2 py-1.5 rounded-lg font-semibold transition-all text-xs", isActiveCategory ? 'style-chip-active' : 'neu-flat text-muted-foreground hover:text-foreground hover:scale-[1.02]', isLoading && 'opacity-50 cursor-not-allowed')}>
                   <span className="text-xs">{category.emoji}</span>
-                  <span className="hidden sm:inline">{category.label}</span>
+                  <span>{category.label}</span>
                   <ChevronDown className="w-2.5 h-2.5" />
                 </button>
               </PopoverTrigger>
@@ -173,7 +232,7 @@ export const StyleButtonsPopover = ({
       </div>
       
       {/* Current selection indicator - compact */}
-      <div className="flex items-center rounded-md neu-pressed text-[10px] gap-[4px] border-2 px-[3px] py-[3px]">
+      <div className="flex items-center rounded-md neu-pressed text-[11px] sm:text-[10px] gap-[4px] border-2 px-[4px] py-[4px]">
         <span className="text-muted-foreground">✨</span>
         <span className="font-semibold text-primary">{getCurrentCategoryLabel()}</span>
       </div>

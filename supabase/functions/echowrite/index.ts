@@ -15,7 +15,8 @@ const VALID_STYLES = [
   'Cover Letter', 'Client Proposal', 'Legal Draft', 'Marketing Copy', 'Sales Pitch',
   'Product Description', 'Landing Page Copy', 'Content Writing', 'Social Media Post',
   'Video/Reel Script', 'Humanizer', 'Simplify Language', 'Polite & Respectful',
-  'Academic Writing', 'Technical Doc', 'Complaint/Request Letter', 'Negotiation Message'
+  'Academic Writing', 'Technical Doc', 'Complaint/Request Letter', 'Negotiation Message',
+  'Casual Message', 'Grammar Fix', 'Phrasing Improve', 'Creative Writing', 'Summary', 'Bullet Points'
 ] as const;
 
 // Max string lengths for validation
@@ -359,7 +360,8 @@ Keep the same tone, formatting, and meaning. Return ONLY the translated text, no
     });
 
     if (!response.ok) {
-      console.error("AI Gateway error:", response.status);
+      const errorText = await response.text().catch(() => '');
+      console.error("AI Gateway error:", response.status, errorText);
       
       if (response.status === 429) {
         return new Response(
@@ -369,13 +371,13 @@ Keep the same tone, formatting, and meaning. Return ONLY the translated text, no
       }
       if (response.status === 402) {
         return new Response(
-          JSON.stringify({ error: "AI credits exhausted. Please add credits to continue." }),
+          JSON.stringify({ error: "AI service credits are temporarily exhausted. Please try again later or contact support." }),
           { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
       
       return new Response(
-        JSON.stringify({ error: "Processing failed. Please try again." }),
+        JSON.stringify({ error: "Processing failed. Please try again shortly." }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }

@@ -88,9 +88,13 @@ export const useDictation = ({
 
     recognition.onend = () => {
       // Auto-restart if still dictating and not paused
-      if (isDictating && !isPaused && recognitionRef.current) {
+      if (recognitionRef.current === recognition && !isPaused) {
         try {
-          recognition.start();
+          setTimeout(() => {
+            if (recognitionRef.current === recognition) {
+              recognition.start();
+            }
+          }, 100);
         } catch (e) {
           // Ignore errors from rapid start/stop
         }

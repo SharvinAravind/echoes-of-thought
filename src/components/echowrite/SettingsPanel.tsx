@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Settings, 
   X, 
@@ -19,7 +19,9 @@ import {
   Lock,
   Check,
   Info,
-  LogOut
+  LogOut,
+  Save,
+  ZoomIn
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { User as UserType, Theme, THEMES } from '@/types/echowrite';
@@ -179,38 +181,107 @@ export const SettingsPanel = ({
   onLogout
 }: SettingsPanelProps) => {
   const isPremium = user.tier === 'premium';
+
+  // Load saved settings from localStorage
+  const loadSavedSettings = () => {
+    try {
+      const saved = localStorage.getItem('echowrite-settings');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return null;
+  };
+
+  const savedSettings = loadSavedSettings();
   
-  // Local state for settings (these would connect to actual settings in a real app)
-  const [noiseReduction, setNoiseReduction] = useState(true);
-  const [advancedNoiseCancellation, setAdvancedNoiseCancellation] = useState(false);
-  const [micCalibration, setMicCalibration] = useState(false);
-  const [realTimePunctuation, setRealTimePunctuation] = useState(false);
-  const [speakerDiarization, setSpeakerDiarization] = useState(false);
-  const [accentOptimization, setAccentOptimization] = useState(false);
-  const [autoLanguageDetection, setAutoLanguageDetection] = useState(false);
-  const [smartFormatting, setSmartFormatting] = useState(false);
-  const [autoGrammar, setAutoGrammar] = useState(false);
-  const [timestamps, setTimestamps] = useState(false);
-  const [emojis, setEmojis] = useState(false);
-  const [bulletPoints, setBulletPoints] = useState(false);
-  const [unlimitedRecording, setUnlimitedRecording] = useState(false);
-  const [backgroundRecording, setBackgroundRecording] = useState(false);
-  const [autoPauseOnSilence, setAutoPauseOnSilence] = useState(false);
-  const [bookmarkMoments, setBookmarkMoments] = useState(false);
-  const [waveformVisualization, setWaveformVisualization] = useState(true);
-  const [cloudSync, setCloudSync] = useState(false);
-  const [searchableHistory, setSearchableHistory] = useState(false);
-  const [e2eEncryption, setE2eEncryption] = useState(false);
-  const [autoDelete, setAutoDelete] = useState(false);
-  const [localOnlyProcessing, setLocalOnlyProcessing] = useState(false);
-  const [noAiTraining, setNoAiTraining] = useState(false);
-  const [autoSummarize, setAutoSummarize] = useState(false);
-  const [autoExport, setAutoExport] = useState(false);
-  const [autoRename, setAutoRename] = useState(false);
-  const [aiArtGeneration, setAiArtGeneration] = useState(false);
+  // Local state for settings - initialized from localStorage
+  const [noiseReduction, setNoiseReduction] = useState(savedSettings?.noiseReduction ?? true);
+  const [advancedNoiseCancellation, setAdvancedNoiseCancellation] = useState(savedSettings?.advancedNoiseCancellation ?? false);
+  const [micCalibration, setMicCalibration] = useState(savedSettings?.micCalibration ?? false);
+  const [realTimePunctuation, setRealTimePunctuation] = useState(savedSettings?.realTimePunctuation ?? false);
+  const [speakerDiarization, setSpeakerDiarization] = useState(savedSettings?.speakerDiarization ?? false);
+  const [accentOptimization, setAccentOptimization] = useState(savedSettings?.accentOptimization ?? false);
+  const [autoLanguageDetection, setAutoLanguageDetection] = useState(savedSettings?.autoLanguageDetection ?? false);
+  const [smartFormatting, setSmartFormatting] = useState(savedSettings?.smartFormatting ?? false);
+  const [autoGrammar, setAutoGrammar] = useState(savedSettings?.autoGrammar ?? false);
+  const [timestamps, setTimestamps] = useState(savedSettings?.timestamps ?? false);
+  const [emojis, setEmojis] = useState(savedSettings?.emojis ?? false);
+  const [bulletPoints, setBulletPoints] = useState(savedSettings?.bulletPoints ?? false);
+  const [unlimitedRecording, setUnlimitedRecording] = useState(savedSettings?.unlimitedRecording ?? false);
+  const [backgroundRecording, setBackgroundRecording] = useState(savedSettings?.backgroundRecording ?? false);
+  const [autoPauseOnSilence, setAutoPauseOnSilence] = useState(savedSettings?.autoPauseOnSilence ?? false);
+  const [bookmarkMoments, setBookmarkMoments] = useState(savedSettings?.bookmarkMoments ?? false);
+  const [waveformVisualization, setWaveformVisualization] = useState(savedSettings?.waveformVisualization ?? true);
+  const [cloudSync, setCloudSync] = useState(savedSettings?.cloudSync ?? false);
+  const [searchableHistory, setSearchableHistory] = useState(savedSettings?.searchableHistory ?? false);
+  const [e2eEncryption, setE2eEncryption] = useState(savedSettings?.e2eEncryption ?? false);
+  const [autoDelete, setAutoDelete] = useState(savedSettings?.autoDelete ?? false);
+  const [localOnlyProcessing, setLocalOnlyProcessing] = useState(savedSettings?.localOnlyProcessing ?? false);
+  const [noAiTraining, setNoAiTraining] = useState(savedSettings?.noAiTraining ?? false);
+  const [autoSummarize, setAutoSummarize] = useState(savedSettings?.autoSummarize ?? false);
+  const [autoExport, setAutoExport] = useState(savedSettings?.autoExport ?? false);
+  const [autoRename, setAutoRename] = useState(savedSettings?.autoRename ?? false);
+  const [aiArtGeneration, setAiArtGeneration] = useState(savedSettings?.aiArtGeneration ?? false);
+  const [zoomLevel, setZoomLevel] = useState<string>(savedSettings?.zoomLevel ?? '100');
+  const [fontFamily, setFontFamily] = useState<string>(savedSettings?.fontFamily ?? 'system');
+  const [isSaved, setIsSaved] = useState(true);
+  const [isDirty, setIsDirty] = useState(false);
   
   // Master toggle for all pro features
-  const [allProEnabled, setAllProEnabled] = useState(false);
+  const [allProEnabled, setAllProEnabled] = useState(savedSettings?.allProEnabled ?? false);
+
+  // Track changes to mark as dirty
+  useEffect(() => {
+    setIsDirty(true);
+    setIsSaved(false);
+  }, [noiseReduction, advancedNoiseCancellation, micCalibration, realTimePunctuation,
+      speakerDiarization, accentOptimization, autoLanguageDetection, smartFormatting,
+      autoGrammar, timestamps, emojis, bulletPoints, unlimitedRecording, backgroundRecording,
+      autoPauseOnSilence, bookmarkMoments, waveformVisualization, cloudSync, searchableHistory,
+      e2eEncryption, localOnlyProcessing, noAiTraining, autoSummarize, autoExport, autoRename,
+      aiArtGeneration, zoomLevel, fontFamily, allProEnabled]);
+
+  // Apply zoom level
+  useEffect(() => {
+    document.documentElement.style.zoom = `${parseInt(zoomLevel)}%`;
+    return () => { document.documentElement.style.zoom = ''; };
+  }, [zoomLevel]);
+
+  // Apply font family
+  useEffect(() => {
+    const fontMap: Record<string, string> = {
+      system: 'system-ui, sans-serif',
+      inter: '"Inter", sans-serif',
+      roboto: '"Roboto", sans-serif',
+      poppins: '"Poppins", sans-serif',
+      opensans: '"Open Sans", sans-serif',
+      lato: '"Lato", sans-serif',
+      montserrat: '"Montserrat", sans-serif',
+      nunito: '"Nunito", sans-serif',
+      raleway: '"Raleway", sans-serif',
+      playfair: '"Playfair Display", serif',
+      merriweather: '"Merriweather", serif',
+      georgia: 'Georgia, serif',
+      courier: '"Courier New", monospace',
+      firacode: '"Fira Code", monospace',
+      jetbrains: '"JetBrains Mono", monospace',
+    };
+    document.documentElement.style.fontFamily = fontMap[fontFamily] || fontMap.system;
+    return () => { document.documentElement.style.fontFamily = ''; };
+  }, [fontFamily]);
+
+  const handleSaveSettings = () => {
+    const settings = {
+      noiseReduction, advancedNoiseCancellation, micCalibration, realTimePunctuation,
+      speakerDiarization, accentOptimization, autoLanguageDetection, smartFormatting,
+      autoGrammar, timestamps, emojis, bulletPoints, unlimitedRecording, backgroundRecording,
+      autoPauseOnSilence, bookmarkMoments, waveformVisualization, cloudSync, searchableHistory,
+      e2eEncryption, localOnlyProcessing, noAiTraining, autoSummarize, autoExport, autoRename,
+      aiArtGeneration, zoomLevel, fontFamily, allProEnabled
+    };
+    localStorage.setItem('echowrite-settings', JSON.stringify(settings));
+    setIsSaved(true);
+    setIsDirty(false);
+  };
   
   // Enable all pro features at once
   const handleEnableAllPro = (enabled: boolean) => {
@@ -269,12 +340,27 @@ export const SettingsPanel = ({
               </p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 sm:p-2.5 rounded-xl neu-button text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <X className="w-4 h-4 sm:w-5 sm:h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleSaveSettings}
+              disabled={isSaved}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all",
+                isSaved 
+                  ? "neu-flat text-primary opacity-70 cursor-default" 
+                  : "primary-button hover:scale-[1.02]"
+              )}
+            >
+              <Save className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">{isSaved ? 'Saved' : 'Save'}</span>
+            </button>
+            <button
+              onClick={onClose}
+              className="p-2 sm:p-2.5 rounded-xl neu-button text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <X className="w-4 h-4 sm:w-5 sm:h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Content */}
@@ -847,22 +933,44 @@ export const SettingsPanel = ({
               </Select>
             </SettingRow>
             
-            <SettingRow 
-              label="Font Family" 
-              isPremium 
-              isLocked={!isPremium}
-            >
-              <Select disabled={!isPremium}>
-                <SelectTrigger className="w-[120px] h-8 text-xs neu-flat border-0">
-                  <SelectValue placeholder="System" />
+            <SettingRow label="Zoom Level">
+              <Select value={zoomLevel} onValueChange={setZoomLevel}>
+                <SelectTrigger className="w-[100px] h-8 text-xs neu-flat border-0">
+                  <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="system">System</SelectItem>
-                  <SelectItem value="serif">Serif</SelectItem>
-                  <SelectItem value="mono">Mono</SelectItem>
+                <SelectContent className="max-h-[200px]">
+                  {['25', '50', '75', '80', '90', '100', '110', '125', '150', '175', '200', '225', '250'].map(v => (
+                    <SelectItem key={v} value={v}>{v}%</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </SettingRow>
+
+            <SettingRow label="Font Style">
+              <Select value={fontFamily} onValueChange={setFontFamily}>
+                <SelectTrigger className="w-[140px] h-8 text-xs neu-flat border-0">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="max-h-[250px]">
+                  <SelectItem value="system">System Default</SelectItem>
+                  <SelectItem value="inter">Inter</SelectItem>
+                  <SelectItem value="roboto">Roboto</SelectItem>
+                  <SelectItem value="poppins">Poppins</SelectItem>
+                  <SelectItem value="opensans">Open Sans</SelectItem>
+                  <SelectItem value="lato">Lato</SelectItem>
+                  <SelectItem value="montserrat">Montserrat</SelectItem>
+                  <SelectItem value="nunito">Nunito</SelectItem>
+                  <SelectItem value="raleway">Raleway</SelectItem>
+                  <SelectItem value="playfair">Playfair Display</SelectItem>
+                  <SelectItem value="merriweather">Merriweather</SelectItem>
+                  <SelectItem value="georgia">Georgia</SelectItem>
+                  <SelectItem value="courier">Courier New</SelectItem>
+                  <SelectItem value="firacode">Fira Code</SelectItem>
+                  <SelectItem value="jetbrains">JetBrains Mono</SelectItem>
+                </SelectContent>
+              </Select>
+            </SettingRow>
+            
             <SettingRow 
               label="Font Size" 
               isPremium 

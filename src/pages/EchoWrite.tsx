@@ -245,9 +245,9 @@ const EchoWrite = () => {
             <div className="grid grid-cols-4 gap-2 px-1">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button onClick={() => setHistoryOpen(!historyOpen)} className="h-10 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors flex items-center justify-center gap-1">
-                    <HistoryIcon className="w-4 h-4 flex-shrink-0" />
-                    <span className="font-semibold text-xs">History</span>
+                  <button onClick={() => setHistoryOpen(!historyOpen)} className="h-11 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors flex items-center justify-center gap-1.5">
+                    <HistoryIcon className="w-[18px] h-[18px] flex-shrink-0" />
+                    <span className="font-semibold text-[11px]">History</span>
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom"><p>View History</p></TooltipContent>
@@ -255,9 +255,9 @@ const EchoWrite = () => {
               
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button onClick={() => setSnowEnabled(!snowEnabled)} className={`h-10 rounded-xl neu-button transition-all flex items-center justify-center gap-1 ${snowEnabled ? 'text-primary' : 'text-muted-foreground'}`}>
-                    <Snowflake className="w-4 h-4 flex-shrink-0" />
-                    <span className="font-semibold text-xs">{snowEnabled ? 'On' : 'Snow'}</span>
+                  <button onClick={() => setSnowEnabled(!snowEnabled)} className={`h-11 rounded-xl neu-button transition-all flex items-center justify-center gap-1.5 ${snowEnabled ? 'text-primary' : 'text-muted-foreground'}`}>
+                    <Snowflake className="w-[18px] h-[18px] flex-shrink-0" />
+                    <span className="font-semibold text-[11px]">{snowEnabled ? 'On' : 'Snow'}</span>
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom"><p>{snowEnabled ? 'Disable Snow' : 'Enable Snow'}</p></TooltipContent>
@@ -265,9 +265,9 @@ const EchoWrite = () => {
               
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button onClick={() => setSettingsOpen(!settingsOpen)} className="h-10 rounded-xl neu-button text-muted-foreground hover:text-primary transition-all flex items-center justify-center gap-1">
-                    <Settings className="w-4 h-4 flex-shrink-0" />
-                    <span className="font-semibold text-xs">Settings</span>
+                  <button onClick={() => setSettingsOpen(!settingsOpen)} className="h-11 rounded-xl neu-button text-muted-foreground hover:text-primary transition-all flex items-center justify-center gap-1.5">
+                    <Settings className="w-[18px] h-[18px] flex-shrink-0" />
+                    <span className="font-semibold text-[11px]">Settings</span>
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom"><p>Settings & Profile</p></TooltipContent>
@@ -275,9 +275,9 @@ const EchoWrite = () => {
               
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button disabled={!text || isLoading} onClick={handleGenerateAll} className="h-10 rounded-xl primary-button disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1">
-                    <Sparkles className="w-4 h-4 flex-shrink-0" />
-                    <span className="text-[8px] font-serif font-extrabold">Generate</span>
+                  <button disabled={!text || isLoading} onClick={handleGenerateAll} className="h-11 rounded-xl primary-button disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5">
+                    <Sparkles className="w-[18px] h-[18px] flex-shrink-0" />
+                    <span className="text-[11px] font-bold">Generate</span>
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom"><p>Generate All Content</p></TooltipContent>
@@ -410,8 +410,8 @@ const EchoWrite = () => {
                 <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
               </div>
               <div className="min-w-0">
-                <h3 className="text-xs sm:text-sm font-bold text-foreground truncate">🎨 Select Writing Style.. 🖋</h3>
-                <p className="text-[9px] sm:text-[10px] text-muted-foreground">Choose your preferred writing style</p>
+                <h3 className="text-[11px] sm:text-sm font-bold text-foreground truncate">🎨 Select Writing Style.. 🖋</h3>
+                <p className="text-[10px] sm:text-[10px] text-muted-foreground">Choose your preferred writing style</p>
               </div>
             </div>
             <StyleButtonsPopover currentStyle={style} onSelect={handleProcess} isLoading={isLoading} />

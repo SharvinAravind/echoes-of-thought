@@ -60,8 +60,8 @@ export const AIContentGenerator = forwardRef<AIContentGeneratorRef, AIContentGen
             <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
           </div>
           <div className="min-w-0">
-            <h3 className="text-xs sm:text-sm font-bold text-foreground">⚡ AI-Powered Content Generation</h3>
-            <p className="text-[9px] sm:text-[10px] text-muted-foreground">25 writing styles + length variations • Powered by AI</p>
+            <h3 className="text-[11px] sm:text-sm font-bold text-foreground">⚡ AI-Powered Content Generation</h3>
+            <p className="text-[10px] sm:text-[10px] text-muted-foreground">25 writing styles + length variations • Powered by AI</p>
           </div>
         </div>
         
