@@ -242,53 +242,45 @@ const EchoWrite = () => {
             </div>
             
             {/* Row 2: All action buttons - evenly spaced */}
-            <div className="flex justify-between items-center px-1">
+            <div className="grid grid-cols-4 gap-2 px-1">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button onClick={() => setHistoryOpen(!historyOpen)} className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors gap-0.5 flex-row px-[6px] flex items-center justify-start py-[6px]">
-                    <HistoryIcon className="w-4 h-4" />
+                  <button onClick={() => setHistoryOpen(!historyOpen)} className="h-10 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors flex items-center justify-center gap-1">
+                    <HistoryIcon className="w-4 h-4 flex-shrink-0" />
                     <span className="text-[8px] font-semibold">History</span>
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <p>View History</p>
-                </TooltipContent>
+                <TooltipContent side="bottom"><p>View History</p></TooltipContent>
               </Tooltip>
               
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button onClick={() => setSnowEnabled(!snowEnabled)} className={`p-2.5 rounded-xl neu-button transition-all gap-0.5 px-[15px] items-start justify-center flex flex-row py-[10px] ${snowEnabled ? 'text-primary' : 'text-muted-foreground'}`}>
-                    <Snowflake className="w-4 h-4" />
+                  <button onClick={() => setSnowEnabled(!snowEnabled)} className={`h-10 rounded-xl neu-button transition-all flex items-center justify-center gap-1 ${snowEnabled ? 'text-primary' : 'text-muted-foreground'}`}>
+                    <Snowflake className="w-4 h-4 flex-shrink-0" />
                     <span className="text-[8px] font-semibold">{snowEnabled ? 'On' : 'Snow'}</span>
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <p>{snowEnabled ? 'Disable Snow' : 'Enable Snow'}</p>
-                </TooltipContent>
+                <TooltipContent side="bottom"><p>{snowEnabled ? 'Disable Snow' : 'Enable Snow'}</p></TooltipContent>
               </Tooltip>
               
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button onClick={() => setSettingsOpen(!settingsOpen)} className="p-2.5 rounded-xl neu-button hover:scale-[1.02] transition-all gap-0.5 text-muted-foreground hover:text-primary flex-row flex items-center justify-start px-[6px] py-[6px]">
-                    <Settings className="w-4 h-4" />
-                    <span className="font-semibold text-xs">Settings</span>
+                  <button onClick={() => setSettingsOpen(!settingsOpen)} className="h-10 rounded-xl neu-button text-muted-foreground hover:text-primary transition-all flex items-center justify-center gap-1">
+                    <Settings className="w-4 h-4 flex-shrink-0" />
+                    <span className="text-[8px] font-semibold">Settings</span>
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <p>Settings & Profile</p>
-                </TooltipContent>
+                <TooltipContent side="bottom"><p>Settings & Profile</p></TooltipContent>
               </Tooltip>
               
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button disabled={!text || isLoading} onClick={handleGenerateAll} className="p-2.5 rounded-xl primary-button gap-0.5 disabled:opacity-50 disabled:cursor-not-allowed items-center justify-center flex flex-row px-[6px] py-[7px]">
-                    <Sparkles className="w-4 h-4" />
-                    <span className="font-bold text-xs">Generate</span>
+                  <button disabled={!text || isLoading} onClick={handleGenerateAll} className="h-10 rounded-xl primary-button disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1">
+                    <Sparkles className="w-4 h-4 flex-shrink-0" />
+                    <span className="text-[8px] font-bold">Generate</span>
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <p>Generate All Content</p>
-                </TooltipContent>
+                <TooltipContent side="bottom"><p>Generate All Content</p></TooltipContent>
               </Tooltip>
             </div>
             
