@@ -245,7 +245,7 @@ const EchoWrite = () => {
             <div className="flex justify-between items-center px-1">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button onClick={() => setHistoryOpen(!historyOpen)} className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors gap-0.5 flex-row py-[5px] px-[6px] flex items-center justify-start">
+                  <button onClick={() => setHistoryOpen(!historyOpen)} className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors gap-0.5 flex-row px-[6px] flex items-center justify-start py-[7px]">
                     <HistoryIcon className="w-4 h-4" />
                     <span className="text-[8px] font-semibold">History</span>
                   </button>
@@ -269,7 +269,7 @@ const EchoWrite = () => {
               
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button onClick={() => setSettingsOpen(!settingsOpen)} className="p-2.5 rounded-xl neu-button hover:scale-[1.02] transition-all gap-0.5 text-muted-foreground hover:text-primary flex-row flex items-center justify-start py-[5px] px-[6px]">
+                  <button onClick={() => setSettingsOpen(!settingsOpen)} className="p-2.5 rounded-xl neu-button hover:scale-[1.02] transition-all gap-0.5 text-muted-foreground hover:text-primary flex-row flex items-center justify-start px-[6px] py-[6px]">
                     <Settings className="w-4 h-4" />
                     <span className="font-semibold text-xs">Settings</span>
                   </button>
@@ -281,7 +281,7 @@ const EchoWrite = () => {
               
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button disabled={!text || isLoading} onClick={handleGenerateAll} className="p-2.5 rounded-xl primary-button gap-0.5 disabled:opacity-50 disabled:cursor-not-allowed items-center justify-center flex flex-row px-[8px] py-[7px]">
+                  <button disabled={!text || isLoading} onClick={handleGenerateAll} className="p-2.5 rounded-xl primary-button gap-0.5 disabled:opacity-50 disabled:cursor-not-allowed items-center justify-center flex flex-row px-[6px] py-[7px]">
                     <Sparkles className="w-4 h-4" />
                     <span className="font-bold text-xs">Generate</span>
                   </button>
