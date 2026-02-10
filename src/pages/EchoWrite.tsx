@@ -245,7 +245,7 @@ const EchoWrite = () => {
             <div className="flex justify-between items-center px-1">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button onClick={() => setHistoryOpen(!historyOpen)} className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors gap-0.5 px-[15px] items-start justify-center flex flex-row py-[10px]">
+                  <button onClick={() => setHistoryOpen(!historyOpen)} className="p-2.5 rounded-xl neu-button text-muted-foreground hover:text-primary transition-colors gap-0.5 items-start justify-center flex flex-row py-[5px] px-[6px]">
                     <HistoryIcon className="w-4 h-4" />
                     <span className="text-[8px] font-semibold">History</span>
                   </button>
@@ -269,9 +269,9 @@ const EchoWrite = () => {
               
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button onClick={() => setSettingsOpen(!settingsOpen)} className="p-2.5 rounded-xl neu-button hover:scale-[1.02] transition-all gap-0.5 text-muted-foreground hover:text-primary px-[15px] flex-row flex items-center justify-start py-[10px]">
+                  <button onClick={() => setSettingsOpen(!settingsOpen)} className="p-2.5 rounded-xl neu-button hover:scale-[1.02] transition-all gap-0.5 text-muted-foreground hover:text-primary flex-row flex items-center justify-start py-[5px] px-[6px]">
                     <Settings className="w-4 h-4" />
-                    <span className="text-[8px] font-semibold">Settings</span>
+                    <span className="font-semibold text-xs">Settings</span>
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
@@ -281,9 +281,9 @@ const EchoWrite = () => {
               
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button disabled={!text || isLoading} onClick={handleGenerateAll} className="p-2.5 rounded-xl primary-button gap-0.5 disabled:opacity-50 disabled:cursor-not-allowed px-[15px] items-center justify-center flex flex-row py-[10px]">
+                  <button disabled={!text || isLoading} onClick={handleGenerateAll} className="p-2.5 rounded-xl primary-button gap-0.5 disabled:opacity-50 disabled:cursor-not-allowed items-center justify-center flex flex-row px-[8px] py-[7px]">
                     <Sparkles className="w-4 h-4" />
-                    <span className="text-[8px] font-bold">Generate</span>
+                    <span className="font-bold text-xs">Generate</span>
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
