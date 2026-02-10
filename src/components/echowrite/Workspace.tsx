@@ -214,7 +214,7 @@ export const Workspace = ({
           onChange={(e) => onTextChange(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Start typing or use dictation... (Press Enter to generate)"
-          className="w-full flex-1 resize-none bg-transparent focus:outline-none text-base sm:text-xl text-foreground leading-relaxed placeholder:text-muted-foreground/40 font-normal"
+          className="w-full flex-1 resize-none bg-transparent focus:outline-none text-sm sm:text-xl text-foreground leading-relaxed placeholder:text-muted-foreground/40 font-normal"
         />
         
         {/* Interim (live) dictation text with gradient */}
@@ -243,11 +243,11 @@ export const Workspace = ({
 
       {/* Character count footer */}
       <div className="px-3 sm:px-6 py-2 sm:py-3 border-t border-border/20 flex justify-between items-center">
-        <span className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+        <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
           {text.length} chars • {text.split(/\s+/).filter(Boolean).length} words
         </span>
-        <span className="text-[9px] sm:text-[10px] font-medium text-muted-foreground">
-          <kbd className="px-1 py-0.5 rounded bg-muted text-foreground font-mono text-[8px] sm:text-[9px]">Enter</kbd> to generate
+        <span className="text-[10px] sm:text-[11px] font-medium text-muted-foreground">
+          <kbd className="px-1.5 py-0.5 rounded bg-muted text-foreground font-mono text-[9px] sm:text-[10px]">Enter</kbd> to generate
         </span>
       </div>
     </div>

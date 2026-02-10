@@ -1,6 +1,6 @@
 import { useState, useImperativeHandle, forwardRef } from 'react';
-import { LengthVariations, getLengthVariations, LengthVariation } from '@/services/aiService';
-import { Copy, CheckCircle2, ArrowRight, RefreshCw, FileText, AlignLeft, BookOpen, Share2, Mail, MessageCircle, Download, Wand2 } from 'lucide-react';
+import { LengthVariations, getLengthVariations, LengthVariation, translateText } from '@/services/aiService';
+import { Copy, CheckCircle2, ArrowRight, RefreshCw, FileText, AlignLeft, BookOpen, Share2, Mail, MessageCircle, Download, Wand2, Languages, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import DOMPurify from 'dompurify';
 import {
@@ -9,8 +9,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { cn } from '@/lib/utils';
+import { SUPPORTED_LANGUAGES } from '@/types/echowrite';
 
 // HTML escape function for safe text insertion
 const escapeHtml = (text: string): string => {
@@ -38,6 +46,8 @@ export const LengthVariationsPanel = forwardRef<LengthVariationsPanelRef, Length
   const [selectedVariation, setSelectedVariation] = useState<LengthVariation | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [sliderValue, setSliderValue] = useState<number[]>([3]); // 1-5 slider for variation count
+  const [translateLang, setTranslateLang] = useState<string>('');
+  const [isTranslating, setIsTranslating] = useState<string | null>(null);
 
   // Map slider value to number of variations to show
   const variationCount = sliderValue[0];
@@ -90,6 +100,33 @@ export const LengthVariationsPanel = forwardRef<LengthVariationsPanelRef, Length
     setCopiedId(variation.id);
     toast.success('Copied!');
     setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleTranslateVariation = async (variation: LengthVariation) => {
+    if (!translateLang) {
+      toast.error('Please select a language first');
+      return;
+    }
+    const langName = SUPPORTED_LANGUAGES.find(l => l.code === translateLang)?.name || translateLang;
+    setIsTranslating(variation.id);
+    try {
+      const translated = await translateText(variation.text, langName);
+      // Update the variation text in-place
+      if (variations) {
+        const typeVariations = variations[selectedType];
+        const idx = typeVariations?.findIndex(v => v.id === variation.id);
+        if (idx !== undefined && idx >= 0 && typeVariations) {
+          typeVariations[idx] = { ...typeVariations[idx], text: translated, wordCount: translated.split(/\s+/).filter(Boolean).length };
+          setVariations({ ...variations });
+          setSelectedVariation(typeVariations[idx]);
+        }
+      }
+      toast.success(`Translated to ${langName}!`);
+    } catch (err) {
+      toast.error('Translation failed');
+    } finally {
+      setIsTranslating(null);
+    }
   };
 
   const shareToWhatsApp = (variation: LengthVariation) => {
@@ -170,21 +207,38 @@ export const LengthVariationsPanel = forwardRef<LengthVariationsPanelRef, Length
           })}
         </div>
         
-        {/* Slider for Variation Count (1-5) - Responsive */}
-        <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-[120px] sm:min-w-[150px] neu-flat px-3 py-2 rounded-xl">
-          <span className="text-[9px] sm:text-[10px] text-muted-foreground font-bold">1</span>
+        {/* Slider for Variation Count (1-5) - Compact */}
+        <div className="flex items-center gap-1.5 sm:gap-2 min-w-[80px] sm:min-w-[100px] neu-flat px-2 py-1.5 rounded-lg">
+          <span className="text-[8px] sm:text-[9px] text-muted-foreground font-bold">1</span>
           <Slider
             value={sliderValue}
             onValueChange={handleSliderChange}
             min={1}
             max={5}
             step={1}
-            className="flex-1"
+            className="flex-1 max-w-[80px]"
           />
-          <span className="text-[9px] sm:text-[10px] text-muted-foreground font-bold">5</span>
-          <span className="text-[9px] sm:text-[10px] font-bold text-primary bg-primary/10 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg">
+          <span className="text-[8px] sm:text-[9px] text-muted-foreground font-bold">5</span>
+          <span className="text-[8px] sm:text-[9px] font-bold text-primary bg-primary/10 px-1 py-0.5 rounded">
             {variationCount}
           </span>
+        </div>
+
+        {/* Translation Language Dropdown */}
+        <div className="flex items-center gap-1.5 neu-flat px-2 py-1.5 rounded-lg">
+          <Languages className="w-3.5 h-3.5 text-primary flex-shrink-0" />
+          <Select value={translateLang} onValueChange={setTranslateLang}>
+            <SelectTrigger className="w-[100px] sm:w-[130px] h-7 text-[10px] sm:text-xs neu-flat border-0 px-1.5">
+              <SelectValue placeholder="Translate" />
+            </SelectTrigger>
+            <SelectContent className="max-h-[250px]">
+              {SUPPORTED_LANGUAGES.map(lang => (
+                <SelectItem key={lang.code} value={lang.code} className="text-xs">
+                  {lang.flag} {lang.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Generate Button - Prominent */}
@@ -251,6 +305,24 @@ export const LengthVariationsPanel = forwardRef<LengthVariationsPanelRef, Length
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5">
+                  {/* Translate Button */}
+                  {translateLang && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleTranslateVariation(variation);
+                      }}
+                      disabled={isTranslating === variation.id}
+                      className="p-1.5 rounded-lg neu-button hover:text-primary transition-colors"
+                      title={`Translate to ${SUPPORTED_LANGUAGES.find(l => l.code === translateLang)?.name || 'selected language'}`}
+                    >
+                      {isTranslating === variation.id ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <Languages className="w-3.5 h-3.5" />
+                      )}
+                    </button>
+                  )}
                   {/* PDF Download */}
                   <button
                     onClick={(e) => {

@@ -149,11 +149,12 @@ export const AuthScreen = ({ onAuthSuccess }: AuthScreenProps) => {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
-      const result = await lovable.auth.signInWithOAuth('google');
+    const result = await lovable.auth.signInWithOAuth('google', {
+        redirect_uri: window.location.origin,
+      });
       if (result.error) {
         toast.error(result.error.message || "Google sign-in failed");
       }
-      // The page will redirect for OAuth flow
     } catch (err: any) {
       toast.error(err.message || "Google sign-in failed");
     } finally {
